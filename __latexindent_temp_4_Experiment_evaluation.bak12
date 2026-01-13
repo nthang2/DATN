@@ -1,0 +1,306 @@
+\documentclass[../Main.tex]{subfiles}
+\begin{document}
+
+\tikzset{
+    % Style cho Package (Khung bao ngoài)
+    uml_package/.style={
+        draw, rectangle, 
+        minimum width=12cm, minimum height=8cm, 
+        anchor=north, 
+        fill=white, 
+        drop shadow={opacity=0.3}
+    },
+    % Style cho Tab tên Package
+    uml_package_tab/.style={
+        draw, rectangle, 
+        fill=white, 
+        minimum width=3.5cm, minimum height=0.7cm, 
+        font=\bfseries
+    },
+    % Style cho Class
+    uml_class/.style={
+        draw, rectangle, 
+        minimum width=3.2cm, minimum height=1.2cm, 
+        align=center, 
+        fill=gray!5, 
+        font=\bfseries\small,
+        drop shadow={opacity=0.15}
+    },
+    % --- ĐỊNH NGHĨA QUAN HỆ UML (Sử dụng arrows.meta) ---
+    % 1. Implementation (Thực thi/Hiện thực hóa): Nét đứt, đầu tam giác rỗng
+    rel_implementation/.style={-{Triangle[open, length=3mm, width=3mm]}, dashed, thick},
+    % 2. Aggregation (Kết tập): Đầu hình thoi trắng (rỗng)
+    rel_aggregation/.style={{Diamond[open, length=3mm, width=3mm]}-, thick},
+    % 3. Composition (Hợp thành): Đầu hình thoi đen (đặc)
+    rel_composition/.style={{Diamond[fill=black, length=3mm, width=3mm]}-, thick},
+    % 4. Association (Kết hợp): Đường thẳng
+    rel_association/.style={-, thick}
+}
+
+
+\section{Architecture Design}
+
+\subsection{Overall design}
+
+The architectural design of the Multi-chain Stablecoin Protocol is founded upon a Hybrid Event-Driven Microservices framework, structured within a Hub-and-Spoke topology. This sophisticated architecture is engineered to resolve the inherent challenges of liquidity fragmentation and state synchronization across heterogeneous blockchain networks. By strictly decoupling the Asset Custody Layer (residing on EVM chains) from the State Execution Layer (residing on the Solana SVM), the system achieves a high-performance, scalable solution that leverages the distinct advantages of each blockchain environment.
+
+The architecture is composed of three primary execution environments, each functioning as an autonomous system component yet interconnected through a secure event-driven pipeline. The first environment is the EVM Spoke, which hosts the Controller Contract. This contract functions as the user's primary interface and asset vault, designed to be lightweight and gas-efficient. Its responsibilities are strictly limited to asset locking, event emission, and state updates based on authorized callbacks. The second environment is the Solana Hub (SVM), which acts as the system's "Brain." It hosts the Gateway Contract for cryptographic verification and data formatting, and the Main Contract for executing the core business logic, such as managing the Universal Wallet and calculating dynamic Health Factors. The third environment, bridging the deterministic worlds of these blockchains, is the Off-chain Guardian Infrastructure. This middleware operates as an active listener and orchestrator, ensuring that state transitions on one chain are accurately and securely reflected on the other.
+
+To visualize the interaction between these components and the directional flow of data, Figure \ref{fig:overall_arch} presents the detailed system architecture diagram.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Figure/Overall_architecture.png}
+    \caption{Detailed Architecture of the Multi-chain Stablecoin Protocol}
+    \label{fig:overall_arch}
+\end{figure}
+
+
+The operational workflow of the system, as depicted in the diagram, follows a rigorous six-step process designed to ensure atomicity, security, and eventual consistency.
+
+\paragraph{Step 1: Initiation and Request Encapsulation}
+The process begins on the EVM chain where the user intends to perform an action, such as depositing collateral. The user constructs a message $M$ containing the action parameters (e.g., Token Address, Amount, Target Chain ID) and a unique nonce. Crucially, the user signs this message with their EVM private key, generating a signature $\sigma$. The user then submits a transaction to the \textbf{Controller Contract}. Upon receipt, the Controller does not immediately execute the cross-chain logic but performs two critical local actions: it locks the user's assets (in a Vault) and emits a `RequestCreated` event containing the message $M$ and signature $\sigma$. This emission acts as a signal flare to the off-chain infrastructure.
+
+\paragraph{Step 2: Event Ingestion (The Listening Phase)}
+Unlike traditional polling mechanisms that can be resource-intensive, the Guardian Server employs a reactive Event Listening model. It maintains an active WebSocket or HTTP connection to the EVM RPC nodes. When the `RequestCreated` event is emitted by the Controller, the Guardian immediately captures the log data. This step represents the "Event" in the Event-Driven Architecture. The Guardian parses the log to extract the raw data necessary for the state transition on the destination chain.
+
+\paragraph{Step 3: Relaying and Submission}
+Once the data is captured, the Guardian packages the original message $M$ and the signature $\sigma$ into a new transaction payload compatible with the Solana runtime. It then submits this transaction to the \textbf{Gateway Contract} on the SVM. In this phase, the Guardian acts strictly as a courier (Relayer); it does not modify the message content, ensuring that the user's original intent remains tamper-proof. The Guardian also manages the payment of SOL gas fees, abstracting the complexity of holding multiple native tokens from the end-user.
+
+\paragraph{Step 4: Verification and Instruction Execution}
+The \textbf{Gateway Contract} serves as the entry point to the Solana environment. Its primary responsibility is security. Before any business logic is executed, the Gateway invokes Solana's native `Secp256k1` program to cryptographically verify that the signature $\sigma$ corresponds to the user's EVM address contained in message $M$. This verification is performed on-chain, providing a trustless guarantee of identity. Upon successful verification, the Gateway formats the data into a structured Instruction and calls the \textbf{Main Contract}. The Main Contract then executes the core logic, such as creating a Universal Wallet PDA or updating the user's debt position.
+
+\paragraph{Step 5: Outcome Observation}
+Similar to the ingestion phase on the EVM side, the Guardian Server also maintains a listener on the Solana Blockchain. When the Main Contract finishes execution, it emits a specific event - either `ExecutionSuccess` (indicating the state was updated) or `ExecutionFailure` (indicating a logic error, such as low health factor). The Guardian listens for these specific outcome events to determine the final status of the cross-chain operation. This asynchronous confirmation step is vital for handling the probabilistic finality of blockchain networks.
+
+\paragraph{Step 6: State Synchronization and Finalization}
+Based on the event received from the Solana Main Contract, the Guardian initiates a final callback transaction to the EVM \textbf{Controller Contract} to close the loop. If the Solana execution was successful, the Guardian calls the `updateState` function to finalize the process (e.g., minting stablecoins to the user). If the Solana execution failed, the Guardian triggers a rollback mechanism, unlocking the user's assets and resetting their nonce. This ensures that the system maintains data consistency between the Asset Layer and the State Layer, preventing any funds from being permanently locked in transit.
+
+\subsection{Detailed Package Design}
+
+Based on the overall architecture, this section details the internal design of the critical subsystems. The design is visualized using Class Diagrams grouped by their respective execution environments.
+
+\subsubsection{Solana Hub Package Design}
+The Solana Hub Package, designated as package SolanaCore, encapsulates the system's central business logic and state management. This package is architected to ensure strict separation between the interface layer (Gateway), the logic layer (Main Contract and Managers), and the data layer (Wallet and Counters).
+Figure \ref{fig:solana_detailed_design} illustrates the internal structure and class relationships within this package.
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+\begin{figure}[htbp]
+    \centering
+    % Resizebox giúp hình to hết khổ giấy mà không bị tràn
+    \resizebox{\textwidth}{!}{
+    \begin{tikzpicture}[
+        node distance=2.5cm,
+        % --- STYLES ---
+        uml_class/.style={
+            draw, rectangle, 
+            minimum width=4.5cm, minimum height=1.5cm, 
+            align=center, 
+            fill=gray!5, 
+            font=\bfseries\large, % Font chữ to hơn
+            drop shadow={opacity=0.15},
+            thick
+        },
+        uml_package_style/.style={
+            draw, rectangle, 
+            inner sep=1cm, 
+            fill=white, 
+            drop shadow={opacity=0.2},
+            rounded corners=2pt
+        },
+        uml_tab_style/.style={
+            draw, rectangle, 
+            fill=white, 
+            minimum width=5cm, minimum height=1cm, 
+            font=\bfseries\Large, 
+            anchor=south west
+        },
+        % Quan hệ UML
+        rel_impl/.style={-{Triangle[open, length=4mm, width=4mm]}, dashed, thick},
+        rel_agg/.style={{Diamond[open, length=4mm, width=4mm]}-, thick},
+        rel_comp/.style={{Diamond[fill=black, length=4mm, width=4mm]}-, thick},
+        rel_assoc/.style={-, thick}
+    ]
+
+        % 1. VẼ CÁC CLASS (NODE) TRƯỚC
+        
+        % Hàng 1: Gateway ở giữa
+        \node[uml_class] (gateway) at (0, 0) {GatewayContract};
+        
+        % Mở rộng khoảng cách sang 2 bên (x = -7 và x = 7)
+        \node[uml_class] (formatter) at (-7.5, 0) {FormaterData};
+        \node[uml_class] (verifier) at (7.5, 0) {SignatureVerifier};
+        
+        % Hàng 2: MainContract (Cách xa hơn chút)
+        \node[uml_class] (main) at (0, -3.5) {MainContract};
+        
+        % Hàng 3: Position và Wallet (Mở rộng cân đối)
+        \node[uml_class] (pos_mgmt) at (-7.5, -7) {PositionManagement};
+        \node[uml_class] (wallet) at (7.5, -7) {UniversalWallet};
+        \node[uml_class] (liq_mgmt) at (0, -10.5) {LiquidityManagement};
+        
+        % Hàng 4: NonceCounter (Nằm hẳn xuống dưới)
+        \node[uml_class] (nonce) at (7.5, -10.5) {NonceCounter};
+
+        % 2. VẼ CÁC ĐƯỜNG KẾT NỐI (RELATIONSHIPS)
+        
+        % (1) Implementation: Gateway -> Helper classes
+        \draw[rel_impl] (gateway) -- (verifier);
+        \draw[rel_impl] (gateway) -- (formatter);
+        
+        % (2) Aggregation: Gateway <>- MainContract
+        \draw[rel_agg] (gateway) -- (main);
+        
+        % (3) Implementation: Main -> Position
+        % Vẽ đường vuông góc đẹp
+        \draw[rel_impl] (main.west) -| (pos_mgmt.north);
+        
+        % (4) Association: Main - Wallet
+        \draw[rel_assoc] (main.east) -| (wallet.north);
+        
+        % (5) Association: Position - Wallet
+        \draw[rel_assoc] (pos_mgmt) -- (wallet);
+        
+        % (6) Composition: Wallet *-- Nonce
+        % Vẽ trực tiếp thẳng xuống
+        \draw[rel_comp] (wallet) -- (nonce);
+
+        \draw[rel_impl] (main) -- (liq_mgmt);
+
+        % 3. VẼ KHUNG PACKAGE (NẰM Ở LAYER BACKGROUND)
+        % Điều này đảm bảo khung không bao giờ che mất class
+        \begin{pgfonlayer}{background}
+            % Fit bao gồm tất cả các node biên
+            \node[uml_package_style, fit=(formatter) (verifier) (nonce) (pos_mgmt) (gateway)] (pkg_box) {};
+            
+            % Vẽ Tab tên Package
+            \node[uml_tab_style] at (pkg_box.north west) {pkg SolanaCore};
+        \end{pgfonlayer}
+
+    \end{tikzpicture}
+    }
+    \caption{Detailed Design of Solana Hub Package}
+    \label{fig:solana_detailed_design}
+\end{figure}
+
+\textbf{Class Descriptions and Relationships:}
+\begin{itemize}
+\item \textbf{GatewayContract:} This class acts as the single entry point for all cross-chain transactions initiated by the Guardian. It serves as an orchestrator that sanitizes inputs before passing control to the core logic.
+    \begin{itemize}
+        \item \textit{Implementation Relationships:} The Gateway implements logic from Formater Data class to deserialize incoming payloads and utilizes the Signature Verifier to perform cryptographic checks (Secp256k1 recovery) on the user's signature.
+        \item \textit{Aggregation:} It maintains an aggregation relationship with the Main Contract, indicating that the Gateway coordinates the execution flow but delegates the actual financial state transitions to the Main Contract.
+    \end{itemize}
+\item \textbf{MainContract:} This is the core controller of the system. It manages the lifecycle of CDPs and coordinates liquidity across chains. To maintain modularity, it splits complex operations into specialized management modules:
+    \begin{itemize}
+        \item It implements the Position Management module to handle collateral locking, debt minting, and health factor calculations.
+        \item It implements the Liquidity Management module to handle the rebalancing of assets between the Hub and Spokes during liquidations.
+    \end{itemize}
+
+\item \textbf{UniversalWallet:} This class represents the persistent state (Program Derived Address - PDA) of a user. It stores the aggregated data of collateral and debt.
+    \begin{itemize}
+        \item \textit{Association:} Both the MainContract and \texttt{PositionManagement} have direct associations with the \texttt{UniversalWallet} to read and modify the user's financial position.
+    \end{itemize}
+
+\item \textbf{NonceCounter:} This class tracks the sequence number of transactions to prevent replay attacks.
+    \begin{itemize}
+        \item \textit{Composition:} The diagram defines a strict composition relationship (\textit{filled diamond}) between \texttt{UniversalWallet} and \texttt{NonceCounter}. This implies that the NonceCounter is an intrinsic part of the Wallet; it cannot exist independently, and its lifecycle is bound to the existence of the Universal Wallet.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Guardian Middleware Package Design}
+The Guardian infrastructure follows a modular design to separate event listening from transaction dispatching.
+
+
+\subsubsection{EVM Controller Package Design}
+The EVM design leverages inheritance to ensure security and standardization.
+
+% \begin{figure}[htbp]
+%     \centering
+%     \begin{tikzpicture}[node distance=1.5cm]
+        
+%         % --- PACKAGE: EVM ---
+%         \node[uml_package, minimum width=9cm, minimum height=5.5cm] (pkg_evm) {};
+%         \node[anchor=north west] at (pkg_evm.north west) {\textbf{pkg EVMController}};
+%         \node[uml_package_tab, anchor=south west] at (pkg_evm.north west) {};
+
+%         % --- CLASSES ---
+%         \node[uml_class] (controller) at (0, 0) {ControllerContract};
+        
+%         \node[uml_class, above=2cm of controller] (icontroller) {<<Interface>> \\ IController};
+        
+%         \node[uml_class, left=2.5cm of controller] (ownable) {Ownable};
+%         \node[uml_class, below=1.5cm of ownable] (guard) {ReentrancyGuard};
+        
+%         \node[uml_class, right=2.5cm of controller] (token) {StableCoinERC20};
+
+%         % --- RELATIONSHIPS ---
+        
+%         % Implementation: Controller implements Interface
+%         \draw[uml_inheritance, dashed] (controller) -- (icontroller);
+        
+%         % Inheritance: Controller inherits Ownable & ReentrancyGuard
+%         \draw[uml_inheritance] (controller) -- (ownable);
+%         \draw[uml_inheritance] (controller) -- (guard);
+        
+%         % Association: Controller manages Token
+%         \draw[uml_association] (controller) -- (token);
+
+%     \end{tikzpicture}
+%     \caption{Detailed Design of EVM Controller Package}
+%     \label{fig:evm_detailed}
+% \end{figure}
+
+\textbf{Design Explanation:}
+\begin{itemize}
+    \item \textbf{ControllerContract:} The implementation class. It implements the \texttt{IController} interface to allow for future upgrades or interface polymorphism.
+    \item \textbf{Inheritance:} The contract inherits from standard OpenZeppelin classes:
+        \begin{itemize}
+            \item \texttt{Ownable}: To restrict administrative functions (like pausing the system).
+            \item \texttt{ReentrancyGuard}: To prevent reentrancy attacks during asset withdrawal.
+        \end{itemize}
+    \item \textbf{StableCoinERC20:} The controller has a direct association with the token contract to execute minting and burning privileges.
+\end{itemize}
+
+\section{Detailed design}
+\subsection{User interface design}
+Phần này có độ dài từ hai đến ba trang. Sinh viên đặc tả thông tin về màn hình mà ứng dụng của mình hướng tới, bao gồm độ phân giải màn hình, kích thước màn hình, số lượng màu sắc hỗ trợ, v.v. Tiếp đến, sinh viên đưa ra các thống nhất/chuẩn hóa của mình khi thiết kế giao diện như thiết kế nút, điều khiển, vị trí hiển thị thông điệp phản hồi, phối màu, v.v. Sau cùng sinh viên đưa ra một số hình ảnh minh họa thiết kế giao diện cho các chức năng quan trọng nhất. Lưu ý, sinh viên không nhầm lẫn giao diện thiết kế với giao diện của sản phẩm sau cùng.
+\subsection{Layer design}
+Phần này có độ dài từ ba đến bốn trang. Sinh viên trình bày thiết kế chi tiết các thuộc tính và phương thức cho một số lớp chủ đạo/quan trọng nhất của ứng dụng (từ 2-4 lớp). Thiết kế chi tiết cho các lớp khác, nếu muốn trình bày, sinh viên đưa vào phần phụ lục.
+
+Để minh họa thiết kế lớp, sinh viên thiết kế luồng truyền thông điệp giữa các đối tượng tham gia cho 2 đến 3 use case quan trọng nào đó bằng biểu đồ trình tự (hoặc biểu đồ giao tiếp).
+\subsection{Database design}
+Phần này có độ dài từ hai đến bốn trang. Sinh viên thiết kế, vẽ và giải thích biểu đồ thực thể liên kết (E-R diagram). Từ đó, sinh viên thiết kế cơ sở dữ liệu tùy theo hệ quản trị cơ sở dữ liệu mà mình sử dụng (SQL, NoSQL, Firebase, v.v.)
+
+\section{Application Building}
+\subsection{Libraries and Tools}
+Sinh viên liệt kê các công cụ, ngôn ngữ lập trình, API, thư viện, IDE, công cụ kiểm thử, v.v. mà mình sử dụng để phát triển ứng dụng. Mỗi công cụ phải được chỉ rõ phiên bản sử dụng. SV nên kẻ bảng mô tả tương tự như Bảng \ref{table:my_label}. Nếu có nhiều nội dung trình bày, sinh viên cần xoay ngang bảng.
+
+\begin{table}[H]
+\centering{}
+    \begin{tabular}{lll}
+        \hline
+        \textbf{Mục đích} & \textbf{Công cụ}       & \textbf{Địa chỉ URL}    \\ \hline
+        IDE lập trình     & Eclipse Oxygen a64 bit & http://www.eclipse.org/ \\ \hline
+        v.v.              & v.v.                   & v.v.                    \\ \hline
+        \end{tabular}
+    \caption{Danh sách thư viện và công cụ sử dụng}
+    \label{fig:my_label}
+\end{table}
+
+\subsection{Achievement}
+Sinh viên trước tiên mô tả kết quả đạt được của mình là gì, ví dụ như các sản phẩm được đóng gói là gì, bao gồm những thành phần nào, ý nghĩa, vai trò?
+
+Sinh viên cần thống kê các thông tin về ứng dụng của mình như: số dòng code, số lớp, số gói, dung lượng toàn bộ mã nguồn, dung lượng của từng sản phẩm đóng gói, v.v. Tương tự như phần liệt kê về công cụ sử dụng, sinh viên cũng nên dùng bảng để mô tả phần thông tin thống kê này.
+
+\subsection{Illustration of main functions}
+Sinh viên lựa chọn và đưa ra màn hình cho các chức năng chính, quan trọng, và thú vị nhất. Mỗi giao diện cần phải có lời giải thích ngắn gọn. Khi giải thích, sinh viên có thể kết hợp với các chú thích ở trong hình ảnh giao diện.
+
+\section{Testing}
+Phần này có độ dài từ hai đến ba trang. Sinh viên thiết kế các trường hợp kiểm thử cho hai đến ba chức năng quan trọng nhất. Sinh viên cần chỉ rõ các kỹ thuật kiểm thử đã sử dụng. Chi tiết các trường hợp kiểm thử khác, nếu muốn trình bày, sinh viên đưa vào phần phụ lục.
+Sinh viên sau cùng tổng kết về số lượng các trường hợp kiểm thử và kết quả kiểm thử. Sinh viên cần phân tích lý do nếu kết quả kiểm thử không đạt.
+\section{Deployment}
+Sinh viên trình bày mô hình và/hoặc cách thức triển khai thử nghiệm/thực tế. Ứng dụng của sinh viên được triển khai trên server/thiết bị gì, cấu hình như thế nào. Kết quả triển khai thử nghiệm nếu có (số lượng người dùng, số lượng truy cập, thời gian phản hồi, phản hồi người dùng, khả năng chịu tải, các thống kê, v.v.)
+
+\end{document}

@@ -1,0 +1,81 @@
+\documentclass[../Main.tex]{subfiles}
+\begin{document}
+\tikzset{
+    % Styles cho sơ đồ
+    contract_box/.style={draw, rectangle, minimum width=3.5cm, minimum height=1.5cm, align=center, fill=white, thick, drop shadow},
+    env_boundary/.style={draw, rectangle, thick, inner sep=0.5cm, minimum height=8cm, minimum width=5cm},
+    server_node/.style={cylinder, draw, shape border rotate=90, aspect=0.25, minimum height=2.2cm, minimum width=1.5cm, fill=cyan!30, align=center, drop shadow},
+    user_node/.style={circle, draw, minimum size=0.8cm, fill=white, thick},
+    flow_arrow/.style={->, >=stealth, thick, font=\footnotesize}
+}
+\section{Overall Architecture Design}
+
+The architectural foundation of the Multi-chain Stablecoin Protocol is constructed upon a Hybrid Event-Driven Microservices model, organized within a rigorous Hub-and-Spoke topology. This design choice is necessitated by the fundamental challenge of the project: orchestrating a unified financial state across heterogeneous blockchain networks that possess vastly different consensus mechanisms, block times, and programming models. The system operates in a distributed ledger context where the "Asset Layer" (Custody) and the "State Layer" (Logic) are decoupled, facilitating asynchronous state synchronization between the high-performance Solana blockchain—acting as the central Hub—and various EVM-compatible networks mediated by a resilient off-chain Guardian infrastructure.
+
+At the core of this architecture lies the **Solana Hub (SVM)**, which hosts the system's "Single Source of Truth." Within this environment, two critical components are deployed: the \textbf{Gateway Contract} and the \textbf{Main Contract}. The Gateway Contract serves as the cryptographic firewall, responsible for authenticating cross-chain requests utilizing Solana's native Secp256k1 program. Once authenticated, the control flow moves to the Main Contract, which manages the Universal Wallet and calculates the global Health Factor. Complementing the Hub are the **EVM Spokes**, representing the Asset Custody Layer. On each supported chain, a \textbf{Controller Contract} is deployed to manage asset locking and implement mutex mechanisms for concurrency control. Bridging these environments is the **Guardian Server**, an off-chain middleware that acts as the active orchestrator, relaying messages and ensuring eventual consistency.
+
+Figure \ref{fig:overall_arch} illustrates the comprehensive system architecture and the directional data flow during a standard cross-chain transaction.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{Figure/Overall_a.png}
+    \caption{Ví dụ thiết kế gói}
+    \label{fig:Fig2}
+\end{figure}
+
+As depicted in the diagram, the operational workflow adheres to a strict "Verify-then-Execute" pattern to ensure atomicity across the distributed system. The process is broken down into the following steps:
+
+\textbf{(1) Sign Message and Request Action:} The workflow is initiated on the EVM chain where the user constructs a message detailing their intent (e.g., Deposit 1 ETH). The user signs this message using their wallet and submits it to the \textbf{Controller Contract}. The Controller locks the user's assets or nonce (Mutex) to prevent double-spending and emits a request event.
+
+\textbf{(2) Query Signature:} The Guardian Server, operating as an event listener, detects the new request on the EVM chain. It queries the Controller Contract to retrieve the full message payload and the user's digital signature.
+
+\textbf{(3) Send Message and Signature:} The Guardian encapsulates the retrieved data into a Solana transaction and submits it to the \textbf{Gateway Contract} on the SVM. The Guardian acts as a relayer, paying the necessary gas fees for the destination chain.
+
+\textbf{(4) Call Instruction for Cross-chain Action:} Upon receiving the transaction, the Gateway Contract utilizes the native Secp256k1 program to cryptographically verify that the signature matches the original EVM sender. If valid, it invokes the \textbf{Main Contract} to execute the business logic, such as updating the Universal Wallet state or calculating the Health Factor.
+
+\textbf{(5) Wait Transaction (Success or Fail):} The Guardian monitors the Solana blockchain for the transaction finality. Since smart contract execution can fail due to logical constraints (e.g., insufficient collateral), the Guardian must wait for the definitive status of the transaction.
+
+\textbf{(6) Update or Reset Data:} Finally, the Guardian synchronizes the result back to the EVM chain. If the Solana transaction was successful, the Guardian triggers the Controller to finalize the state (e.g., mint stablecoins). If failed, it triggers a revert, releasing the Mutex lock and returning the user's assets to their original state. This bidirectional synchronization ensures that the system maintains eventual consistency despite the asynchronous nature of the underlying networks.
+
+
+\section{Detailed design}
+\subsection{User interface design}
+Phần này có độ dài từ hai đến ba trang. Sinh viên đặc tả thông tin về màn hình mà ứng dụng của mình hướng tới, bao gồm độ phân giải màn hình, kích thước màn hình, số lượng màu sắc hỗ trợ, v.v. Tiếp đến, sinh viên đưa ra các thống nhất/chuẩn hóa của mình khi thiết kế giao diện như thiết kế nút, điều khiển, vị trí hiển thị thông điệp phản hồi, phối màu, v.v. Sau cùng sinh viên đưa ra một số hình ảnh minh họa thiết kế giao diện cho các chức năng quan trọng nhất. Lưu ý, sinh viên không nhầm lẫn giao diện thiết kế với giao diện của sản phẩm sau cùng.
+\subsection{Layer design}
+Phần này có độ dài từ ba đến bốn trang. Sinh viên trình bày thiết kế chi tiết các thuộc tính và phương thức cho một số lớp chủ đạo/quan trọng nhất của ứng dụng (từ 2-4 lớp). Thiết kế chi tiết cho các lớp khác, nếu muốn trình bày, sinh viên đưa vào phần phụ lục.
+
+Để minh họa thiết kế lớp, sinh viên thiết kế luồng truyền thông điệp giữa các đối tượng tham gia cho 2 đến 3 use case quan trọng nào đó bằng biểu đồ trình tự (hoặc biểu đồ giao tiếp).
+\subsection{Database design}
+Phần này có độ dài từ hai đến bốn trang. Sinh viên thiết kế, vẽ và giải thích biểu đồ thực thể liên kết (E-R diagram). Từ đó, sinh viên thiết kế cơ sở dữ liệu tùy theo hệ quản trị cơ sở dữ liệu mà mình sử dụng (SQL, NoSQL, Firebase, v.v.)
+
+\section{Application Building}
+\subsection{Libraries and Tools}
+Sinh viên liệt kê các công cụ, ngôn ngữ lập trình, API, thư viện, IDE, công cụ kiểm thử, v.v. mà mình sử dụng để phát triển ứng dụng. Mỗi công cụ phải được chỉ rõ phiên bản sử dụng. SV nên kẻ bảng mô tả tương tự như Bảng \ref{table:my_label}. Nếu có nhiều nội dung trình bày, sinh viên cần xoay ngang bảng.
+
+\begin{table}[H]
+\centering{}
+    \begin{tabular}{lll}
+        \hline
+        \textbf{Mục đích} & \textbf{Công cụ}       & \textbf{Địa chỉ URL}    \\ \hline
+        IDE lập trình     & Eclipse Oxygen a64 bit & http://www.eclipse.org/ \\ \hline
+        v.v.              & v.v.                   & v.v.                    \\ \hline
+        \end{tabular}
+    \caption{Danh sách thư viện và công cụ sử dụng}
+    \label{fig:my_label}
+\end{table}
+
+\subsection{Achievement}
+Sinh viên trước tiên mô tả kết quả đạt được của mình là gì, ví dụ như các sản phẩm được đóng gói là gì, bao gồm những thành phần nào, ý nghĩa, vai trò?
+
+Sinh viên cần thống kê các thông tin về ứng dụng của mình như: số dòng code, số lớp, số gói, dung lượng toàn bộ mã nguồn, dung lượng của từng sản phẩm đóng gói, v.v. Tương tự như phần liệt kê về công cụ sử dụng, sinh viên cũng nên dùng bảng để mô tả phần thông tin thống kê này.
+
+\subsection{Illustration of main functions}
+Sinh viên lựa chọn và đưa ra màn hình cho các chức năng chính, quan trọng, và thú vị nhất. Mỗi giao diện cần phải có lời giải thích ngắn gọn. Khi giải thích, sinh viên có thể kết hợp với các chú thích ở trong hình ảnh giao diện.
+
+\section{Testing}
+Phần này có độ dài từ hai đến ba trang. Sinh viên thiết kế các trường hợp kiểm thử cho hai đến ba chức năng quan trọng nhất. Sinh viên cần chỉ rõ các kỹ thuật kiểm thử đã sử dụng. Chi tiết các trường hợp kiểm thử khác, nếu muốn trình bày, sinh viên đưa vào phần phụ lục.
+Sinh viên sau cùng tổng kết về số lượng các trường hợp kiểm thử và kết quả kiểm thử. Sinh viên cần phân tích lý do nếu kết quả kiểm thử không đạt.
+\section{Deployment}
+Sinh viên trình bày mô hình và/hoặc cách thức triển khai thử nghiệm/thực tế. Ứng dụng của sinh viên được triển khai trên server/thiết bị gì, cấu hình như thế nào. Kết quả triển khai thử nghiệm nếu có (số lượng người dùng, số lượng truy cập, thời gian phản hồi, phản hồi người dùng, khả năng chịu tải, các thống kê, v.v.)
+
+\end{document}

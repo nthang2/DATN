@@ -1,0 +1,62 @@
+\documentclass[../Main.tex]{subfiles}
+\begin{document}
+
+\section{Overall Architecture Design}
+
+The architectural foundation of the Multi-chain Stablecoin Protocol is constructed upon a Hybrid Event-Driven Microservices model, organized within a rigorous Hub-and-Spoke topology. This design choice is necessitated by the fundamental challenge of the project: orchestrating a unified financial state across heterogeneous blockchain networks that possess vastly different consensus mechanisms, block times, and programming models. Unlike traditional monolithic applications where the user interface, business logic, and database reside within a unified environment, this system operates in a distributed ledger context where the "Asset Layer" (Custody) and the "State Layer" (Logic) are decoupled. Consequently, the system architecture is designed to facilitate asynchronous state synchronization between the high-performance Solana blockchain-acting as the central Hub—and various EVM-compatible networks—acting as the Spokes—mediated by a resilient off-chain Guardian infrastructure.
+
+At a high level, the architecture treats smart contracts deployed on different chains as autonomous microservices. In this paradigm, the **JPOW Controller Contract** on EVM chains and the **JPOW Main Contract** on Solana function as independent services that encapsulate their own state and logic. They do not communicate via synchronous API calls, which are prone to failure in distributed networks due to latency and probabilistic finality. Instead, they interact through an Event-Driven Architecture (EDA). Interactions are initiated by state changes on the source chain, which emit immutable log events. These events are consumed by the Guardian middleware, processed, and relayed to the destination chain. This design ensures that the system remains non-blocking and responsive; a delay or congestion on the Ethereum network does not halt the operation of the protocol on Solana or Binance Smart Chain, thereby preserving the system's availability and resilience.
+
+The core of this architecture is the **Solana Hub**, which hosts the system's "Single Source of Truth." By leveraging the Solana Virtual Machine (SVM), the system centralizes the complex financial logic required to manage the Collateralized Debt Positions (CDP). Within this environment, two critical components are deployed: the **Gateway Contract** and the **JPOW Main Contract**. The Gateway Contract serves as the cryptographic firewall of the system. Its primary responsibility is to authenticate cross-chain requests utilizing Solana's native Secp256k1 program. Since the users initiate transactions using their Ethereum-based private keys, the Gateway must cryptographically prove that the signature provided in the relay message matches the user's identity before allowing any state modification. Once authenticated, the control flow moves to the JPOW Main Contract. This component manages the **Universal Wallet**, a specialized data structure that aggregates the user's collateral and debt across all connected chains. By centralizing this state, the system can calculate a global Health Factor in real-time, enabling a unified borrowing power that is mathematically impossible in fragmented, bridge-based architectures.
+
+Complementing the Hub are the **EVM Spokes**, which represent the Asset Custody Layer. On each supported chain (such as Ethereum, Arbitrum, or Polygon), a **JPOW Controller Contract** is deployed. This contract is designed to be lightweight and logic-minimal to reduce gas costs and attack surfaces. Its function is analogous to a decentralized vault. When a user wishes to deposit collateral or mint stablecoins, they interact solely with this Controller. Crucially, to handle the asynchronous nature of the cross-chain communication, the Controller implements a pessimistic locking mechanism known as the **Mutex (Mutual Exclusion)** pattern. When a user initiates a request—for instance, depositing ETH to mint stablecoins—the Controller locks the user's unique nonce and emits a `RequestCreated` event. This lock prevents the user from initiating subsequent requests until the current operation is either finalized or reverted by the Guardian. This mechanism is vital for maintaining linearizability in a distributed system, ensuring that a user cannot double-spend their assets or spam the network while a cross-chain transaction is in transit.
+
+Bridging the gap between the deterministic on-chain environments is the **Guardian Network**, an off-chain middleware developed using Node.js. The Guardian acts not merely as a passive relayer but as an active orchestrator of the protocol's state. It operates on an infinite event loop, polling the RPC nodes of all connected EVM chains to detect `RequestCreated` logs. Upon capturing an event, the Guardian encapsulates the payload—containing the user's signature, action type, and amount—into a Solana transaction. It then acts as a transaction relayer, signing the submission with its own keyer key and paying the SOL gas fees on behalf of the user. This abstraction significantly enhances the user experience, as the end-user does not need to hold SOL tokens or manage a Solana-specific wallet; they simply sign a message in their MetaMask wallet, and the infrastructure handles the rest.
+
+Furthermore, the architecture incorporates a robust error-handling strategy modeled after the **Saga Pattern** for distributed transactions. In a cross-chain context, atomicity cannot be guaranteed by a single database commit. A transaction might succeed on the EVM side (locking funds) but fail on the Solana side (due to slippage, insufficient health factor, or network congestion). To address this, the Guardian is programmed with conditional logic to handle "Compensating Transactions." If the Solana execution fails, the Guardian detects the failure and submits a specific "Revert" transaction back to the JPOW Controller on the EVM chain. This callback triggers the Controller to release the Mutex lock and return the user's assets to their original state. Conversely, if the Solana execution is successful, the Guardian submits a "Finalize" transaction to the EVM chain, instructing the Controller to mint the stablecoins or release the withdrawn collateral. This bidirectional synchronization ensures that the system eventually reaches a consistent state, preventing funds from being permanently frozen in transit.
+
+In summary, the Overall Architecture Design is a sophisticated synthesis of high-performance state management on Solana and secure asset custody on EVM chains. By adopting a Hub-and-Spoke topology driven by event-based communication, the system effectively solves the liquidity fragmentation problem. The division of labor is clear: the JPOW Controller manages assets and concurrency via Mutex locks; the Solana Hub manages the global financial model and cryptographic verification; and the Guardian Network orchestrates the flow of data, ensuring atomicity and eventual consistency across the decentralized web.
+
+
+
+\section{Detailed design}
+\subsection{User interface design}
+Phần này có độ dài từ hai đến ba trang. Sinh viên đặc tả thông tin về màn hình mà ứng dụng của mình hướng tới, bao gồm độ phân giải màn hình, kích thước màn hình, số lượng màu sắc hỗ trợ, v.v. Tiếp đến, sinh viên đưa ra các thống nhất/chuẩn hóa của mình khi thiết kế giao diện như thiết kế nút, điều khiển, vị trí hiển thị thông điệp phản hồi, phối màu, v.v. Sau cùng sinh viên đưa ra một số hình ảnh minh họa thiết kế giao diện cho các chức năng quan trọng nhất. Lưu ý, sinh viên không nhầm lẫn giao diện thiết kế với giao diện của sản phẩm sau cùng.
+\subsection{Layer design}
+Phần này có độ dài từ ba đến bốn trang. Sinh viên trình bày thiết kế chi tiết các thuộc tính và phương thức cho một số lớp chủ đạo/quan trọng nhất của ứng dụng (từ 2-4 lớp). Thiết kế chi tiết cho các lớp khác, nếu muốn trình bày, sinh viên đưa vào phần phụ lục.
+
+Để minh họa thiết kế lớp, sinh viên thiết kế luồng truyền thông điệp giữa các đối tượng tham gia cho 2 đến 3 use case quan trọng nào đó bằng biểu đồ trình tự (hoặc biểu đồ giao tiếp).
+\subsection{Database design}
+Phần này có độ dài từ hai đến bốn trang. Sinh viên thiết kế, vẽ và giải thích biểu đồ thực thể liên kết (E-R diagram). Từ đó, sinh viên thiết kế cơ sở dữ liệu tùy theo hệ quản trị cơ sở dữ liệu mà mình sử dụng (SQL, NoSQL, Firebase, v.v.)
+
+\section{Application Building}
+\subsection{Libraries and Tools}
+Sinh viên liệt kê các công cụ, ngôn ngữ lập trình, API, thư viện, IDE, công cụ kiểm thử, v.v. mà mình sử dụng để phát triển ứng dụng. Mỗi công cụ phải được chỉ rõ phiên bản sử dụng. SV nên kẻ bảng mô tả tương tự như Bảng \ref{table:my_label}. Nếu có nhiều nội dung trình bày, sinh viên cần xoay ngang bảng.
+
+\begin{table}[H]
+\centering{}
+    \begin{tabular}{lll}
+        \hline
+        \textbf{Mục đích} & \textbf{Công cụ}       & \textbf{Địa chỉ URL}    \\ \hline
+        IDE lập trình     & Eclipse Oxygen a64 bit & http://www.eclipse.org/ \\ \hline
+        v.v.              & v.v.                   & v.v.                    \\ \hline
+        \end{tabular}
+    \caption{Danh sách thư viện và công cụ sử dụng}
+    \label{fig:my_label}
+\end{table}
+
+\subsection{Achievement}
+Sinh viên trước tiên mô tả kết quả đạt được của mình là gì, ví dụ như các sản phẩm được đóng gói là gì, bao gồm những thành phần nào, ý nghĩa, vai trò?
+
+Sinh viên cần thống kê các thông tin về ứng dụng của mình như: số dòng code, số lớp, số gói, dung lượng toàn bộ mã nguồn, dung lượng của từng sản phẩm đóng gói, v.v. Tương tự như phần liệt kê về công cụ sử dụng, sinh viên cũng nên dùng bảng để mô tả phần thông tin thống kê này.
+
+\subsection{Illustration of main functions}
+Sinh viên lựa chọn và đưa ra màn hình cho các chức năng chính, quan trọng, và thú vị nhất. Mỗi giao diện cần phải có lời giải thích ngắn gọn. Khi giải thích, sinh viên có thể kết hợp với các chú thích ở trong hình ảnh giao diện.
+
+\section{Testing}
+Phần này có độ dài từ hai đến ba trang. Sinh viên thiết kế các trường hợp kiểm thử cho hai đến ba chức năng quan trọng nhất. Sinh viên cần chỉ rõ các kỹ thuật kiểm thử đã sử dụng. Chi tiết các trường hợp kiểm thử khác, nếu muốn trình bày, sinh viên đưa vào phần phụ lục.
+Sinh viên sau cùng tổng kết về số lượng các trường hợp kiểm thử và kết quả kiểm thử. Sinh viên cần phân tích lý do nếu kết quả kiểm thử không đạt.
+\section{Deployment}
+Sinh viên trình bày mô hình và/hoặc cách thức triển khai thử nghiệm/thực tế. Ứng dụng của sinh viên được triển khai trên server/thiết bị gì, cấu hình như thế nào. Kết quả triển khai thử nghiệm nếu có (số lượng người dùng, số lượng truy cập, thời gian phản hồi, phản hồi người dùng, khả năng chịu tải, các thống kê, v.v.)
+
+\end{document}

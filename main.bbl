@@ -1,0 +1,142 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{none/global//global/global/global}
+  \entry{nakamoto2008bitcoin}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=NS}{%
+         family={Nakamoto},
+         familyi={N\bibinitperiod},
+         given={Satoshi},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{NS1}
+    \strng{fullhash}{NS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{howpublished}{\url{https://bitcoin.org/bitcoin.pdf}}
+    \field{note}{Accessed: 2024}
+    \field{title}{Bitcoin: A peer-to-peer electronic cash system}
+    \field{year}{2008}
+  \endentry
+
+  \entry{buterin2014ethereum}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=BV}{%
+         family={Buterin},
+         familyi={B\bibinitperiod},
+         given={Vitalik},
+         giveni={V\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Ethereum Foundation}%
+    }
+    \strng{namehash}{BV1}
+    \strng{fullhash}{BV1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{howpublished}{\url{https://ethereum.org/en/whitepaper/}}
+    \field{title}{Ethereum: A next-generation smart contract and decentralized application platform}
+    \field{year}{2014}
+  \endentry
+
+  \entry{yakovenko2018solana}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=YA}{%
+         family={Yakovenko},
+         familyi={Y\bibinitperiod},
+         given={Anatoly},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{YA1}
+    \strng{fullhash}{YA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{howpublished}{\url{https://solana.com/solana-whitepaper.pdf}}
+    \field{note}{Whitepaper}
+    \field{title}{Solana: A new architecture for a high performance blockchain v0.8.13}
+    \field{year}{2018}
+  \endentry
+
+  \entry{wood2014ethereum}{article}{}{}
+    \true{moreauthor}
+    \true{morelabelname}
+    \name{author}{1}{}{%
+      {{hash=WG}{%
+         family={Wood},
+         familyi={W\bibinitperiod},
+         given={Gavin},
+         giveni={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{WG+1}
+    \strng{fullhash}{WG+1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{number}{2014}
+    \field{pages}{1\bibrangedash 32}
+    \field{title}{Ethereum: A secure decentralised generalised transaction ledger}
+    \field{volume}{151}
+    \field{journaltitle}{Ethereum project yellow paper}
+    \field{year}{2014}
+  \endentry
+
+  \entry{anchor_framework}{misc}{}{}
+    \name{author}{2}{}{%
+      {{hash=FA}{%
+         family={Ferrante},
+         familyi={F\bibinitperiod},
+         given={Armani},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=C}{%
+         family={{Coral Team}},
+         familyi={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FAC1}
+    \strng{fullhash}{FAC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{howpublished}{\url{https://www.anchor-lang.com/}}
+    \field{note}{Documentation}
+    \field{title}{Anchor Framework: A framework for Solana's Sealevel runtime}
+    \field{year}{2021}
+  \endentry
+
+  \entry{openzeppelin}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=O}{%
+         family={{OpenZeppelin}},
+         familyi={O\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{O1}
+    \strng{fullhash}{O1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{howpublished}{\url{https://www.openzeppelin.com/contracts}}
+    \field{note}{Library Documentation}
+    \field{title}{OpenZeppelin Contracts: The standard for secure blockchain applications}
+    \field{year}{2023}
+  \endentry
+\enddatalist
+\endinput
