@@ -8,11 +8,19 @@
 \contentsline {table}{\numberline {2.6}{\ignorespaces Functional Description: Withdraw Collateral}}{14}{table.caption.16}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces Danh sách thư viện và công cụ sử dụng}}{33}{table.caption.27}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces Development Environment Tools}}{48}{table.caption.31}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Smart Contract Development Stack}}{49}{table.caption.32}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Frontend Development Libraries}}{50}{table.caption.33}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces Backend Development Libraries}}{51}{table.caption.34}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces Testing and Simulation Tools}}{51}{table.caption.35}%
+\contentsline {table}{\numberline {4.6}{\ignorespaces Source Code Statistics by Component}}{52}{table.caption.36}%
+\contentsline {table}{\numberline {4.7}{\ignorespaces Test Cases for Cross-chain Minting Logic}}{54}{table.caption.37}%
+\contentsline {table}{\numberline {4.8}{\ignorespaces Test Cases for Security and Verification}}{55}{table.caption.38}%
+\contentsline {table}{\numberline {4.9}{\ignorespaces Test Cases for Liquidation Logic}}{56}{table.caption.39}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {A.1}{\ignorespaces Table to test captions and labels.}}{43}{table.caption.32}%
+\contentsline {table}{\numberline {A.1}{\ignorespaces Table to test captions and labels.}}{66}{table.caption.44}%
 \addvspace {10\p@ }
 \contentsfinish 
 \contentsfinish 

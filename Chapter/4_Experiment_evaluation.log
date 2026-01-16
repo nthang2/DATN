@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2025.11.7)  12 JAN 2026 17:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2025.11.7)  15 JAN 2026 21:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1489,7 +1489,7 @@ Package hyperref Info: Link coloring OFF on input line 2.
 \@outlinefile=\write6
 \openout6 = `4_Experiment_evaluation.out'.
 
-<Figure/Overall_architecture.png, id=84, 1002.74625pt x 543.02875pt>
+<Figure/Overall_architecture.png, id=108, 1002.74625pt x 543.02875pt>
 File: Figure/Overall_architecture.png Graphic file (type png)
 <use Figure/Overall_architecture.png>
 Package pdftex.def Info: Figure/Overall_architecture.png  used on input line 53.
@@ -1582,15 +1582,524 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [7]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-LaTeX Warning: Reference `table:my_label' on page 8 undefined on input line 442.
+
+
+[8]
+Overfull \hbox (10.00655pt too wide) in paragraph at lines 468--469
+[]\T5/ptm/m/n/13 The con-tract ex-poses spe-cific func-tions for User-System in-ter-ac-tion and Guardian-
+ []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[8]
+[9]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[10]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[11]
+Overfull \hbox (9.00781pt too wide) in paragraph at lines 513--514
+[]\T5/ptm/m/n/13 Interact Uni-ver-sal Wal-let (Guardian-Only): A spe-cial-ized ad-min-is-tra-tive method
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[12]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[13]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[14]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[15]
+
+LaTeX Warning: Reference `eq:health_factor_global' on page 16 undefined on input line 555.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[16]
+Overfull \hbox (20.60458pt too wide) in paragraph at lines 574--575
+[]\T5/ptm/b/n/13 Chain id: \T5/ptm/m/n/13 The iden-ti-fier for the spe-cific blockchain net-work (e.g., 1 for Ethereum). 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[17]
+<Figure/wl_connect_client.png, id=212, 516.93124pt x 490.83376pt>
+File: Figure/wl_connect_client.png Graphic file (type png)
+<use Figure/wl_connect_client.png>
+Package pdftex.def Info: Figure/wl_connect_client.png  used on input line 594.
+(pdftex.def)             Requested size: 298.75264pt x 283.68018pt.
+<Figure/universal_wl_client.png, id=214, 1262.7175pt x 470.75874pt>
+File: Figure/universal_wl_client.png Graphic file (type png)
+<use Figure/universal_wl_client.png>
+Package pdftex.def Info: Figure/universal_wl_client.png  used on input line 607.
+(pdftex.def)             Requested size: 426.79135pt x 159.11485pt.
+
+Overfull \hbox (0.4646pt too wide) in paragraph at lines 614--615
+[]\T5/ptm/m/n/13 The man-age-ment of as-so-ci-ated ad-dresses is han-dled through the wal-let list panel,
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[18 <./Figure/wl_connect_client.png>]
+<Figure/borrow_client.png, id=224, 1291.82625pt x 825.0825pt>
+File: Figure/borrow_client.png Graphic file (type png)
+<use Figure/borrow_client.png>
+Package pdftex.def Info: Figure/borrow_client.png  used on input line 622.
+(pdftex.def)             Requested size: 405.45047pt x 258.95813pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[19 <./Figure/universal_wl_client.png>]
+
+[20 <./Figure/borrow_client.png>]
+<Figure/portfolio_client.png, id=242, 1205.50375pt x 823.075pt>
+File: Figure/portfolio_client.png Graphic file (type png)
+<use Figure/portfolio_client.png>
+Package pdftex.def Info: Figure/portfolio_client.png  used on input line 652.
+(pdftex.def)             Requested size: 405.45047pt x 276.81505pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[21 <./Figure/portfolio_client.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[22]
+LaTeX Font Info:    Trying to load font information for T5+pcr on input line 694.
+ (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/vntex/t5pcr.fd
+File: t5ucr.fd 2005/08/24 Fontinst v1.929 font definitions for T5/pcr.
+)
+Underfull \hbox (badness 10000) in paragraph at lines 696--696
+[]|\T5/ptm/m/n/13 Solidity (Juan
+ []
+
+
+Overfull \hbox (9.14719pt too wide) in paragraph at lines 691--698
+ [][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 710--710
+[]|\T5/ptm/b/n/13 Library / Frame-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 712--712
+[]|\T5/ptm/m/n/13 Anchor Frame-work
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 712--712
+[]|\T5/ptm/m/n/13 Sealevel run-time frame-work
+ []
+
+
+Underfull \hbox (badness 1448) in paragraph at lines 712--712
+\T5/ptm/m/n/13 for Solana, han-dling se-ri-al-iza-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 713--713
+[]|\T5/ptm/m/n/13 Object-oriented lan-guage for
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 714--714
+[]|\T5/ptm/m/n/13 OpenZeppelin Con-
+ []
+
+
+Overfull \hbox (9.14719pt too wide) in paragraph at lines 708--717
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[23]
+Underfull \hbox (badness 2197) in paragraph at lines 731--731
+\T5/ptm/m/n/13 build-ing the ap-pli-ca-tion in-ter-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 733--733
+[]|\T5/ptm/m/n/13 Strictly typed su-per-set of
+ []
+
+
+Underfull \hbox (badness 1668) in paragraph at lines 735--735
+[]|\T5/ptm/m/n/13 Next-generation fron-tend build
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 737--737
+[]|\T5/ptm/m/n/13 React Hooks li-brary for
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 737--737
+\T5/ptm/m/n/13 Ethereum, sim-pli-fy-ing wal-let
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 737--737
+\T5/ptm/m/n/13 con-nec-tion and state man-age-
+ []
+
+
+Underfull \hbox (badness 1831) in paragraph at lines 739--739
+[]|\T5/ptm/m/n/13 Low-level Type-Script in-ter-face
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 741--741
+[]|\T5/ptm/m/n/13 @solana/web3.js
+ []
+
+
+Underfull \hbox (badness 4582) in paragraph at lines 741--741
+\T5/ptm/m/n/13 the Solana blockchain (RPC,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 743--743
+[]|\T5/ptm/m/n/13 @coral-xyz/anchor
+ []
+
+
+Underfull \hbox (badness 1389) in paragraph at lines 743--743
+[]|\T5/ptm/m/n/13 Client li-brary to in-ter-act with
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 745--745
+[]|\T5/ptm/m/n/13 @solana/spl-token
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 747--747
+[]|\T5/ptm/m/n/13 Primitive and flex-i-ble state
+ []
+
+
+Underfull \hbox (badness 2020) in paragraph at lines 747--747
+\T5/ptm/m/n/13 man-age-ment li-brary for Re-act
+ []
+
+
+Overfull \hbox (23.37357pt too wide) in paragraph at lines 727--750
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[24]
+Underfull \hbox (badness 4366) in paragraph at lines 764--764
+[]|\T5/ptm/m/n/13 Runtime en-vi-ron-ment for the
+ []
+
+
+Underfull \hbox (badness 2426) in paragraph at lines 768--768
+[]|\T5/ptm/m/n/13 Comprehensive Python li-brary
+ []
+
+
+Underfull \hbox (badness 2469) in paragraph at lines 768--768
+\T5/ptm/m/n/13 for in-ter-act-ing with Ethereum
+ []
+
+
+Underfull \hbox (badness 7344) in paragraph at lines 770--770
+\T5/ptm/m/n/13 and man-ag-ing Ethereum ac-
+ []
+
+
+Underfull \hbox (badness 5331) in paragraph at lines 772--772
+\T5/ptm/m/n/13 the Solana blockchain JSON
+ []
+
+
+Underfull \hbox (badness 3364) in paragraph at lines 778--778
+[]|\T5/ptm/m/n/13 Synchronous driver for Mon-
+ []
+
+
+Overfull \hbox (23.37357pt too wide) in paragraph at lines 760--781
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[25]
+Underfull \hbox (badness 1490) in paragraph at lines 794--794
+[]|\T5/ptm/m/n/13 JavaScript test frame-work and
+ []
+
+
+Overfull \hbox (9.14719pt too wide) in paragraph at lines 791--797
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[26]
+Overfull \hbox (40.4249pt too wide) in paragraph at lines 821--839
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[27]
+Underfull \hbox (badness 10000) in paragraph at lines 872--873
+[]|\T5/ptm/b/n/13 TC-MINT-
+ []
+
+
+Underfull \hbox (badness 6758) in paragraph at lines 873--875
+[]|\T5/ptm/b/n/13 Scenario: \T5/ptm/m/n/13 User de-posits
+ []
+
+
+Underfull \hbox (badness 2941) in paragraph at lines 875--879
+\T5/ptm/b/n/13 3. \T5/ptm/m/n/13 Mock Guardian sub-mits
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 881--882
+[]|\T5/ptm/b/n/13 TC-MINT-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 881--882
+\T5/ptm/m/n/13 (Over-
+ []
+
+
+Underfull \hbox (badness 3209) in paragraph at lines 882--884
+\T5/ptm/m/n/13 mint debt ex-ceed-ing the
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 884--888
+\T5/ptm/b/n/13 4. Ex-pected: \T5/ptm/m/n/13 Cal-cu-la-tion
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 890--891
+[]|\T5/ptm/b/n/13 TC-MINT-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 890--891
+\T5/ptm/m/n/13 (Zero
+ []
+
+
+Overfull \hbox (49.99992pt too wide) in paragraph at lines 868--897
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[28]
+Underfull \hbox (badness 3118) in paragraph at lines 912--914
+[]|\T5/ptm/b/n/13 Scenario: \T5/ptm/m/n/13 Guardian sub-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 912--914
+\T5/ptm/m/n/13 - Sig: Sign($\OML/cmm/m/it/12 User[]$\T5/ptm/m/n/13 ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 914--917
+[]|\T5/ptm/b/n/13 1. \T5/ptm/m/n/13 Solana Gate-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 914--917
+\T5/ptm/m/n/13 way in-vokes na-tive
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 914--917
+\T5/ptm/b/n/13 2. \T5/ptm/m/n/13 Re-cov-ered ad-dress is
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 914--917
+\T5/ptm/m/n/13 com-pared with \T5/pcr/m/n/13 Uni-ver-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 914--917
+\T5/ptm/b/n/13 3. Ex-pected: \T5/ptm/m/n/13 Ad-dresses
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 920--922
+[]|\T5/ptm/b/n/13 Scenario: \T5/ptm/m/n/13 At-tacker (or
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 920--922
+\T5/ptm/m/n/13 com-pro-mised Guardian)
+ []
+
+
+Underfull \hbox (badness 2020) in paragraph at lines 920--922
+\T5/ptm/m/n/13 tries to mint debt for a
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 920--922
+\T5/ptm/m/n/13 Vic-tim us-ing At-tacker's
+ []
+
+
+Underfull \hbox (badness 6542) in paragraph at lines 920--922
+\T5/ptm/m/n/13 - Sig: Sign($\OML/cmm/m/it/12 Attacker[]$\T5/ptm/m/n/13 ,
+ []
+
+
+Underfull \hbox (badness 6825) in paragraph at lines 922--925
+\T5/ptm/b/n/13 2. \T5/ptm/m/n/13 Con-tract com-pares Re-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 927--928
+\T5/ptm/m/n/13 (Replay At-
+ []
+
+
+Underfull \hbox (badness 7291) in paragraph at lines 928--930
+\T5/ptm/m/n/13 mits a pre-vi-ously valid
+ []
+
+
+Underfull \hbox (badness 5345) in paragraph at lines 928--930
+\T5/ptm/b/n/13 Input: \T5/ptm/m/n/13 A valid pay-load
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 930--933
+[]|\T5/ptm/b/n/13 1. \T5/ptm/m/n/13 First sub-mis-sion suc-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 930--933
+\T5/ptm/m/n/13 ceeds; \T5/pcr/m/n/13 Uni-ver-sal-Wal-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 930--933
+\T5/pcr/m/n/13 let.nonce \T5/ptm/m/n/13 in-cre-ments
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 930--933
+\T5/ptm/b/n/13 3. Ex-pected: \T5/ptm/m/n/13 Con-tract
+ []
+
+
+Underfull \hbox (badness 1527) in paragraph at lines 930--933
+\OML/cmm/m/it/12 Wallet:nonce\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 k \OT1/cmr/m/n/12 + 1)$\T5/ptm/m/n/13 . Check
+ []
+
+
+Overfull \hbox (49.99992pt too wide) in paragraph at lines 907--935
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[29]
+Underfull \hbox (badness 10000) in paragraph at lines 950--952
+[]|\T5/ptm/b/n/13 Scenario: \T5/ptm/m/n/13 Or-a-cle price
+ []
+
+
+Underfull \hbox (badness 1735) in paragraph at lines 957--958
+\T5/ptm/m/n/13 (Healthy Po-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 960--962
+\T5/ptm/m/n/13 with \T5/pcr/m/n/13 Po-si-tion-Healthy\T5/ptm/m/n/13 .
+ []
+
+
+Overfull \hbox (49.99992pt too wide) in paragraph at lines 945--964
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[30]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[31]
 
 Package glossaries Warning: No \printnoidxglossary or \printnoidxglossaries
  found. (Remove \makenoidxglossaries if you don't want any glossaries.)
@@ -1598,7 +2107,7 @@ This document will not have a glossary.
 
 
 
-[9] (Chapter/4_Experiment_evaluation.aux)
+[32] (Chapter/4_Experiment_evaluation.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -1612,24 +2121,24 @@ LaTeX Font Warning: Size substitutions with differences
 LaTeX Warning: There were undefined references.
 
 Package rerunfilecheck Info: File `4_Experiment_evaluation.out' has not changed.
-(rerunfilecheck)             Checksum: E624B630F3E79507B3302F4B291258E6;1842.
+(rerunfilecheck)             Checksum: 3F12404343DC0B088B943C2CF4ADBF41;3314.
 Package logreq Info: Writing requests to '4_Experiment_evaluation.run.xml'.
 \openout1 = `4_Experiment_evaluation.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 46143 strings out of 473190
- 925611 string characters out of 5704335
- 1800166 words of memory out of 5000000
- 68611 multiletter control sequences out of 15000+600000
- 579748 words of font info for 66 fonts, out of 8000000 for 9000
+ 46300 strings out of 473190
+ 928576 string characters out of 5704335
+ 1813001 words of memory out of 5000000
+ 68693 multiletter control sequences out of 15000+600000
+ 583175 words of font info for 68 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 128i,11n,124p,2493b,958s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb>
-Output written on Chapter/4_Experiment_evaluation.pdf (9 pages, 119661 bytes).
+ 128i,12n,124p,2493b,958s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/ucrr8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmri8v.pfb>
+Output written on Chapter/4_Experiment_evaluation.pdf (32 pages, 526591 bytes).
 PDF statistics:
- 180 PDF objects out of 1000 (max. 8388607)
- 141 compressed objects within 2 object streams
- 37 named destinations out of 1000 (max. 500000)
- 218 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 459 PDF objects out of 1000 (max. 8388607)
+ 377 compressed objects within 4 object streams
+ 107 named destinations out of 1000 (max. 500000)
+ 286 words of extra memory for PDF output out of 10000 (max. 10000000)
 

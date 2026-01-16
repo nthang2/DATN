@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2025.11.7)  12 JAN 2026 17:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2025.11.7)  15 JAN 2026 21:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1569,7 +1569,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 pdfTeX warning (ext4): destination with the same identifier (name{page.ii}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.68 ...{4.2.2}Layer design}{32}{subsection.4.2.2}
+l.71 ... Application Design}{37}{subsection.4.2.2}
                                                   % [2]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
@@ -1984,7 +1984,7 @@ Package fancyhdr Warning: \headheight is too small (10.0pt):
 [25]
 CHAPTER 4.
 (./Chapter/4_Experiment_evaluation.tex
-<Figure/Overall_architecture.png, id=731, 1002.74625pt x 543.02875pt>
+<Figure/Overall_architecture.png, id=791, 1002.74625pt x 543.02875pt>
 File: Figure/Overall_architecture.png Graphic file (type png)
 <use Figure/Overall_architecture.png>
 Package pdftex.def Info: Figure/Overall_architecture.png  used on input line 53.
@@ -2069,8 +2069,21 @@ Package fancyhdr Warning: \headheight is too small (10.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
 
 [32]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-LaTeX Warning: Reference `table:my_label' on page 33 undefined on input line 442.
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[33]
+Overfull \hbox (10.00655pt too wide) in paragraph at lines 468--469
+[]\T5/ptm/m/n/13 The con-tract ex-poses spe-cific func-tions for User-System in-ter-ac-tion and Guardian-
+ []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -2084,7 +2097,10 @@ Package fancyhdr Warning: \headheight is too small (10.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
 
-[33])
+[34]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 
 
 Package fancyhdr Warning: \headheight is too small (10.0pt): 
@@ -2093,7 +2109,653 @@ Package fancyhdr Warning: \headheight is too small (10.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
 
-[34]
+[35]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[36]
+Overfull \hbox (9.00781pt too wide) in paragraph at lines 513--514
+[]\T5/ptm/m/n/13 Interact Uni-ver-sal Wal-let (Guardian-Only): A spe-cial-ized ad-min-is-tra-tive method
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[37]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[38]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[39]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[40]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[41]
+Overfull \hbox (20.60458pt too wide) in paragraph at lines 574--575
+[]\T5/ptm/b/n/13 Chain id: \T5/ptm/m/n/13 The iden-ti-fier for the spe-cific blockchain net-work (e.g., 1 for Ethereum). 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[42]
+<Figure/wl_connect_client.png, id=886, 516.93124pt x 490.83376pt>
+File: Figure/wl_connect_client.png Graphic file (type png)
+<use Figure/wl_connect_client.png>
+Package pdftex.def Info: Figure/wl_connect_client.png  used on input line 594.
+(pdftex.def)             Requested size: 298.75264pt x 283.68018pt.
+<Figure/universal_wl_client.png, id=888, 1262.7175pt x 470.75874pt>
+File: Figure/universal_wl_client.png Graphic file (type png)
+<use Figure/universal_wl_client.png>
+Package pdftex.def Info: Figure/universal_wl_client.png  used on input line 607.
+(pdftex.def)             Requested size: 426.79135pt x 159.11485pt.
+
+Overfull \hbox (0.4646pt too wide) in paragraph at lines 614--615
+[]\T5/ptm/m/n/13 The man-age-ment of as-so-ci-ated ad-dresses is han-dled through the wal-let list panel,
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[43 <./Figure/wl_connect_client.png>]
+<Figure/borrow_client.png, id=896, 1291.82625pt x 825.0825pt>
+File: Figure/borrow_client.png Graphic file (type png)
+<use Figure/borrow_client.png>
+Package pdftex.def Info: Figure/borrow_client.png  used on input line 622.
+(pdftex.def)             Requested size: 405.45047pt x 258.95813pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[44 <./Figure/universal_wl_client.png>]
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[45 <./Figure/borrow_client.png>]
+<Figure/portfolio_client.png, id=913, 1205.50375pt x 823.075pt>
+File: Figure/portfolio_client.png Graphic file (type png)
+<use Figure/portfolio_client.png>
+Package pdftex.def Info: Figure/portfolio_client.png  used on input line 652.
+(pdftex.def)             Requested size: 405.45047pt x 276.81505pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[46 <./Figure/portfolio_client.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[47]
+Underfull \hbox (badness 10000) in paragraph at lines 696--696
+[]|\T5/ptm/m/n/13 Solidity (Juan
+ []
+
+
+Overfull \hbox (9.14719pt too wide) in paragraph at lines 691--698
+ [][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 710--710
+[]|\T5/ptm/b/n/13 Library / Frame-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 712--712
+[]|\T5/ptm/m/n/13 Anchor Frame-work
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 712--712
+[]|\T5/ptm/m/n/13 Sealevel run-time frame-work
+ []
+
+
+Underfull \hbox (badness 1448) in paragraph at lines 712--712
+\T5/ptm/m/n/13 for Solana, han-dling se-ri-al-iza-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 713--713
+[]|\T5/ptm/m/n/13 Object-oriented lan-guage for
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 714--714
+[]|\T5/ptm/m/n/13 OpenZeppelin Con-
+ []
+
+
+Overfull \hbox (9.14719pt too wide) in paragraph at lines 708--717
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[48]
+Underfull \hbox (badness 2197) in paragraph at lines 731--731
+\T5/ptm/m/n/13 build-ing the ap-pli-ca-tion in-ter-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 733--733
+[]|\T5/ptm/m/n/13 Strictly typed su-per-set of
+ []
+
+
+Underfull \hbox (badness 1668) in paragraph at lines 735--735
+[]|\T5/ptm/m/n/13 Next-generation fron-tend build
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 737--737
+[]|\T5/ptm/m/n/13 React Hooks li-brary for
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 737--737
+\T5/ptm/m/n/13 Ethereum, sim-pli-fy-ing wal-let
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 737--737
+\T5/ptm/m/n/13 con-nec-tion and state man-age-
+ []
+
+
+Underfull \hbox (badness 1831) in paragraph at lines 739--739
+[]|\T5/ptm/m/n/13 Low-level Type-Script in-ter-face
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 741--741
+[]|\T5/ptm/m/n/13 @solana/web3.js
+ []
+
+
+Underfull \hbox (badness 4582) in paragraph at lines 741--741
+\T5/ptm/m/n/13 the Solana blockchain (RPC,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 743--743
+[]|\T5/ptm/m/n/13 @coral-xyz/anchor
+ []
+
+
+Underfull \hbox (badness 1389) in paragraph at lines 743--743
+[]|\T5/ptm/m/n/13 Client li-brary to in-ter-act with
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 745--745
+[]|\T5/ptm/m/n/13 @solana/spl-token
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 747--747
+[]|\T5/ptm/m/n/13 Primitive and flex-i-ble state
+ []
+
+
+Underfull \hbox (badness 2020) in paragraph at lines 747--747
+\T5/ptm/m/n/13 man-age-ment li-brary for Re-act
+ []
+
+
+Overfull \hbox (23.37357pt too wide) in paragraph at lines 727--750
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[49]
+Underfull \hbox (badness 4366) in paragraph at lines 764--764
+[]|\T5/ptm/m/n/13 Runtime en-vi-ron-ment for the
+ []
+
+
+Underfull \hbox (badness 2426) in paragraph at lines 768--768
+[]|\T5/ptm/m/n/13 Comprehensive Python li-brary
+ []
+
+
+Underfull \hbox (badness 2469) in paragraph at lines 768--768
+\T5/ptm/m/n/13 for in-ter-act-ing with Ethereum
+ []
+
+
+Underfull \hbox (badness 7344) in paragraph at lines 770--770
+\T5/ptm/m/n/13 and man-ag-ing Ethereum ac-
+ []
+
+
+Underfull \hbox (badness 5331) in paragraph at lines 772--772
+\T5/ptm/m/n/13 the Solana blockchain JSON
+ []
+
+
+Underfull \hbox (badness 3364) in paragraph at lines 778--778
+[]|\T5/ptm/m/n/13 Synchronous driver for Mon-
+ []
+
+
+Overfull \hbox (23.37357pt too wide) in paragraph at lines 760--781
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[50]
+Underfull \hbox (badness 1490) in paragraph at lines 794--794
+[]|\T5/ptm/m/n/13 JavaScript test frame-work and
+ []
+
+
+Overfull \hbox (9.14719pt too wide) in paragraph at lines 791--797
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[51]
+Overfull \hbox (40.4249pt too wide) in paragraph at lines 821--839
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[52]
+Underfull \hbox (badness 10000) in paragraph at lines 872--873
+[]|\T5/ptm/b/n/13 TC-MINT-
+ []
+
+
+Underfull \hbox (badness 6758) in paragraph at lines 873--875
+[]|\T5/ptm/b/n/13 Scenario: \T5/ptm/m/n/13 User de-posits
+ []
+
+
+Underfull \hbox (badness 2941) in paragraph at lines 875--879
+\T5/ptm/b/n/13 3. \T5/ptm/m/n/13 Mock Guardian sub-mits
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 881--882
+[]|\T5/ptm/b/n/13 TC-MINT-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 881--882
+\T5/ptm/m/n/13 (Over-
+ []
+
+
+Underfull \hbox (badness 3209) in paragraph at lines 882--884
+\T5/ptm/m/n/13 mint debt ex-ceed-ing the
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 884--888
+\T5/ptm/b/n/13 4. Ex-pected: \T5/ptm/m/n/13 Cal-cu-la-tion
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 890--891
+[]|\T5/ptm/b/n/13 TC-MINT-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 890--891
+\T5/ptm/m/n/13 (Zero
+ []
+
+
+Overfull \hbox (49.99992pt too wide) in paragraph at lines 868--897
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[53]
+Underfull \hbox (badness 3118) in paragraph at lines 912--914
+[]|\T5/ptm/b/n/13 Scenario: \T5/ptm/m/n/13 Guardian sub-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 912--914
+\T5/ptm/m/n/13 - Sig: Sign($\OML/cmm/m/it/12 User[]$\T5/ptm/m/n/13 ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 914--917
+[]|\T5/ptm/b/n/13 1. \T5/ptm/m/n/13 Solana Gate-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 914--917
+\T5/ptm/m/n/13 way in-vokes na-tive
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 914--917
+\T5/ptm/b/n/13 2. \T5/ptm/m/n/13 Re-cov-ered ad-dress is
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 914--917
+\T5/ptm/m/n/13 com-pared with \T5/pcr/m/n/13 Uni-ver-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 914--917
+\T5/ptm/b/n/13 3. Ex-pected: \T5/ptm/m/n/13 Ad-dresses
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 920--922
+[]|\T5/ptm/b/n/13 Scenario: \T5/ptm/m/n/13 At-tacker (or
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 920--922
+\T5/ptm/m/n/13 com-pro-mised Guardian)
+ []
+
+
+Underfull \hbox (badness 2020) in paragraph at lines 920--922
+\T5/ptm/m/n/13 tries to mint debt for a
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 920--922
+\T5/ptm/m/n/13 Vic-tim us-ing At-tacker's
+ []
+
+
+Underfull \hbox (badness 6542) in paragraph at lines 920--922
+\T5/ptm/m/n/13 - Sig: Sign($\OML/cmm/m/it/12 Attacker[]$\T5/ptm/m/n/13 ,
+ []
+
+
+Underfull \hbox (badness 6825) in paragraph at lines 922--925
+\T5/ptm/b/n/13 2. \T5/ptm/m/n/13 Con-tract com-pares Re-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 927--928
+\T5/ptm/m/n/13 (Replay At-
+ []
+
+
+Underfull \hbox (badness 7291) in paragraph at lines 928--930
+\T5/ptm/m/n/13 mits a pre-vi-ously valid
+ []
+
+
+Underfull \hbox (badness 5345) in paragraph at lines 928--930
+\T5/ptm/b/n/13 Input: \T5/ptm/m/n/13 A valid pay-load
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 930--933
+[]|\T5/ptm/b/n/13 1. \T5/ptm/m/n/13 First sub-mis-sion suc-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 930--933
+\T5/ptm/m/n/13 ceeds; \T5/pcr/m/n/13 Uni-ver-sal-Wal-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 930--933
+\T5/pcr/m/n/13 let.nonce \T5/ptm/m/n/13 in-cre-ments
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 930--933
+\T5/ptm/b/n/13 3. Ex-pected: \T5/ptm/m/n/13 Con-tract
+ []
+
+
+Underfull \hbox (badness 1527) in paragraph at lines 930--933
+\OML/cmm/m/it/12 Wallet:nonce\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 k \OT1/cmr/m/n/12 + 1)$\T5/ptm/m/n/13 . Check
+ []
+
+
+Overfull \hbox (49.99992pt too wide) in paragraph at lines 907--935
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[54]
+Underfull \hbox (badness 10000) in paragraph at lines 950--952
+[]|\T5/ptm/b/n/13 Scenario: \T5/ptm/m/n/13 Or-a-cle price
+ []
+
+
+Underfull \hbox (badness 1735) in paragraph at lines 957--958
+\T5/ptm/m/n/13 (Healthy Po-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 960--962
+\T5/ptm/m/n/13 with \T5/pcr/m/n/13 Po-si-tion-Healthy\T5/ptm/m/n/13 .
+ []
+
+
+Overfull \hbox (49.99992pt too wide) in paragraph at lines 945--964
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[55]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[56])
+
+
+Package fancyhdr Warning: \headheight is too small (10.0pt): 
+(fancyhdr)                Make it at least 15.59995pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.59995pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
+
+[57]
 CHAPTER 5.
 (./Chapter/5_Solution_contribution.tex
 LaTeX Font Info:    Calculating math sizes for size <10.83347> on input line 4.
@@ -2132,40 +2794,40 @@ LaTeX Font Warning: Font shape `U/lasy/m/n' in size <5.41673> not available
 
 )
 
-[35
+[58
 
 ]
 CHAPTER 6.
 (./Chapter/6_Conclusion.tex)
 
-[36
+[59
 
 ] (./Chapter/7_Reference.tex
 
-LaTeX Warning: Citation 'hovy1993automated' on page 37 undefined on input line 13.
+LaTeX Warning: Citation 'hovy1993automated' on page 60 undefined on input line 13.
 
 
-LaTeX Warning: Citation 'peterson2007computer' on page 37 undefined on input line 18.
+LaTeX Warning: Citation 'peterson2007computer' on page 60 undefined on input line 18.
 
 
-LaTeX Warning: Citation 'NguyenThucHai' on page 37 undefined on input line 20.
+LaTeX Warning: Citation 'NguyenThucHai' on page 60 undefined on input line 20.
 
 
-LaTeX Warning: Citation 'poesio2001discourse' on page 37 undefined on input line 24.
+LaTeX Warning: Citation 'poesio2001discourse' on page 60 undefined on input line 24.
 
 
-LaTeX Warning: Citation 'knott1996data' on page 37 undefined on input line 30.
+LaTeX Warning: Citation 'knott1996data' on page 60 undefined on input line 30.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[37
+[60
 
 ]
 
-LaTeX Warning: Citation 'BernersTim' on page 38 undefined on input line 34.
+LaTeX Warning: Citation 'BernersTim' on page 61 undefined on input line 34.
 
 
 Overfull \hbox (10.64345pt too wide) in paragraph at lines 34--36
@@ -2173,7 +2835,7 @@ Overfull \hbox (10.64345pt too wide) in paragraph at lines 34--36
  []
 
 
-LaTeX Warning: Citation 'LectureA' on page 38 undefined on input line 37.
+LaTeX Warning: Citation 'LectureA' on page 61 undefined on input line 37.
 
 )
 
@@ -2184,18 +2846,18 @@ Package fancyhdr Warning: \headheight is too small (10.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
 
-[38]
+[61]
 Overfull \hbox (6.85043pt too wide) in paragraph at lines 321--321
 \T5/ptm/m/it/13 v0.8.13\T5/ptm/m/n/13 , []$\T5/pcr/m/n/13 https : / / solana . com / solana -[] whitepaper . pdf$[]\T5/ptm/m/n/13 , Whitepa-
  []
 
 
 
-[39
+[62
 
 ]
 
-[40
+[63
 
 ]
 Ph\d {u} l\d {u}c A.
@@ -2204,7 +2866,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[41
+[64
 
 ]
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -2218,8 +2880,8 @@ Package fancyhdr Warning: \headheight is too small (10.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
 
-[42]
-<Figure/IoT.png, id=837, 931.48pt x 523.9575pt>
+[65]
+<Figure/IoT.png, id=1104, 931.48pt x 523.9575pt>
 File: Figure/IoT.png Graphic file (type png)
 <use Figure/IoT.png>
 Package pdftex.def Info: Figure/IoT.png  used on input line 81.
@@ -2233,24 +2895,24 @@ Package fancyhdr Warning: \headheight is too small (10.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
 
-[43 <./Figure/IoT.png>]
+[66 <./Figure/IoT.png>]
 
-LaTeX Warning: Citation 'scott2013sdn' on page 44 undefined on input line 93.
+LaTeX Warning: Citation 'scott2013sdn' on page 67 undefined on input line 93.
 
 
-LaTeX Warning: Citation 'ashton2009internet' on page 44 undefined on input line 93.
+LaTeX Warning: Citation 'ashton2009internet' on page 67 undefined on input line 93.
 
 
 Overfull \hbox (14.86223pt too wide) in paragraph at lines 93--94
 []\T5/ptm/m/n/13 . Cö thº, sinh vi¶n sû döng l»nh [][]\T5/pcr/m/n/13 \cite{} []\T5/ptm/m/n/13 nh÷ sau [].
  []
 
-<Figure/Bia.PNG, id=849, 313.77225pt x 331.83975pt>
+<Figure/Bia.PNG, id=1116, 313.77225pt x 331.83975pt>
 File: Figure/Bia.PNG Graphic file (type png)
 <use Figure/Bia.PNG>
 Package pdftex.def Info: Figure/Bia.PNG  used on input line 113.
 (pdftex.def)             Requested size: 213.39568pt x 225.68349pt.
-<Figure/GayBia.PNG, id=850, 420.97275pt x 479.99326pt>
+<Figure/GayBia.PNG, id=1117, 420.97275pt x 479.99326pt>
 File: Figure/GayBia.PNG Graphic file (type png)
 <use Figure/GayBia.PNG>
 Package pdftex.def Info: Figure/GayBia.PNG  used on input line 125.
@@ -2264,7 +2926,7 @@ Package fancyhdr Warning: \headheight is too small (10.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
 
-[44]
+[67]
 
 
 Package fancyhdr Warning: \headheight is too small (10.0pt): 
@@ -2273,11 +2935,11 @@ Package fancyhdr Warning: \headheight is too small (10.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-5.59995pt}.
 
-[45 <./Figure/Bia.PNG> <./Figure/GayBia.PNG>]
+[68 <./Figure/Bia.PNG> <./Figure/GayBia.PNG>]
 Ph\d {u} l\d {u}c B.
 (./Chapter/Appendix_B.tex)
 
-[46
+[69
 
 ] (./Main.aux)
  ***********
@@ -2296,7 +2958,7 @@ LaTeX Warning: There were undefined references.
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `Main.out' has not changed.
-(rerunfilecheck)             Checksum: FA8E733FD49D8B9D818EE1F17DC269A8;15138.
+(rerunfilecheck)             Checksum: AC59B768C1C2B20B2A2B47F6D9B3DB08;16619.
 
 Package biblatex Warning: Please (re)run BibTeX on the file(s):
 (biblatex)                Main
@@ -2307,18 +2969,18 @@ Package logreq Info: Writing requests to 'Main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 47262 strings out of 473190
- 946236 string characters out of 5704335
- 1812329 words of memory out of 5000000
- 69508 multiletter control sequences out of 15000+600000
+ 47381 strings out of 473190
+ 948565 string characters out of 5704335
+ 1816177 words of memory out of 5000000
+ 69553 multiletter control sequences out of 15000+600000
  623664 words of font info for 102 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  108i,12n,107p,2426b,1259s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/ucrr8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/uhvr8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmri8v.pfb>
-Output written on Main.pdf (57 pages, 946439 bytes).
+Output written on Main.pdf (80 pages, 1298747 bytes).
 PDF statistics:
- 974 PDF objects out of 1000 (max. 8388607)
- 779 compressed objects within 8 object streams
- 191 named destinations out of 1000 (max. 500000)
- 745 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1259 PDF objects out of 1440 (max. 8388607)
+ 1024 compressed objects within 11 object streams
+ 261 named destinations out of 1000 (max. 500000)
+ 813 words of extra memory for PDF output out of 10000 (max. 10000000)
 

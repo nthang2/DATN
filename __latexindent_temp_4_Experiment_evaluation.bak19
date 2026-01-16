@@ -1,0 +1,647 @@
+\documentclass[../Main.tex]{subfiles}
+\begin{document}
+
+\tikzset{
+    % Style cho Package (Khung bao ngoài)
+    uml_package/.style={
+        draw, rectangle, 
+        minimum width=12cm, minimum height=8cm, 
+        anchor=north, 
+        fill=white, 
+        drop shadow={opacity=0.3}
+    },
+    % Style cho Tab tên Package
+    uml_package_tab/.style={
+        draw, rectangle, 
+        fill=white, 
+        minimum width=3.5cm, minimum height=0.7cm, 
+        font=\bfseries
+    },
+    % Style cho Class
+    uml_class/.style={
+        draw, rectangle, 
+        minimum width=3.2cm, minimum height=1.2cm, 
+        align=center, 
+        fill=gray!5, 
+        font=\bfseries\small,
+        drop shadow={opacity=0.15}
+    },
+    % --- ĐỊNH NGHĨA QUAN HỆ UML (Sử dụng arrows.meta) ---
+    % 1. Implementation (Thực thi/Hiện thực hóa): Nét đứt, đầu tam giác rỗng
+    rel_implementation/.style={-{Triangle[open, length=3mm, width=3mm]}, dashed, thick},
+    % 2. Aggregation (Kết tập): Đầu hình thoi trắng (rỗng)
+    rel_aggregation/.style={{Diamond[open, length=3mm, width=3mm]}-, thick},
+    % 3. Composition (Hợp thành): Đầu hình thoi đen (đặc)
+    rel_composition/.style={{Diamond[fill=black, length=3mm, width=3mm]}-, thick},
+    % 4. Association (Kết hợp): Đường thẳng
+    rel_association/.style={-, thick}
+}
+
+
+\section{Architecture Design}
+
+\subsection{Overall design}
+
+The architectural design of the Multi-chain Stablecoin Protocol is founded upon a Hybrid Event-Driven Microservices framework, structured within a Hub-and-Spoke topology. This sophisticated architecture is engineered to resolve the inherent challenges of liquidity fragmentation and state synchronization across heterogeneous blockchain networks. By strictly decoupling the Asset Custody Layer (residing on EVM chains) from the State Execution Layer (residing on the Solana SVM), the system achieves a high-performance, scalable solution that leverages the distinct advantages of each blockchain environment.
+
+The architecture is composed of three primary execution environments, each functioning as an autonomous system component yet interconnected through a secure event-driven pipeline. The first environment is the EVM Spoke, which hosts the Controller Contract. This contract functions as the user's primary interface and asset vault, designed to be lightweight and gas-efficient. Its responsibilities are strictly limited to asset locking, event emission, and state updates based on authorized callbacks. The second environment is the Solana Hub (SVM), which acts as the system's "Brain." It hosts the Gateway Contract for cryptographic verification and data formatting, and the Main Contract for executing the core business logic, such as managing the Universal Wallet and calculating dynamic Health Factors. The third environment, bridging the deterministic worlds of these blockchains, is the Off-chain Guardian Infrastructure. This middleware operates as an active listener and orchestrator, ensuring that state transitions on one chain are accurately and securely reflected on the other.
+
+To visualize the interaction between these components and the directional flow of data, Figure \ref{fig:overall_arch} presents the detailed system architecture diagram.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Figure/Overall_architecture.png}
+    \caption{Detailed Architecture of the Multi-chain Stablecoin Protocol}
+    \label{fig:overall_arch}
+\end{figure}
+
+
+The operational workflow of the system, as depicted in the diagram, follows a rigorous six-step process designed to ensure atomicity, security, and eventual consistency.
+
+\paragraph{Step 1: Initiation and Request Encapsulation}
+The process begins on the EVM chain where the user intends to perform an action, such as depositing collateral. The user constructs a message $M$ containing the action parameters (e.g., Token Address, Amount, Target Chain ID) and a unique nonce. Crucially, the user signs this message with their EVM private key, generating a signature $\sigma$. The user then submits a transaction to the \textbf{Controller Contract}. Upon receipt, the Controller does not immediately execute the cross-chain logic but performs two critical local actions: it locks the user's assets (in a Vault) and emits a `RequestCreated` event containing the message $M$ and signature $\sigma$. This emission acts as a signal flare to the off-chain infrastructure.
+
+\paragraph{Step 2: Event Ingestion (The Listening Phase)}
+Unlike traditional polling mechanisms that can be resource-intensive, the Guardian Server employs a reactive Event Listening model. It maintains an active WebSocket or HTTP connection to the EVM RPC nodes. When the `RequestCreated` event is emitted by the Controller, the Guardian immediately captures the log data. This step represents the "Event" in the Event-Driven Architecture. The Guardian parses the log to extract the raw data necessary for the state transition on the destination chain.
+
+\paragraph{Step 3: Relaying and Submission}
+Once the data is captured, the Guardian packages the original message $M$ and the signature $\sigma$ into a new transaction payload compatible with the Solana runtime. It then submits this transaction to the \textbf{Gateway Contract} on the SVM. In this phase, the Guardian acts strictly as a courier (Relayer); it does not modify the message content, ensuring that the user's original intent remains tamper-proof. The Guardian also manages the payment of SOL gas fees, abstracting the complexity of holding multiple native tokens from the end-user.
+
+\paragraph{Step 4: Verification and Instruction Execution}
+The \textbf{Gateway Contract} serves as the entry point to the Solana environment. Its primary responsibility is security. Before any business logic is executed, the Gateway invokes Solana's native `Secp256k1` program to cryptographically verify that the signature $\sigma$ corresponds to the user's EVM address contained in message $M$. This verification is performed on-chain, providing a trustless guarantee of identity. Upon successful verification, the Gateway formats the data into a structured Instruction and calls the \textbf{Main Contract}. The Main Contract then executes the core logic, such as creating a Universal Wallet PDA or updating the user's debt position.
+
+\paragraph{Step 5: Outcome Observation}
+Similar to the ingestion phase on the EVM side, the Guardian Server also maintains a listener on the Solana Blockchain. When the Main Contract finishes execution, it emits a specific event - either `ExecutionSuccess` (indicating the state was updated) or `ExecutionFailure` (indicating a logic error, such as low health factor). The Guardian listens for these specific outcome events to determine the final status of the cross-chain operation. This asynchronous confirmation step is vital for handling the probabilistic finality of blockchain networks.
+
+\paragraph{Step 6: State Synchronization and Finalization}
+Based on the event received from the Solana Main Contract, the Guardian initiates a final callback transaction to the EVM \textbf{Controller Contract} to close the loop. If the Solana execution was successful, the Guardian calls the `updateState` function to finalize the process (e.g., minting stablecoins to the user). If the Solana execution failed, the Guardian triggers a rollback mechanism, unlocking the user's assets and resetting their nonce. This ensures that the system maintains data consistency between the Asset Layer and the State Layer, preventing any funds from being permanently locked in transit.
+
+\subsection{Detailed Package Design}
+
+Based on the overall architecture, this section details the internal design of the critical subsystems. The design is visualized using Class Diagrams grouped by their respective execution environments.
+
+\subsubsection{Solana Hub Package Design}
+The Solana Hub Package, designated as package SolanaCore, encapsulates the system's central business logic and state management. This package is architected to ensure strict separation between the interface layer (Gateway), the logic layer (Main Contract and Managers), and the data layer (Wallet and Counters).
+Figure \ref{fig:solana_detailed_design} illustrates the internal structure and class relationships within this package.
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+\begin{figure}[htbp]
+    \centering
+    % Resizebox giúp hình to hết khổ giấy mà không bị tràn
+    \resizebox{\textwidth}{!}{
+    \begin{tikzpicture}[
+        node distance=2.5cm,
+        % --- STYLES ---
+        uml_class/.style={
+            draw, rectangle, 
+            minimum width=4.5cm, minimum height=1.5cm, 
+            align=center, 
+            fill=gray!5, 
+            font=\bfseries\large, % Font chữ to hơn
+            drop shadow={opacity=0.15},
+            thick
+        },
+        uml_package_style/.style={
+            draw, rectangle, 
+            inner sep=1cm, 
+            fill=white, 
+            drop shadow={opacity=0.2},
+            rounded corners=2pt
+        },
+        uml_tab_style/.style={
+            draw, rectangle, 
+            fill=white, 
+            minimum width=5cm, minimum height=1cm, 
+            font=\bfseries\Large, 
+            anchor=south west
+        },
+        % Quan hệ UML
+        rel_impl/.style={-{Triangle[open, length=4mm, width=4mm]}, dashed, thick},
+        rel_agg/.style={{Diamond[open, length=4mm, width=4mm]}-, thick},
+        rel_comp/.style={{Diamond[fill=black, length=4mm, width=4mm]}-, thick},
+        rel_assoc/.style={-, thick}
+    ]
+
+        % 1. VẼ CÁC CLASS (NODE) TRƯỚC
+        
+        % Hàng 1: Gateway ở giữa
+        \node[uml_class] (gateway) at (0, 0) {GatewayContract};
+        
+        % Mở rộng khoảng cách sang 2 bên (x = -7 và x = 7)
+        \node[uml_class] (formatter) at (-7.5, 0) {FormaterData};
+        \node[uml_class] (verifier) at (7.5, 0) {SignatureVerifier};
+        
+        % Hàng 2: MainContract (Cách xa hơn chút)
+        \node[uml_class] (main) at (0, -3.5) {MainContract};
+        
+        % Hàng 3: Position và Wallet (Mở rộng cân đối)
+        \node[uml_class] (pos_mgmt) at (-7.5, -7) {PositionManagement};
+        \node[uml_class] (wallet) at (7.5, -7) {UniversalWallet};
+        \node[uml_class] (liq_mgmt) at (0, -10.5) {LiquidityManagement};
+        
+        % Hàng 4: NonceCounter (Nằm hẳn xuống dưới)
+        \node[uml_class] (nonce) at (7.5, -10.5) {NonceCounter};
+
+        % 2. VẼ CÁC ĐƯỜNG KẾT NỐI (RELATIONSHIPS)
+        
+        % (1) Implementation: Gateway -> Helper classes
+        \draw[rel_impl] (gateway) -- (verifier);
+        \draw[rel_impl] (gateway) -- (formatter);
+        
+        % (2) Aggregation: Gateway <>- MainContract
+        \draw[rel_agg] (gateway) -- (main);
+        
+        % (3) Implementation: Main -> Position
+        % Vẽ đường vuông góc đẹp
+        \draw[rel_impl] (main.west) -| (pos_mgmt.north);
+        
+        % (4) Association: Main - Wallet
+        \draw[rel_assoc] (main.east) -| (wallet.north);
+        
+        % (5) Association: Position - Wallet
+        \draw[rel_assoc] (pos_mgmt) -- (wallet);
+        
+        % (6) Composition: Wallet *-- Nonce
+        % Vẽ trực tiếp thẳng xuống
+        \draw[rel_comp] (wallet) -- (nonce);
+
+        \draw[rel_impl] (main) -- (liq_mgmt);
+
+        % 3. VẼ KHUNG PACKAGE (NẰM Ở LAYER BACKGROUND)
+        % Điều này đảm bảo khung không bao giờ che mất class
+        \begin{pgfonlayer}{background}
+            % Fit bao gồm tất cả các node biên
+            \node[uml_package_style, fit=(formatter) (verifier) (nonce) (pos_mgmt) (gateway)] (pkg_box) {};
+            
+            % Vẽ Tab tên Package
+            \node[uml_tab_style] at (pkg_box.north west) {pkg SolanaCore};
+        \end{pgfonlayer}
+
+    \end{tikzpicture}
+    }
+    \caption{Detailed Design of Solana Hub Package}
+    \label{fig:solana_detailed_design}
+\end{figure}
+
+\textbf{Class Descriptions and Relationships:}
+\begin{itemize}
+\item \textbf{GatewayContract:} This class acts as the single entry point for all cross-chain transactions initiated by the Guardian. It serves as an orchestrator that sanitizes inputs before passing control to the core logic.
+    \begin{itemize}
+        \item Implementation Relationships: The Gateway implements logic from Formater Data class to deserialize incoming payloads and utilizes the Signature Verifier to perform cryptographic checks (Secp256k1 recovery) on the user's signature.
+        \item Aggregation: It maintains an aggregation relationship with the Main Contract, indicating that the Gateway coordinates the execution flow but delegates the actual financial state transitions to the Main Contract.
+    \end{itemize}
+\item \textbf{MainContract:} This is the core controller of the system. It manages the lifecycle of CDPs and coordinates liquidity across chains. To maintain modularity, it splits complex operations into specialized management modules:
+    \begin{itemize}
+        \item It implements the Position Management module to handle collateral locking, debt minting, and health factor calculations.
+        \item It implements the Liquidity Management module to handle the rebalancing of assets between the Hub and Spokes during liquidations.
+    \end{itemize}
+
+\item \textbf{UniversalWallet:} This class represents the persistent state (Program Derived Address - PDA) of a user. It stores the aggregated data of collateral and debt.
+    \begin{itemize}
+        \item Association: Both the Main Contract and Position Management have direct associations with the Universal Wallet to read and modify the user's financial position.
+    \end{itemize}
+
+\item \textbf{NonceCounter:} This class tracks the sequence number of transactions to prevent replay attacks.
+    \begin{itemize}
+        \item Composition: The diagram defines a strict composition relationship (filled diamond) between Universal Wallet and Nonce Counter. This implies that the Nonce Counter is an intrinsic part of the Wallet; it cannot exist independently, and its lifecycle is bound to the existence of the Universal Wallet.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Guardian Middleware Package Design}
+The Guardian Middleware Package, designated as package GuardianService, acts as the off-chain orchestration layer. It is designed using an Event-Driven architecture to handle the asynchronous nature of cross-chain communication reliably.
+
+Figure \ref{fig:guardian_detailed_design} depicts the internal class design of the Guardian node.
+
+\begin{figure}[htbp]
+    \centering
+    \resizebox{\textwidth}{!}{
+    \begin{tikzpicture}[
+        node distance=2.5cm,
+        % --- STYLES (Dùng lại style chuẩn của hình trước) ---
+        uml_class/.style={
+            draw, rectangle, 
+            minimum width=4.5cm, minimum height=1.5cm, 
+            align=center, 
+            fill=gray!5, 
+            font=\bfseries\large, 
+            drop shadow={opacity=0.15},
+            thick
+        },
+        uml_package_style/.style={
+            draw, rectangle, 
+            inner sep=1cm, 
+            fill=white, 
+            drop shadow={opacity=0.2},
+            rounded corners=2pt
+        },
+        uml_tab_style/.style={
+            draw, rectangle, 
+            fill=white, 
+            minimum width=5cm, minimum height=1cm, 
+            font=\bfseries\Large, 
+            anchor=south west
+        },
+        % Quan hệ UML
+        rel_impl/.style={-{Triangle[open, length=4mm, width=4mm]}, dashed, thick}, % Thực thi / Phụ thuộc
+        rel_agg/.style={{Diamond[open, length=4mm, width=4mm]}-, thick}, % Kết tập
+        rel_comp/.style={{Diamond[fill=black, length=4mm, width=4mm]}-, thick}, % Hợp thành
+        rel_assoc/.style={-, thick} % Kết hợp
+    ]
+
+        % 1. VẼ CÁC CLASS (NODE)
+        
+        % Trung tâm: EventQueue (Hàng đợi)
+        \node[uml_class] (queue) at (0, 0) {EventQueue};
+        
+        % Bên Trái: Listener và Interface RPC
+        \node[uml_class] (listener) at (-6, 0) {EventListener};
+        \node[uml_class] (rpc) at (-6, 3.5) {<<Interface>>\\IRpcProvider};
+        
+        % Bên Phải: Orchestrator (Bộ điều phối)
+        \node[uml_class] (orchestrator) at (6, 0) {TxOrchestrator};
+        
+        % Bên Dưới: Các thành phần hỗ trợ cho Orchestrator
+        \node[uml_class] (signer) at (3.5, -4) {KeyManager};
+        \node[uml_class] (relayer) at (8.5, -4) {SolanaRelayer};
+
+        % 2. VẼ CÁC ĐƯỜNG KẾT NỐI
+        
+        % (1) Implementation: EventListener dùng IRpcProvider
+        \draw[rel_impl] (listener) -- (rpc);
+        
+        % (2) Association: Listener đẩy vào Queue (Mũi tên ngang)
+        \draw[rel_assoc] (listener) -- (queue);
+        
+        % (3) Association: Orchestrator lấy từ Queue
+        \draw[rel_assoc] (queue) -- (orchestrator);
+        
+        % (4) Composition: Orchestrator sở hữu KeyManager (Bắt buộc phải có để ký)
+        % Orchestrator *-- KeyManager
+        \draw[rel_comp] (orchestrator.south) -- ++(0,-1) -| (signer.north);
+        
+        % (5) Aggregation: Orchestrator dùng SolanaRelayer (Để gửi tx)
+        % Orchestrator <>- SolanaRelayer
+        \draw[rel_agg] (orchestrator.south) -- ++(0,-1) -| (relayer.north);
+
+        % 3. VẼ KHUNG PACKAGE (LAYER BACKGROUND)
+        \begin{pgfonlayer}{background}
+            % Fit bao gồm tất cả các node
+            \node[uml_package_style, fit=(rpc) (listener) (relayer) (signer)] (pkg_box) {};
+            % Vẽ Tab tên Package
+            \node[uml_tab_style] at (pkg_box.north west) {pkg GuardianService};
+        \end{pgfonlayer}
+
+    \end{tikzpicture}
+    }
+    \caption{Detailed Design of Guardian Middleware Package}
+    \label{fig:guardian_detailed_design}
+\end{figure}
+
+\textbf{Class Descriptions and Relationships:}
+
+\begin{itemize}
+    \item \textbf{EventListener:} This component is responsible for monitoring blockchain networks. It implements the IRpcProvider interface to maintain agnostic connections to various EVM chains (Ethereum, BSC, Arbitrum). Its primary role is to detect RequestCreated logs and normalize them into a standard event format.
+    
+    \item \textbf{EventQueue:} Acting as a buffer, this class decouples the ingestion layer (Listener) from the processing layer (Orchestrator). It ensures that during high network traffic, events are not lost but queued for sequential processing.
+    
+    \item \textbf{TxOrchestrator:} This is the core logic unit of the middleware. It consumes events from the queue, validates the data integrity, and constructs the corresponding cross-chain transaction payloads.
+    
+    \item \textbf{KeyManager:} A security-critical class responsible for managing the Guardian's private keys.
+    \begin{itemize}
+        \item Composition: The TxOrchestrator has a composition relationship with KeyManager, indicating that the orchestrator cannot function (cannot sign transactions) without the secure signing module.
+    \end{itemize}
+    
+    \item \textbf{SolanaRelayer:} This class handles the low-level networking required to broadcast signed transactions to the Solana cluster and confirm their finality.
+    \begin{itemize}
+        \item Aggregation: The TxOrchestrator aggregates the SolanaRelayer, utilizing it as a service to dispatch the final outcome of its logic.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{EVM Controller Package Design}
+% \pgfdeclarelayer{background}
+% \pgfdeclarelayer{foreground}
+% \pgfsetlayers{background,main,foreground}
+
+The EVM Controller Package is designed to manage user interactions on the EVM chains, ensuring that requests are properly formatted, signed, and validated before being relayed to the Solana Hub. This package adheres to a layered design within the EVM environment, separating concerns related to request handling, data validation, and asset management.
+
+Figure \ref{fig:evm_detailed_design} illustrates the class structure within this package.
+
+\begin{figure}[htbp]
+    \centering
+    \resizebox{\textwidth}{!}{
+    \begin{tikzpicture}[
+        node distance=2.5cm and 3.5cm, % Dọc = 2.5cm, Ngang = 3.5cm
+        % --- STYLES ---
+        uml_class/.style={
+            draw, rectangle, 
+            minimum width=4.5cm, minimum height=1.5cm, 
+            align=center, 
+            fill=gray!5, 
+            font=\bfseries\large, 
+            drop shadow={opacity=0.15},
+            thick
+        },
+        % Style riêng cho Interface
+        uml_interface/.style={
+            draw, rectangle, % Viền đứt
+            minimum width=4.5cm, minimum height=1.5cm, 
+            align=center, 
+            fill=white, % Nền trắng
+            font=\bfseries\large, 
+            drop shadow={opacity=0.15},
+            thick
+        },
+        uml_package_style/.style={
+            draw, rectangle, 
+            inner sep=1cm, 
+            fill=white, 
+            drop shadow={opacity=0.2},
+            rounded corners=2pt
+        },
+        uml_tab_style/.style={
+            draw, rectangle, 
+            fill=white, 
+            minimum width=5cm, minimum height=1cm, 
+            font=\bfseries\Large, 
+            anchor=south west
+        },
+        % Quan hệ
+        rel_impl/.style={-{Triangle[open, length=4mm, width=4mm]}, dashed, thick},
+        rel_assoc/.style={-, thick}
+    ]
+
+        % 1. VẼ CÁC CLASS (Dùng positioning relative để tự động căn khoảng cách)
+        
+        % Class trung tâm
+        \node[uml_class] (controller) {Controller Contract};
+        
+        % Interface nằm bên TRÁI Controller (cách 3.5cm)
+        \node[uml_interface, left=of controller] (ireq) {<<Interface>> \\ IRequestHandler};
+        
+        % Verifier nằm bên PHẢI Controller (cách 3.5cm)
+        \node[uml_class, right=of controller] (verifier) {SignatureVerifier};
+        
+        % Action nằm bên DƯỚI Controller (cách 2.5cm)
+        \node[uml_class, below=of controller] (req_action) {RequestAction};
+
+        % 2. VẼ CÁC ĐƯỜNG KẾT NỐI
+        
+        % (1) Controller implements Interface (Mũi tên chỉ về phía Interface)
+        \draw[rel_impl] (controller) -- (ireq);
+        
+        % (2) Controller uses SignatureVerifier (Đường thẳng)
+        \draw[rel_assoc] (controller) -- (verifier);
+        
+        % (3) Controller uses RequestAction (Đường thẳng)
+        \draw[rel_assoc] (controller) -- (req_action);
+
+        % 3. VẼ KHUNG PACKAGE (LAYER BACKGROUND)
+        \begin{pgfonlayer}{background}
+            % Fit bao gồm tất cả các node + padding
+            \node[uml_package_style, fit=(ireq) (controller) (verifier) (req_action)] (pkg_box) {};
+            
+            % Vẽ Tab tên Package
+            \node[uml_tab_style] at (pkg_box.north west) {pkg EVMController};
+        \end{pgfonlayer}
+
+    \end{tikzpicture}
+    }
+    \caption{Detailed Design of EVM Controller Package}
+    \label{fig:evm_detailed_design}
+\end{figure}
+
+\textbf{Design Explanation:}
+\begin{itemize}
+    \item \textbf{Controller Contract:} This is the core contract deployed on the EVM chain. It manages user requests and orchestrates the cross-chain interaction flow.
+    \begin{itemize}
+        \item Interface Implementation: The contract implements the IRequestHandler interface, defining the standard methods for processing external requests.
+        \item Usage Relationships: It has direct associations with RequestAction and SignatureVerifier classes. The Controller Contract utilizes RequestAction to structure and validate incoming request data and relies on SignatureVerifier to perform cryptographic checks on user signatures.
+    \end{itemize}
+    
+    \item \textbf{RequestAction:} A data structure class that encapsulates all the necessary parameters for a cross-chain request (e.g., nonce, action type, amount, destination chain ID). It is used by the Controller Contract to hold and process incoming requests.
+    
+    \item \textbf{SignatureVerifier:} This utility class is responsible for validating the authenticity of a user's signature. It takes the message $M$ and the signature $\sigma$ as input and verifies if they were generated by the owner of the intended EVM address. This is a critical security component that prevents unauthorized actions.
+\end{itemize}
+
+
+% %%%%%%%%%%%
+\section{Detailed Design}
+
+This section presents the comprehensive design specification for the Multi-chain Stablecoin Protocol. It decomposes the system into three core layers: Smart Contract Design (On-chain), Server Application Design (Off-chain), and Database Design (Persistence). The level of detail provided herein serves as the blueprint for the implementation phase.
+
+\subsection{Smart Contract Design}
+
+The smart contract architecture serves as the immutable backbone of the Multi-chain Stablecoin Protocol. It is partitioned into two distinct environments: the EVM Controller (handling asset custody and user requests) and the Solana Hub (handling global state and core financial logic). The design focuses on data integrity, cryptographic security, and efficient state synchronization.
+
+\subsubsection{EVM Controller Design}
+The \texttt{ControllerContract}, deployed on EVM-compatible chains, acts as the primary interface for users to initiate cross-chain actions and for the Guardian to finalize state transitions.
+
+\textbf{1. Core Attributes and Data Structures}
+
+The contract maintains several critical data structures to manage the lifecycle of user requests:
+
+\begin{itemize}
+    \item \textbf{Request Struct:} This is the fundamental data unit representing a user's intent. It encapsulates all necessary information for cross-chain processing:
+    \begin{itemize}
+        requestId}: A unique identifier for tracking the request across the system.
+        \item \texttt{chainId}: The ID of the destination chain where the action should be executed.
+        \item \texttt{user}: The EVM address of the user initiating the transaction.
+        \item \texttt{actionType}: An enumeration defining the operation (Deposit, Withdraw, Mint, Burn).
+        \item \texttt{token}: The address of the collateral token involved in the transaction.
+        \item \texttt{amount}: The quantity of tokens to be processed.
+        \item \texttt{nonce}: A sequential counter ensuring strict ordering and preventing replay attacks.
+        \item \texttt{deadline}: A timestamp after which the request is considered invalid, protecting against delayed execution.
+        \item \texttt{signature}: The cryptographic proof consisting of the components $(r, s, v)$, generated by the user's private key.
+    \end{itemize}
+
+    \item \textbf{ActionType Enum:} A predefined set of constants representing valid operations: \texttt{Deposit}, \texttt{Withdraw}, \texttt{Mint}, and \texttt{Burn}. This strict typing prevents invalid operations from being submitted.
+
+    \item \textbf{Link Wallet Request:} A specialized structure used when a user wishes to link their EVM address to a Universal Wallet on a different chain. It stores the binding request until it is verified by the Solana Hub.
+\end{itemize}
+
+\textbf{2. Key Methods}
+
+The contract exposes specific functions for User-System interaction and Guardian-System synchronization:
+
+\begin{itemize}
+    \item \textbf{Request (User-Facing):} This function is the entry point for users. When called, it validates the input parameters, transfers the user's assets to the contract vault (in case of Deposit), and emits a \texttt{RequestCreated} event. Crucially, it locks the user's nonce to prevent concurrent requests, ensuring linearizability.
+
+    \item \textbf{Complete Request (Guardian-Only):} This restricted function is invoked by the Guardian server upon successful execution on the Solana Hub. It accepts the final status and, if successful, finalizes the local state (e.g., minting stablecoins to the user's wallet).
+
+    \item \textbf{Revert Request (Guardian-Only):} Serving as a fail-safe mechanism, this function is called if the cross-chain operation fails on Solana (e.g., due to insufficient health factor). It unlocks the user's assets and resets the nonce, returning the system to its pre-request state without loss of funds.
+\end{itemize}
+
+\subsubsection{Solana Gateway Design}
+The \texttt{GatewayContract} on Solana acts as the ingestion point for cross-chain messages. Its primary responsibility is data sanitization and cryptographic verification before passing control to the main logic.
+
+\textbf{1. Core Attributes}
+\begin{itemize}
+    \item \textbf{Request Data Storage:} The contract defines a specific data layout to store the re-formatted request received from the EVM chain. Unlike the EVM struct, this data is optimized for the Solana BPF runtime (e.g., converting 256-bit integers to 64/128-bit where applicable) to minimize storage costs.
+\end{itemize}
+
+\textbf{2. Key Methods}
+\begin{itemize}
+    \item \textbf{Set Request (Guardian-Only):} This instruction allows the authorized Guardian to submit the raw data and signature from the EVM chain. The method performs the heavy lifting of Secp256k1 signature verification to prove that the data originated from the claimed EVM user. Once verified, it formats the data into an internal instruction and invokes the Main Contract.
+\end{itemize}
+
+\subsubsection{Solana Main Contract Design}
+The \texttt{MainContract} is the "Brain" of the system, managing the global financial state and executing the core CDP logic.
+
+\textbf{1. Core Attributes}
+\begin{itemize}
+    \item \textbf{Universal Wallet:} The central PDA (Program Derived Address) that aggregates a user's entire portfolio. It stores the total collateral balance and total debt across all connected chains, serving as the single source of truth for solvency calculations.
+    
+    \item \textbf{Depository:} A global state tracking the system-wide parameters, such as total protocol debt, total value locked (TVL), and risk parameters (LTV ratios) for each supported asset.
+    
+    \item \textbf{Loan:} A data structure representing the specific debt position of a user. It tracks the principal amount borrowed and the accrued interest over time.
+    
+    \item \textbf{Link Wallet Request:} Stores pending requests for wallet linkage. When a user wants to control their Solana Universal Wallet from a new EVM address, this attribute temporarily holds the request until proof of ownership is established.
+\end{itemize}
+
+\textbf{2. Key Methods}
+\begin{itemize}
+    \item \textbf{Deposit, Mint, Burn, Withdraw:} These are the fundamental CDP operations. They are designed to be polymorphic, capable of being invoked either by the \textbf{Guardian} (relaying an action from an EVM user) or directly by a \textbf{Solana Native User}. This unified interface ensures that the business logic remains consistent regardless of the user's origin chain.
+    
+    \item \textbf{Interact Universal Wallet (Guardian-Only):} A specialized administrative method allowing the Guardian to update the mapping within a Universal Wallet, such as adding a new linked chain address after successful verification.
+    
+    \item \textbf{Liquidate:} This critical function maintains system solvency. It is executed natively on the Solana chain. When a user's Health Factor drops below the threshold, a liquidator can call this method. The liquidator repays the user's debt (in stablecoins) directly on Solana and, in return, receives a portion of the user's collateral stored in the Solana vault (or claims rights to cross-chain collateral via the Depository).
+\end{itemize}
+
+\subsection{Server Application Design}
+The Off-chain Infrastructure (Guardian) is a Node.js application designed as a persistent microservice. It bridges the EVM and Solana environments.
+
+\subsubsection{Class Specification: GuardianService}
+This is the main entry point of the application. It orchestrates the lifecycle of event listeners.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+    \hline
+    \textbf{Property} & \textbf{Type} & \textbf{Description} \\ \hline
+    \texttt{providers} & \texttt{Map<ChainID, JsonRpcProvider>} & Holds active connections to RPC nodes (Infura, Alchemy, QuickNode). \\ \hline
+    \texttt{signer} & \texttt{Wallet} & The Ethers.js wallet instance loaded with the Guardian's private key. \\ \hline
+    \texttt{queue} & \texttt{BetterQueue} & A persistent file-system queue to store events in case of server restart. \\ \hline
+    \end{tabularx}
+    \caption{GuardianService Properties}
+\end{table}
+
+\subsubsection{Class Specification: TxOrchestrator}
+This class contains the core business logic for processing events and determining the necessary cross-chain actions.
+
+\textbf{Key Method: processEvent(event)}
+\begin{enumerate}
+    \item \textbf{Input:} Raw log from EVM (topic, data).
+    \item \textbf{Decode:} Uses the contract ABI to decode the log into a JSON object: `{nonce, user, amount, action}`.
+    \item \textbf{Validation:} Checks the Redis cache to see if this `nonce` has already been processed (Idempotency check).
+    \item \textbf{Transformation:} Converts the EVM amounts (wei) to Solana format (u64/u128).
+    \item \textbf{Construction:} Builds a Solana Transaction containing the \texttt{Gateway::execute} instruction.
+    \item \textbf{Submission:} Calls \texttt{SolanaRelayer.send()} and waits for confirmation.
+\end{enumerate}
+
+\subsubsection{Class Specification: SignatureVerifier (Off-chain)}
+Before submitting to Solana (which costs gas), the Guardian performs a pre-check verification off-chain.
+
+% \begin{lstlisting}[language=JavaScript, caption={Off-chain Verification Logic}, label={lst:js_verify}]
+% class SignatureVerifier {
+%     static verify(message, signature, expectedAddress) {
+%         const msgHash = ethers.utils.hashMessage(message);
+%         const recoveredAddr = ethers.utils.recoverAddress(msgHash, signature);
+        
+%         if (recoveredAddr.toLowerCase() !== expectedAddress.toLowerCase()) {
+%             throw new Error("Invalid Signature: Identity mismatch");
+%         }
+%         return true;
+%     }
+% }
+% \end{lstlisting}
+
+\subsection{Database Design}
+The system utilizes a Hybrid Database model. The "System of Record" is the blockchain, while the "System of Engagement" utilizes off-chain caching for performance.
+
+\subsubsection{On-chain Data Schema (Solana Account Model)}
+Solana stores data in "Accounts". The schema for the \texttt{UniversalWallet} PDA is designed for space efficiency.
+
+\begin{itemize}
+    \item \textbf{PDA Derivation Strategy:}
+    \begin{equation}
+        Pubkey = \text{findProgramAddress}([\text{"wallet"}, \text{user\_eth\_addr}], \text{ProgramID})
+    \end{equation}
+    \item \textbf{Storage Layout (Serialization):}
+    \begin{itemize}
+        \item \texttt{Discriminator (8 bytes)}: Unique identifier for the struct type.
+        \item \texttt{Owner Address (20 bytes)}: Mapped EVM address.
+        \item \texttt{Debt (16 bytes)}: u128 integer.
+        \item \texttt{Positions Vector (Variable)}: 
+        \begin{itemize}
+            \item \texttt{ChainID (2 bytes)}
+            \item \texttt{Token Address (20 bytes)}
+            \item \texttt{Amount (16 bytes)}
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Total Size Estimate:} $8 + 20 + 16 + 4 + (N \times 38)$ bytes. For 5 chains, approx 240 bytes.
+\end{itemize}
+
+\subsubsection{Off-chain Database Schema (Redis)}
+Redis is used by the Guardian for two purposes: Event Deduplication and User Session State (for the Frontend).
+
+\textbf{1. Key-Value Design for Idempotency}
+\begin{itemize}
+    \item \textbf{Key Format:} \texttt{processed\_tx:\{chain\_id\}:\{tx\_hash\}}
+    \item \textbf{Value:} \texttt{Timestamp (ISO8601)}
+    \item \textbf{TTL:} 24 hours (Events older than 24h are assumed settled).
+\end{itemize}
+
+\textbf{2. Key-Value Design for Nonce Management}
+To ensure the Guardian sends transactions to Solana in correct order without nonce collisions.
+\begin{itemize}
+    \item \textbf{Key Format:} \texttt{guardian:solana:nonce}
+    \item \textbf{Value:} \texttt{Integer (Current on-chain nonce)}
+    \item \textbf{Logic:} Before sending, \texttt{INCR key}. If transaction fails, \texttt{DECR key}.
+\end{itemize}
+
+\subsubsection{Entity-Relationship Description}
+Although NoSQL (Redis) and Blockchain are used, the logical relationships can be described as:
+
+\begin{itemize}
+    \item \textbf{One-to-One:} User (EVM Address) $\leftrightarrow$ UniversalWallet (Solana PDA). A single Ethereum address maps to exactly one Universal Wallet.
+    \item \textbf{One-to-Many:} UniversalWallet $\rightarrow$ ChainPositions. One wallet can hold collateral from multiple chains (ETH from Mainnet, BNB from BSC).
+    \item \textbf{Many-to-One:} RequestEvents $\rightarrow$ ControllerContract. The contract logs history of all requests.
+\end{itemize}
+
+This detailed design ensures that the data integrity is maintained across the distributed ledger while providing high-speed access for the application layer via the Redis cache.
+%%%%%%%%%%%
+
+\section{Application Building}
+\subsection{Libraries and Tools}
+Sinh viên liệt kê các công cụ, ngôn ngữ lập trình, API, thư viện, IDE, công cụ kiểm thử, v.v. mà mình sử dụng để phát triển ứng dụng. Mỗi công cụ phải được chỉ rõ phiên bản sử dụng. SV nên kẻ bảng mô tả tương tự như Bảng \ref{table:my_label}. Nếu có nhiều nội dung trình bày, sinh viên cần xoay ngang bảng.
+
+\begin{table}[H]
+\centering{}
+    \begin{tabular}{lll}
+        \hline
+        \textbf{Mục đích} & \textbf{Công cụ}       & \textbf{Địa chỉ URL}    \\ \hline
+        IDE lập trình     & Eclipse Oxygen a64 bit & http://www.eclipse.org/ \\ \hline
+        v.v.              & v.v.                   & v.v.                    \\ \hline
+        \end{tabular}
+    \caption{Danh sách thư viện và công cụ sử dụng}
+    \label{fig:my_label}
+\end{table}
+
+\subsection{Achievement}
+Sinh viên trước tiên mô tả kết quả đạt được của mình là gì, ví dụ như các sản phẩm được đóng gói là gì, bao gồm những thành phần nào, ý nghĩa, vai trò?
+
+Sinh viên cần thống kê các thông tin về ứng dụng của mình như: số dòng code, số lớp, số gói, dung lượng toàn bộ mã nguồn, dung lượng của từng sản phẩm đóng gói, v.v. Tương tự như phần liệt kê về công cụ sử dụng, sinh viên cũng nên dùng bảng để mô tả phần thông tin thống kê này.
+
+\subsection{Illustration of main functions}
+Sinh viên lựa chọn và đưa ra màn hình cho các chức năng chính, quan trọng, và thú vị nhất. Mỗi giao diện cần phải có lời giải thích ngắn gọn. Khi giải thích, sinh viên có thể kết hợp với các chú thích ở trong hình ảnh giao diện.
+
+\section{Testing}
+Phần này có độ dài từ hai đến ba trang. Sinh viên thiết kế các trường hợp kiểm thử cho hai đến ba chức năng quan trọng nhất. Sinh viên cần chỉ rõ các kỹ thuật kiểm thử đã sử dụng. Chi tiết các trường hợp kiểm thử khác, nếu muốn trình bày, sinh viên đưa vào phần phụ lục.
+Sinh viên sau cùng tổng kết về số lượng các trường hợp kiểm thử và kết quả kiểm thử. Sinh viên cần phân tích lý do nếu kết quả kiểm thử không đạt.
+\section{Deployment}
+Sinh viên trình bày mô hình và/hoặc cách thức triển khai thử nghiệm/thực tế. Ứng dụng của sinh viên được triển khai trên server/thiết bị gì, cấu hình như thế nào. Kết quả triển khai thử nghiệm nếu có (số lượng người dùng, số lượng truy cập, thời gian phản hồi, phản hồi người dùng, khả năng chịu tải, các thống kê, v.v.)
+
+\end{document}

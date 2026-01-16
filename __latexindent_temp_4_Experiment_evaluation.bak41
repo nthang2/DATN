@@ -571,418 +571,46 @@ The User Collection encompasses two main sub-entities:
 Finally, the Protocol Controller domain manages the aggregate liquidity and security parameters of the system. This entity tracks the global state of the protocol across all connected spokes. It records the Total Value Locked (TVL) per chain and the total circulating supply of the stablecoin. The schema includes specific fields for liquidity management, monitoring the available capacity of each EVM vault to ensure that withdrawal requests can be honored. Furthermore, this domain stores system-wide configuration parameters, such as the current Loan-To-Value ratios for supported collateral assets and the operational status of each bridge connection. By centralizing this data off-chain, the Guardian can perform complex analytics to detect liquidity imbalances or potential security threats, allowing for proactive rebalancing or emergency pausing of specific controller contracts if anomalies are detected.
 The Controller \& Liquidity Collection includes the following critical attributes:
 \begin{itemize}
-    \item \textbf{Chain id:} The identifier for the specific blockchain network (e.g., 1 for Ethereum).
-    \item \textbf{Total value locked (TVL):} The aggregate amount of collateral assets currently held in the protocol on each specific chain.
-    \item \textbf{Circulating supply:} The total amount of stablecoins minted and currently active in the market from each chain.
-    \item \textbf{Available liquidity:} Monitors the free capital available in the vault. This is crucial for approving withdrawal requests; if a vault is empty, the Guardian must pause withdrawals or trigger a rebalance.
-\end{itemize}
-
-\section{Application Client and Illustration of main functions}
-
-This section demonstrates the implementation of the client-side application, focusing on the user experience flows for identity management and cross-chain financial operations.
-
-\subsection{User Interface for Universal Wallet}
-
-The Universal Wallet interface serves as the foundational layer of the application, enabling users to aggregate their fragmented blockchain identities into a single manageable profile. This interface handles the complexities of multi-chain authentication and state synchronization.
-
-\subsubsection{Wallet Connectivity}
-
-The initial interaction with the protocol begins with the wallet connection module. To support the hybrid architecture, the interface is designed to accommodate distinct blockchain standards simultaneously. The connectivity panel categorizes providers into specific network groups, allowing users to select between Solana-native wallets like Phantom or EVM-compatible wallets such as MetaMask. A distinguishing feature of this implementation is the support for concurrent multi-wallet connections. Users can maintain active sessions with multiple providers at the same time, which is visualized by the status indicators next to each provider. This capability is essential for the protocol, as it allows the application to read balances and request signatures from different chains without forcing the user to constantly switch the active network in their browser extension.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.7\textwidth]{Figure/wl_connect_client.png}
-    \caption{Multi-chain Wallet Connectivity Interface}
-    \label{fig:wl_connect}
-\end{figure}
-
-\subsubsection{Link Wallet Workflow}
-
-Once the wallets are connected, the user interacts with the linking interface to establish the Universal Wallet. The design presents a dual-field form requiring the selection of a source wallet and a destination wallet. The application enforces a rigorous proof-of-ownership protocol during this process. The workflow initiates when the user selects the request option, triggering a transaction on the source chain. This on-chain action serves as the intent declaration. Upon successful confirmation of the source transaction, the interface automatically prompts the user to sign a cryptographically secure message using the destination wallet. This two-step verification ensures that the link is established only when the user possesses the private keys for both addresses, effectively binding the identities across the two networks.
-
-There is one primary screen for the Universal Wallet, as shown in Figure \ref{fig:universal_wl}. The interface is divided into two main panels: the wallet connectivity panel on the left and the wallet management panel on the right.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=1.0\textwidth]{Figure/universal_wl_client.png}
-    \caption{Universal Wallet Management Interface (Link and List View)}
-    \label{fig:universal_wl}
-\end{figure}
-
-\subsubsection{Remove Wallet Logic}
-
-The management of associated addresses is handled through the wallet list panel, where users can view and disassociate their linked accounts. The interface provides a removal function for each entry; however, the execution of this action is governed by strict logic to preserve system integrity. The protocol distinguishes between the primary wallet, which acts as the root identifier, and secondary wallets. The interface restricts the removal of the first wallet, enforcing a rule that it can only be dissociated after all secondary wallets have been removed. Additionally, the system performs a solvency check before allowing any removal operation. If the user has outstanding debt obligations, the interface prevents the removal of any wallet that contains collateral necessary to maintain a safe health factor, thereby securing the protocol against under-collateralization risks.
-
-\subsection{User Interface for Cross-chain Borrow}
-
-The borrowing interface acts as the central command center for the user's financial activities. It is designed to provide immediate visual feedback on the user's solvency while offering granular control over their asset allocation across different chains. Figure \ref{fig:borrow_client} illustrates the consolidated dashboard view.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.95\textwidth]{Figure/borrow_client.png}
-    \caption{Cross-chain Borrowing and Position Management Interface}
-    \label{fig:borrow_client}
-\end{figure}
-
-\subsubsection{Overview Panel: Total Deposit and Minted}
-At the top of the interface, the system aggregates the user's global financial position into two primary metrics: Total Deposited and Total Minted. Unlike single-chain applications that only show local balances, these values represent the summation of assets across all connected networks (e.g., Ethereum, Solana, Arbitrum), normalized to a USD base currency. This high-level summary provides users with an instant snapshot of their portfolio's scale and their outstanding liabilities, which is crucial for making informed borrowing decisions. To the right, the current Borrow Rate is prominently displayed, ensuring transparency regarding the cost of debt.
-
-\subsubsection{Action Panel: Deposit and Mint Operations}
-The core interaction occurs within the dual-pane action modules for Deposit and Mint. 
-\begin{itemize}
-    \item \textbf{Deposit Module:} This component allows users to lock collateral. It features a chain-agnostic token selector, enabling the user to deposit assets like USDC or ETH from any supported network without leaving the dashboard. The interface automatically fetches the user's available balance and provides a "Max" button for convenience.
-    \item \textbf{Mint Module:} Correspondingly, the minting module allows the user to generate the protocol's stablecoin (USDAI) on any supported blockchain. It is tightly coupled with the deposit module; as the user inputs a deposit amount, the interface dynamically updates the borrowing capacity in the mint section, providing real-time feedback on how much debt can be safely issued against the new collateral.
-\end{itemize}
-
-\subsubsection{Risk Management Controls: LTV and Health Factor}
-To mitigate the risk of liquidation, the interface incorporates advanced visualization tools for risk management.
-
-\textbf{Loan-To-Value (LTV) Slider:}
-A distinctive feature of the design is the interactive LTV slider bar. This control visualizes the ratio between the minted value and the collateral value. As users adjust the amount of debt they wish to mint, the progress bar fills up towards the liquidation threshold (marked in red at 98\%). This visual cue helps users intuitively understand their position's risk level relative to the maximum allowable limit (95\%), preventing accidental over-leveraging.
-
-\textbf{Health Factor Gauge:}
-The Health Factor is the most critical metric for position safety, and it is visualized using a semi-circular gauge. The interface categorizes the health status into color-coded zones: red for danger (close to 1.0), yellow for caution, and green for healthy (e.g., $> 1.5$). In the example shown, a Health Factor of 1.92 indicates a robust position. This gauge updates instantaneously as the user modifies the deposit or mint amounts in the action panel, allowing them to simulate the impact of their transaction on their solvency before committing to the blockchain.
-
-\subsection{User Interface for Portfolio}
-
-The Portfolio interface is engineered to provide a comprehensive, real-time overview of the user's active financial engagements within the protocol. Unlike the borrowing interface which focuses on initiating new actions, the portfolio view is dedicated to the ongoing management and monitoring of established debt positions. Figure \ref{fig:portfolio_client} displays the detailed layout of this section.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.95\textwidth]{Figure/portfolio_client.png}
-    \caption{User Portfolio and Position Management Interface}
-    \label{fig:portfolio_client}
-\end{figure}
-
-\subsubsection{Position Visualization}
-The "Your Position" panel offers a granular breakdown of the user's capital allocation. It utilizes horizontal progress bars to visually represent the magnitude of assets relative to the user's total capacity.
-\begin{itemize}
-    \item \textbf{Collateral Deposited:} This bar displays the total value of assets locked in the protocol (e.g., \$110). It provides a quick visual reference for the user's capital commitment.
-    \item \textbf{Minted Debt:} This bar indicates the outstanding stablecoin debt (e.g., \$5.1). By placing these bars in proximity, the interface allows users to easily compare their debt load against their collateral base.
-    \item \textbf{Staked Assets:} A dedicated section tracks yield-bearing activities, ensuring that all forms of capital deployment are centralized in one view.
-\end{itemize}
-
-\subsubsection{Solvency Indicators and Liquidation Risk}
-To the right of the position summary, the Health Factor gauge reappears as a persistent safety monitor. In the portfolio context, this gauge is augmented with critical market data essential for risk assessment.
-\begin{itemize}
-    \item \textbf{Liquidation Price:} This metric calculates the specific price point of the collateral asset (e.g., USDC) at which the position would become insolvent. In the example, a liquidation price of 0.04 against a current price of 1 indicates a highly safe position.
-    \item \textbf{Current Price Feed:} Real-time price updates from the Oracle are displayed, allowing users to benchmark the market movement against their liquidation threshold instantly.
-\end{itemize}
-
-\subsubsection{Operational Controls: Deposit, Withdraw, Mint, Redeem}
-The lower section of the portfolio interface integrates the functional controls directly with the asset list. This design pattern minimizes navigation friction, allowing users to react swiftly to market changes.
-\begin{itemize}
-    \item \textbf{Deposit \& Withdraw:} Located within the asset row (e.g., USDC), these buttons allow users to add more collateral to strengthen their health factor or withdraw excess capital when the market is favorable. The interface displays both the wallet balance and the currently deposited amount to facilitate decision-making.
-    \item \textbf{Mint \& Redeem:} Similarly, the stablecoin section (USDAI) provides controls to increase leverage (Mint) or repay debt (Redeem/Burn). The "Available" field informs the user of their remaining borrowing power, while "Minted" tracks the current obligation.
+    \item \textbf{chain\id:} The identifier for the specific blockchain network (e.g., 1 for Ethereum, 56 for BSC).
+    \item \textbf{total\_value\_locked (TVL):} The aggregate amount of collateral assets currently held in the JPOW Controller contract on this specific chain.
+    \item \textbf{circulating\_supply:} The total amount of stablecoins minted and currently active in the market from this chain.
+    \item \textbf{available\_liquidity:} Monitors the free capital available in the vault. This is crucial for approving withdrawal requests; if a vault is empty, the Guardian must pause withdrawals or trigger a rebalance.
+    \item \textbf{asset\_config:} An object or relational table storing the risk parameters for supported tokens, including:
+    \begin{itemize}
+        \item \texttt{token\_address}: The contract address of the collateral.
+        \item \texttt{ltv\_ratio}: The maximum Loan-To-Value percentage allowed.
+        \item \texttt{oracle\_feed}: The address of the price feed (e.g., Chainlink) used for valuation.
+        \item \texttt{is\_active}: A boolean flag to enable or disable the asset for collateralization.
+    \end{itemize}
 \end{itemize}
 
 \section{Application Building}
-
-This section details the technological ecosystem utilized to construct the Multi-chain Stablecoin Protocol. The development stack is categorized into development environments, smart contract frameworks, frontend interfaces, backend infrastructure, and testing suites.
-
 \subsection{Libraries and Tools}
-
-\subsubsection{IDE \& Extensions}
-The development environment is centered around Visual Studio Code, augmented with specific extensions to support syntax highlighting, linting, and formatting for the diverse languages used (Rust, Solidity, TypeScript, Python).
+Sinh viên liệt kê các công cụ, ngôn ngữ lập trình, API, thư viện, IDE, công cụ kiểm thử, v.v. mà mình sử dụng để phát triển ứng dụng. Mỗi công cụ phải được chỉ rõ phiên bản sử dụng. SV nên kẻ bảng mô tả tương tự như Bảng \ref{table:my_label}. Nếu có nhiều nội dung trình bày, sinh viên cần xoay ngang bảng.
 
 \begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{4cm}|p{6cm}|p{4cm}|}
-    \hline
-    \textbf{Tool / Extension} & \textbf{Purpose} & \textbf{URL} \\ \hline
-    Visual Studio Code & Primary Integrated Development Environment. & \url{https://code.visualstudio.com/} \\ \hline
-    rust-analyzer & Language support for Rust (code completion, goto definition). & \url{https://github.com/rust-lang/rust-analyzer} \\ \hline
-    Solidity (Juan Blanco) & Syntax highlighting and snippets for Ethereum smart contracts. & \url{https://github.com/juanfranblanco/vscode-solidity} \\ \hline
-    \end{tabular}
-    \caption{Development Environment Tools}
-    \label{tab:ide_tools}
-\end{table}
-
-\subsubsection{Smart Contract Tools \& Libraries}
-This category encompasses the core frameworks required to develop, compile, and deploy logic on both the Solana Virtual Machine (SVM) and the Ethereum Virtual Machine (EVM).
-
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{4cm}|p{6cm}|p{4cm}|}
-    \hline
-    \textbf{Library / Framework} & \textbf{Purpose} & \textbf{URL} \\ \hline
-    Rust (v1.79.0) & Systems programming language for Solana programs. & \url{https://www.rust-lang.org/} \\ \hline
-    Anchor Framework (v0.30.0) & Sealevel runtime framework for Solana, handling serialization/IDL. & \url{https://www.anchor-lang.com/} \\ \hline
-    Solidity (v0.8.28) & Object-oriented language for EVM Controller contracts. & \url{https://soliditylang.org/} \\ \hline
-    OpenZeppelin Contracts & Standard secure contract components (ERC20, Ownable). & \url{https://www.openzeppelin.com/} \\ \hline
-    Hardhat (v2.25.0) & Ethereum development environment for compiling and deployment. & \url{https://hardhat.org/} \\ \hline
-    \end{tabular}
-    \caption{Smart Contract Development Stack}
-    \label{tab:contract_tools}
-\end{table}
-
-\subsubsection{Frontend Client}
-The user interface is engineered using a high-performance React stack powered by Vite. The integration of blockchain interactions relies on modern libraries like Viem/Wagmi for EVM and the Solana Web3 suite for SVM.
-
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{4.5cm}|p{6cm}|p{4cm}|}
-    \hline
-    \textbf{Library (Version)} & \textbf{Purpose / Usage} & \textbf{URL} \\ \hline
-    
-    React (v18.3.1) & Component-based UI library for building the application interface. & \url{https://react.dev/} \\ \hline
-    
-    TypeScript ($\sim$5.6.2) & Strictly typed superset of JavaScript ensuring type safety across the codebase. & \url{https://www.typescriptlang.org/} \\ \hline
-    
-    Vite (v6.0.5) & Next-generation frontend build tool providing fast HMR and optimized bundling. & \url{https://vitejs.dev/} \\ \hline
-    
-    Wagmi (v2.16.9) & React Hooks library for Ethereum, simplifying wallet connection and state management. & \url{https://wagmi.sh/} \\ \hline
-    
-    Viem (v2.x) & Low-level TypeScript interface for Ethereum, replacing Ethers.js for better performance. & \url{https://viem.sh/} \\ \hline
-    
-    @solana/web3.js (v1.98.0) & Core library for interacting with the Solana blockchain (RPC, Transactions). & \url{https://solana.com/docs} \\ \hline
-    
-    @coral-xyz/anchor (v0.30.1) & Client library to interact with Anchor-based Solana programs (IDL, Accounts). & \url{https://www.anchor-lang.com/} \\ \hline
-    
-    @solana/spl-token (v0.4.12) & Utility library for managing SPL tokens (minting, transferring) on Solana. & \url{https://spl.solana.com/token} \\ \hline
-    
-    Jotai (v2.11.0) & Primitive and flexible state management library for React (Global State). & \url{https://jotai.org/} \\ \hline
-    
-    \end{tabular}
-    \caption{Frontend Development Libraries}
-    \label{tab:frontend_libs}
-\end{table}
-
-\subsubsection{Backend (Guardian Infrastructure)}
-The Guardian infrastructure operates on a Python 3.9 runtime, utilizing asynchronous frameworks to handle high-throughput event processing. The core libraries facilitate interaction with both Ethereum and Solana networks alongside persistent storage.
-
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{4.5cm}|p{6cm}|p{4cm}|}
-    \hline
-    \textbf{Library (Version)} & \textbf{Purpose / Usage} & \textbf{URL} \\ \hline
-    
-    Python (v3.9) & Runtime environment for the backend logic and scripting. & \url{https://www.python.org/} \\ \hline
-    
-    Sanic ($\ge$ v22.12.0) & High-performance asynchronous web server and framework for building fast APIs. & \url{https://sanic.dev/} \\ \hline
-    
-    Web3.py (v6.15.1) & Comprehensive Python library for interacting with Ethereum nodes and contracts. & \url{https://web3py.readthedocs.io/} \\ \hline
-    
-    Eth-account (v0.11.3) & Library for signing transactions and managing Ethereum accounts securely. & \url{https://eth-account.readthedocs.io/} \\ \hline
-    
-    Solana.py (v0.36.6) & Python client for interacting with the Solana blockchain JSON RPC API. & \url{https://michaelhly.github.io/solana-py/} \\ \hline
-    
-    Solders (v0.26.0) & High-performance Python binding for Solana primitives (Keypairs, Pubkeys). & \url{https://github.com/kevinheavey/solders} \\ \hline
-    
-    AnchorPy (v0.21.0) & Python client for Anchor-based Solana programs, enabling IDL interaction. & \url{https://kevinheavey.github.io/anchorpy/} \\ \hline
-    
-    PyMongo (v4.10.1) & Synchronous driver for MongoDB, used for persisting user request logs. & \url{https://pymongo.readthedocs.io/} \\ \hline
-    
-    \end{tabular}
-    \caption{Backend Development Libraries}
-    \label{tab:backend_libs}
-\end{table}
-
-\subsubsection{Testing Tools}
-Quality assurance is maintained through a combination of unit testing frameworks and local blockchain simulators.
-
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{4cm}|p{6cm}|p{4cm}|}
-    \hline
-    \textbf{Tool} & \textbf{Purpose} & \textbf{URL} \\ \hline
-    Mocha / Chai & JavaScript test framework and assertion library. & \url{https://mochajs.org/} \\ \hline
-    Hardhat & Local Ethereum node for forking mainnet state during tests. & \url{https://hardhat.org/} \\ \hline
-    \end{tabular}
-    \caption{Testing and Simulation Tools}
-    \label{tab:testing_tools}
+\centering{}
+    \begin{tabular}{lll}
+        \hline
+        \textbf{Mục đích} & \textbf{Công cụ}       & \textbf{Địa chỉ URL}    \\ \hline
+        IDE lập trình     & Eclipse Oxygen a64 bit & http://www.eclipse.org/ \\ \hline
+        v.v.              & v.v.                   & v.v.                    \\ \hline
+        \end{tabular}
+    \caption{Danh sách thư viện và công cụ sử dụng}
+    \label{fig:my_label}
 \end{table}
 
 \subsection{Achievement}
+Sinh viên trước tiên mô tả kết quả đạt được của mình là gì, ví dụ như các sản phẩm được đóng gói là gì, bao gồm những thành phần nào, ý nghĩa, vai trò?
 
-The development phase culminated in a fully operational Cross-chain Stablecoin Protocol, demonstrating the feasibility of the Hub-and-Spoke architecture for decentralized finance. The project successfully delivered three distinct yet integrated components, each fulfilling a critical role in the system:
+Sinh viên cần thống kê các thông tin về ứng dụng của mình như: số dòng code, số lớp, số gói, dung lượng toàn bộ mã nguồn, dung lượng của từng sản phẩm đóng gói, v.v. Tương tự như phần liệt kê về công cụ sử dụng, sinh viên cũng nên dùng bảng để mô tả phần thông tin thống kê này.
 
-\begin{enumerate}
-    \item \textbf{The Multi-chain DApp Client:} A unified interface that abstracts the complexity of cross-chain interactions. It allows users to manage their Universal Wallets and execute financial operations seamlessly across heterogeneous networks without manually bridging assets.
-    \item \textbf{The Hybrid Smart Contract System:} 
-    \begin{itemize}
-        \item The \textit{Solana Hub} successfully manages the global financial state, proving that a high-performance chain can serve as the settlement layer for assets on slower chains.
-        \item The \textit{EVM Controllers} function effectively as decentralized vaults, ensuring secure asset custody with minimized gas costs.
-    \end{itemize}
-    \item \textbf{The Guardian Infrastructure:} The Python-based middleware proved robust in synchronizing state. It successfully handles event ingestion, cryptographic verification, and transaction relaying, ensuring eventual consistency between the EVM and SVM environments.
-\end{enumerate}
-
-\subsubsection{Project Statistics}
-The scale and complexity of the implementation are reflected in the codebase metrics. Table \ref{tab:project_stats} provides a detailed breakdown of the lines of code (LOC) across different modules.
-
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{5cm}|p{6cm}|r|}
-    \hline
-    \textbf{Component} & \textbf{Language / Technology} & \textbf{Lines of Code (LOC)} \\ \hline
-    
-    \multirow{2}{*}{\textbf{Frontend Client}} 
-    & TypeScript & 42,355 \\ 
-    & TypeScript JSX (React Components) & 19,174 \\ \hline
-    
-    \multirow{2}{*}{\textbf{Smart Contracts (SVM)}} 
-    & Rust (Anchor Framework) & 10,633 \\ 
-    & TypeScript (Integration Tests) & $\approx$ 34,000 \\ \hline
-    
-    \textbf{Smart Contracts (EVM)} & Solidity & 733 \\ \hline
-    
-    \textbf{Backend (Guardian)} & Python & $\approx$ 36,000 \\ \hline
-    
-    \textbf{Total Project Size} & \multicolumn{2}{c|}{\textbf{$\approx$ 142,895 LOC}} \\ \hline
-    \end{tabular}
-    \caption{Source Code Statistics by Component}
-    \label{tab:project_stats}
-\end{table}
+\subsection{Illustration of main functions}
+Sinh viên lựa chọn và đưa ra màn hình cho các chức năng chính, quan trọng, và thú vị nhất. Mỗi giao diện cần phải có lời giải thích ngắn gọn. Khi giải thích, sinh viên có thể kết hợp với các chú thích ở trong hình ảnh giao diện.
 
 \section{Testing}
-
-Ensuring the reliability and security of smart contracts is the paramount objective of the testing phase, particularly for a DeFi protocol handling user assets across multiple blockchains. The testing strategy employed for this project is comprehensive, moving from atomic unit tests of individual functions to complex integration scenarios that simulate the entire cross-chain lifecycle. This section details the methodologies used, the specific test cases designed for critical functionalities, and the final evaluation of the system's robustness.
-
-\subsection{Testing Methodology}
-The testing framework leverages a combination of industry-standard techniques to maximize code coverage and vulnerability detection:
-
-\begin{itemize}
-    \item \textbf{Unit Testing:} This is the first line of defense. Each function within the Solana \texttt{MainContract} (Rust) and EVM \texttt{Controller} (Solidity) is tested in isolation. We utilized the \textit{Anchor} framework's testing suite (TypeScript) to verify Solana logic and \textit{Hardhat/Chai} for EVM logic. The goal is to ensure that mathematical calculations (e.g., Health Factor) and state transitions occur exactly as specified.
-    
-    \item \textbf{Integration Testing (End-to-End):} Given the hybrid architecture, unit tests alone are insufficient. We simulated the cross-chain environment using a local testnet setup (Solana Bankrun + Anvil Fork). These tests involve mocking the Guardian's role to verify the interaction flow: \textit{User locks on EVM $\rightarrow$ Event Emitted $\rightarrow$ Mock Relayer submits to Solana $\rightarrow$ State Updated}.
-    
-    \item \textbf{Fuzz Testing (Property-based Testing):} To detect edge cases that manual test cases might miss (such as integer overflows or rounding errors), we employed fuzzing techniques. This involves feeding the smart contracts with thousands of random inputs (e.g., random amounts, random chain IDs) to ensure the system never enters an undefined state or panics unexpectedly.
-\end{itemize}
-
-\subsection{Test Cases for Critical Functions}
-
-The testing focus was prioritized on three high-risk areas: Cross-chain Minting (Solvency), Cryptographic Verification (Security), and Liquidation (System Health).
-
-\subsubsection{Function 1: Cross-chain Deposit and Minting}
-This function is the core value proposition of the protocol. It involves state changes on both chains and requires strict solvency checks.
-
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.4}
-    \begin{tabular}{|p{2.5cm}|p{5cm}|p{5.5cm}|p{2cm}|}
-    \hline
-    \textbf{Test Case ID} & \textbf{Test Scenario \& Input} & \textbf{Detailed Procedure \& Expected Result} & \textbf{Status} \\ \hline
-    
-    \textbf{TC-MINT-01} \newline (Happy Path) 
-    & \textbf{Scenario:} User deposits valid collateral and mints within LTV. \newline 
-      \textbf{Input:} \newline - Collateral: 10 ETH \newline - Mint: 5000 USDAI \newline - LTV Limit: 80\% 
-    & \textbf{1.} User calls \texttt{requestAction} on EVM. \newline 
-      \textbf{2.} Check EVM Vault balance: increases by 10 ETH. \newline 
-      \textbf{3.} Mock Guardian submits valid signature to Solana. \newline 
-      \textbf{4. Expected:} Solana state updates UniversalWallet debt to 5000. Health Factor remains $> 1.0$. Transaction succeeds. 
-    & Passed \\ \hline
-
-    \textbf{TC-MINT-02} \newline (Over-minting) 
-    & \textbf{Scenario:} User attempts to mint debt exceeding the collateral value. \newline 
-      \textbf{Input:} \newline - Collateral: 1 ETH (\$2000) \newline - Mint: 3000 USDAI \newline - Max LTV: 80\% 
-    & \textbf{1.} Construct request on EVM (this passes as EVM doesn't check price). \newline 
-      \textbf{2.} Guardian relays to Solana. \newline 
-      \textbf{3.} Solana contract calculates projected Health Factor. \newline 
-      \textbf{4. Expected:} Calculation shows $HF < 1.0$. Transaction on Solana reverts with custom error \texttt{RiskThresholdExceeded}. 
-    & Passed \\ \hline
-
-    \textbf{TC-MINT-03} \newline (Zero Amount) 
-    & \textbf{Scenario:} User sends a request with 0 amount. \newline 
-      \textbf{Input:} Amount = 0 
-    & \textbf{1.} Call \texttt{requestAction}. \newline 
-      \textbf{2. Expected:} EVM Contract reverts immediately with \texttt{InvalidAmount} error to save gas and prevent spam. 
-    & Passed \\ \hline
-    \end{tabular}
-    \caption{Test Cases for Cross-chain Minting Logic}
-    \label{tab:tc_mint}
-\end{table}
-
-\subsubsection{Function 2: Cryptographic Security (Signature Verification)}
-Since the Solana state is updated based on messages relayed by an off-chain server, verifying that the original user actually signed the message is critical to prevent spoofing.
-
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.4}
-    \begin{tabular}{|p{2.5cm}|p{5cm}|p{5.5cm}|p{2cm}|}
-    \hline
-    \textbf{Test Case ID} & \textbf{Test Scenario \& Input} & \textbf{Detailed Procedure \& Expected Result} & \textbf{Status} \\ \hline
-    
-    \textbf{TC-SEC-01} \newline (Valid Sig) 
-    & \textbf{Scenario:} Guardian submits a payload with a valid Secp256k1 signature. \newline 
-      \textbf{Input:} \newline - Msg Hash: $H(M)$ \newline - Sig: Sign($User_{priv}$, $H(M)$) 
-    & \textbf{1.} Solana Gateway invokes native \texttt{secp256k1\_recover}. \newline 
-      \textbf{2.} Recovered address is compared with \texttt{UniversalWallet.owner}. \newline 
-      \textbf{3. Expected:} Addresses match. Execution proceeds to Main Contract. 
-    & Passed \\ \hline
-
-    \textbf{TC-SEC-02} \newline (Forgery) 
-    & \textbf{Scenario:} Attacker (or compromised Guardian) tries to mint debt for a Victim using Attacker's signature. \newline 
-      \textbf{Input:} \newline - Msg: "Mint for Victim" \newline - Sig: Sign($Attacker_{priv}$, Msg) 
-    & \textbf{1.} Gateway recovers the signer address from the signature. \newline 
-      \textbf{2.} Contract compares Recovered ($Attacker$) vs Wallet Owner ($Victim$). \newline 
-      \textbf{3. Expected:} Assertion fails. Transaction reverts with \texttt{InvalidSignature}. 
-    & Passed \\ \hline
-
-    \textbf{TC-SEC-03} \newline (Replay Attack) 
-    & \textbf{Scenario:} Attacker resubmits a previously valid Mint request to double the debt. \newline 
-      \textbf{Input:} A valid payload $(M, \sigma)$ used in block $N$. 
-    & \textbf{1.} First submission succeeds; \texttt{UniversalWallet.nonce} increments from $k$ to $k+1$. \newline 
-      \textbf{2.} Second submission sends same payload (nonce $k$). \newline 
-      \textbf{3. Expected:} Contract checks $Payload.nonce (k) == Wallet.nonce (k+1)$. Check fails. Revert with \texttt{InvalidNonce}. 
-    & Passed \\ \hline
-    \end{tabular}
-    \caption{Test Cases for Security and Verification}
-    \label{tab:tc_sec}
-\end{table}
-
-\subsubsection{Function 3: Liquidation Engine}
-This module ensures the protocol remains solvent by allowing third parties to liquidate bad debt. Testing this requires manipulating price feeds.
-
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.4}
-    \begin{tabular}{|p{2.5cm}|p{5cm}|p{5.5cm}|p{2cm}|}
-    \hline
-    \textbf{Test Case ID} & \textbf{Test Scenario \& Input} & \textbf{Detailed Procedure \& Expected Result} & \textbf{Status} \\ \hline
-    
-    \textbf{TC-LIQ-01} \newline (Valid Liquidation) 
-    & \textbf{Scenario:} Oracle price drops, making user insolvent. \newline 
-      \textbf{Input:} \newline - Collateral: 1 ETH \newline - Debt: 1500 USD \newline - Price drops: $2000 \to 1600$ 
-    & \textbf{1.} Mock Oracle updates price to \$1600. Health Factor drops below 1.1. \newline 
-      \textbf{2.} Liquidator calls \texttt{liquidate()}. \newline 
-      \textbf{3. Expected:} Liquidator pays debt. User's collateral is transferred to Liquidator + Bonus. User's debt is reduced. 
-    & Passed \\ \hline
-
-    \textbf{TC-LIQ-02} \newline (Healthy Position) 
-    & \textbf{Scenario:} Liquidator tries to liquidate a healthy user for profit. \newline 
-      \textbf{Input:} Health Factor = 1.5 
-    & \textbf{1.} Call \texttt{liquidate()}. \newline 
-      \textbf{2. Expected:} Contract verifies $HF > Threshold$. Reverts with \texttt{PositionHealthy}. No assets are transferred. 
-    & Passed \\ \hline
-    \end{tabular}
-    \caption{Test Cases for Liquidation Logic}
-    \label{tab:tc_liq}
-\end{table}
-
-\subsection{Evaluation and Results}
-
-The testing phase has yielded highly positive results, validating the architectural decisions made during the design phase.
-
-\subsubsection{Quantitative Summary}
-\begin{itemize}
-    \item \textbf{Total Test Suites:} 12 (Covering EVM Vaults, Solana State, Gateway, and Math Libraries).
-    \item \textbf{Total Test Cases Executed:} 84 individual atomic tests.
-    \item \textbf{Code Coverage:}
-    \begin{itemize}
-        \item Solana (Rust): 92\% Statement Coverage.
-        \item EVM (Solidity): 100\% Branch Coverage (due to smaller codebase).
-    \end{itemize}
-\end{itemize}
-
-\subsubsection{Qualitative Analysis}
-The testing process uncovered a critical issue in the early development phase regarding \textit{decimal precision loss} when converting between EVM (18 decimals) and Solana (9 decimals). This was rectified by implementing a \texttt{DecimalScaling} library in the Gateway contract, which was subsequently verified by Test Case \texttt{TC-MINT-01}. Furthermore, the integration tests confirmed that the \texttt{Mutex} locking mechanism on the EVM controller effectively prevents race conditions, ensuring that user funds are secure even if the Guardian node experiences temporary latency.
-
+Phần này có độ dài từ hai đến ba trang. Sinh viên thiết kế các trường hợp kiểm thử cho hai đến ba chức năng quan trọng nhất. Sinh viên cần chỉ rõ các kỹ thuật kiểm thử đã sử dụng. Chi tiết các trường hợp kiểm thử khác, nếu muốn trình bày, sinh viên đưa vào phần phụ lục.
+Sinh viên sau cùng tổng kết về số lượng các trường hợp kiểm thử và kết quả kiểm thử. Sinh viên cần phân tích lý do nếu kết quả kiểm thử không đạt.
 \section{Deployment}
 Sinh viên trình bày mô hình và/hoặc cách thức triển khai thử nghiệm/thực tế. Ứng dụng của sinh viên được triển khai trên server/thiết bị gì, cấu hình như thế nào. Kết quả triển khai thử nghiệm nếu có (số lượng người dùng, số lượng truy cập, thời gian phản hồi, phản hồi người dùng, khả năng chịu tải, các thống kê, v.v.)
 

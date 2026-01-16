@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex Main"] 1768214683.51538 "Main.aux" "Main.bbl" "Main" 1768214695.7969 0
-  "./Main-blx.bib" 1768214694.91687 343 eecd58be191eac03682f8fda492bb690 ""
+["bibtex Main"] 1768488817.77083 "Main.aux" "Main.bbl" "Main" 1768488825.11026 0
+  "./Main-blx.bib" 1768488824.67067 343 eecd58be191eac03682f8fda492bb690 ""
   "./reference.bib" 1766375003.37202 2212 35bf5342b1f561f73f891ce68859e55f ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/bibtex/bst/biblatex/biblatex.bst" 1741388039 65510 b1f696b0241395385f422f67543c37fd ""
-  "Main.aux" 1768214694.9093 22626 c93393f3662e174ed6bbfdeb50e8a08c "pdflatex"
+  "Main.aux" 1768488824.6592 30366 f15a951e40904be2631d006469b6fba1 "pdflatex"
   (generated)
   "Main.bbl"
   "Main.blg"
   (rewritten before read)
-["pdflatex"] 1768214683.61354 "/Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Main.tex" "Main.pdf" "Main" 1768214695.7974 0
+["pdflatex"] 1768488817.86437 "/Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Main.tex" "Main.pdf" "Main" 1768488825.11053 0
   "/Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Main.tex" 1768201541.19221 11071 2ed7a8c282044ee4818956d68c24647b ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/enc/dvips/base/8r.enc" 1741388039 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/enc/dvips/vntex/t5.enc" 1741388039 7824 21ade6c3c7fd67cb4ace8dbc91c53118 ""
@@ -315,7 +315,7 @@
   "Chapter/1_Introduction.tex" 1764749376.09692 9720 d8d1998ad0b09446c9e0843cb12afb79 ""
   "Chapter/2_Survey.tex" 1765944835.13005 34442 e4745a9274a86787aff11a878a3069fc ""
   "Chapter/3_Methodology.tex" 1767582557.72463 18347 c82d8938d8aac28ba479b540801cec9e ""
-  "Chapter/4_Experiment_evaluation.tex" 1768214647.83485 29181 d05eb7e4cfe55f2000f8c40d454e322d ""
+  "Chapter/4_Experiment_evaluation.tex" 1768488800.97914 80948 f3074ef8d2f3896e9f68c5fb2e6bacb6 ""
   "Chapter/5_Solution_contribution.tex" 1764201516 2243 0f68662b88f21afb410c08ab4b622a2a ""
   "Chapter/6_Conclusion.tex" 1764201516 911 badc63470fd009f6e1967601f82c59d6 ""
   "Chapter/7_Reference.tex" 1764201516 2973 c1c5719f0ee3bf2983600122fb016a64 ""
@@ -327,14 +327,18 @@
   "Figure/GayBia.PNG" 1764201518 191331 069c28aad9aae33fa0cf3c5082fbc395 ""
   "Figure/IoT.png" 1764201516 78538 f9af89991a494178dc80a33473eba6a6 ""
   "Figure/Overall_architecture.png" 1768188476.57338 53951 e1a78c35314efc30d1983d89e4ad68ee ""
-  "Main.aux" 1768214694.9093 22626 c93393f3662e174ed6bbfdeb50e8a08c "pdflatex"
-  "Main.bbl" 1768214683.60871 4084 c09f61f9211bc3958292fb5bdb33337d "bibtex Main"
-  "Main.lof" 1768214694.91831 1365 8a8c9c12a7f9f136fa696cc7baf470a3 "pdflatex"
-  "Main.lot" 1768214694.91834 1155 dde7b7c9369977f461fbdfc79975e910 "pdflatex"
-  "Main.out" 1768214694.91258 15138 fa8e733fd49d8b9d818ee1f17dc269a8 "pdflatex"
-  "Main.run.xml" 1768214694.91806 2618 6566b1660d7ab3bd473692cc166e8c87 "pdflatex"
+  "Figure/borrow_client.png" 1768445335.13698 198143 ee43df558aa517ba074fa7bc2bc86623 ""
+  "Figure/portfolio_client.png" 1768445458.56685 194867 55077ededd1bfb7f1cce34c6eb1fe013 ""
+  "Figure/universal_wl_client.png" 1768445408.67773 71666 b6be2c9db1345a0a1840cba56fcd679f ""
+  "Figure/wl_connect_client.png" 1768446167.1975 33960 d52db9f933c0ea6dd379cc6cb402842c ""
+  "Main.aux" 1768488824.6592 30366 f15a951e40904be2631d006469b6fba1 "pdflatex"
+  "Main.bbl" 1768488817.85803 4084 c09f61f9211bc3958292fb5bdb33337d "bibtex Main"
+  "Main.lof" 1768488824.67549 1895 d239593f827cc8a0539521f195948cd1 "pdflatex"
+  "Main.lot" 1768488824.67556 2041 1418f336efbd7d59dbecb29273252edd "pdflatex"
+  "Main.out" 1768488824.66539 16619 ac59b768c1c2b20b2a2b47f6d9b3db08 "pdflatex"
+  "Main.run.xml" 1768488824.67501 2618 6566b1660d7ab3bd473692cc166e8c87 "pdflatex"
   "Main.tex" 1768201541.19221 11071 2ed7a8c282044ee4818956d68c24647b ""
-  "Main.toc" 1768214694.91816 8756 032e8c663cd293a04e1df9da01e8aa5b "pdflatex"
+  "Main.toc" 1768488824.67538 12100 425bc873f72b0131761da8f2e93684d8 "pdflatex"
   "glossary.tex" 1766389093.86124 1363 1502e3d86449ed5efb9018398a519cef ""
   "lstlisting" 0 -1 0 ""
   (generated)

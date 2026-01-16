@@ -33,18 +33,74 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {c}EVM Controller Package Design}{6}{subsubsection.0.1.2.3}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {0.4}{\ignorespaces Detailed Design of EVM Controller Package}}{6}{figure.caption.10}\protected@file@percent }
 \newlabel{fig:evm_detailed_design}{{0.4}{6}{Detailed Design of EVM Controller Package}{figure.caption.10}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {0.2}Detailed design}{7}{section.0.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {0.2.1}User interface design}{7}{subsection.0.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {0.2.2}Layer design}{7}{subsection.0.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {0.2.3}Database design}{8}{subsection.0.2.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {0.3}Application Building}{8}{section.0.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {0.3.1}Libraries and Tools}{8}{subsection.0.3.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Danh sách thư viện và công cụ sử dụng}}{8}{table.caption.11}\protected@file@percent }
-\newlabel{fig:my_label}{{1}{8}{Danh sách thư viện và công cụ sử dụng}{table.caption.11}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {0.3.2}Achievement}{8}{subsection.0.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {0.3.3}Illustration of main functions}{8}{subsection.0.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {0.4}Testing}{8}{section.0.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {0.5}Deployment}{9}{section.0.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {0.2}Detailed Design}{7}{section.0.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {0.2.1}Smart Contract Design}{7}{subsection.0.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {a}EVM Controller Design}{7}{subsubsection.0.2.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {b}Solana Gateway Design}{10}{subsubsection.0.2.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {c}Solana Main Contract Design}{11}{subsubsection.0.2.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {0.2.2}Server Application Design}{12}{subsection.0.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {0.2.3}Database Design}{14}{subsection.0.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {a}Universal Wallet Collection}{14}{subsubsection.0.2.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {b}User Collection (Loans and Requests)}{15}{subsubsection.0.2.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {c}Controller \& Liquidity Collection}{16}{subsubsection.0.2.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {0.3}Application Client and Illustration of main functions}{17}{section.0.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {0.3.1}User Interface for Universal Wallet}{17}{subsection.0.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {a}Wallet Connectivity}{17}{subsubsection.0.3.1.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {0.5}{\ignorespaces Multi-chain Wallet Connectivity Interface}}{18}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:wl_connect}{{0.5}{18}{Multi-chain Wallet Connectivity Interface}{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {b}Link Wallet Workflow}{18}{subsubsection.0.3.1.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {0.6}{\ignorespaces Universal Wallet Management Interface (Link and List View)}}{19}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:universal_wl}{{0.6}{19}{Universal Wallet Management Interface (Link and List View)}{figure.caption.12}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {c}Remove Wallet Logic}{19}{subsubsection.0.3.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {0.3.2}User Interface for Cross-chain Borrow}{19}{subsection.0.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {a}Overview Panel: Total Deposit and Minted}{19}{subsubsection.0.3.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {0.7}{\ignorespaces Cross-chain Borrowing and Position Management Interface}}{20}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:borrow_client}{{0.7}{20}{Cross-chain Borrowing and Position Management Interface}{figure.caption.13}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {b}Action Panel: Deposit and Mint Operations}{20}{subsubsection.0.3.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {c}Risk Management Controls: LTV and Health Factor}{20}{subsubsection.0.3.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {0.3.3}User Interface for Portfolio}{21}{subsection.0.3.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {0.8}{\ignorespaces User Portfolio and Position Management Interface}}{21}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:portfolio_client}{{0.8}{21}{User Portfolio and Position Management Interface}{figure.caption.14}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {a}Position Visualization}{22}{subsubsection.0.3.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {b}Solvency Indicators and Liquidation Risk}{22}{subsubsection.0.3.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {c}Operational Controls: Deposit, Withdraw, Mint, Redeem}{22}{subsubsection.0.3.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {0.4}Application Building}{23}{section.0.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {0.4.1}Libraries and Tools}{23}{subsection.0.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {a}IDE \& Extensions}{23}{subsubsection.0.4.1.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Development Environment Tools}}{23}{table.caption.15}\protected@file@percent }
+\newlabel{tab:ide_tools}{{1}{23}{Development Environment Tools}{table.caption.15}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {b}Smart Contract Tools \& Libraries}{23}{subsubsection.0.4.1.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Smart Contract Development Stack}}{24}{table.caption.16}\protected@file@percent }
+\newlabel{tab:contract_tools}{{2}{24}{Smart Contract Development Stack}{table.caption.16}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {c}Frontend Client}{24}{subsubsection.0.4.1.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Frontend Development Libraries}}{25}{table.caption.17}\protected@file@percent }
+\newlabel{tab:frontend_libs}{{3}{25}{Frontend Development Libraries}{table.caption.17}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {d}Backend (Guardian Infrastructure)}{25}{subsubsection.0.4.1.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Backend Development Libraries}}{26}{table.caption.18}\protected@file@percent }
+\newlabel{tab:backend_libs}{{4}{26}{Backend Development Libraries}{table.caption.18}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {e}Testing Tools}{26}{subsubsection.0.4.1.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Testing and Simulation Tools}}{26}{table.caption.19}\protected@file@percent }
+\newlabel{tab:testing_tools}{{5}{26}{Testing and Simulation Tools}{table.caption.19}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {0.4.2}Achievement}{27}{subsection.0.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {a}Project Statistics}{27}{subsubsection.0.4.2.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Source Code Statistics by Component}}{27}{table.caption.20}\protected@file@percent }
+\newlabel{tab:project_stats}{{6}{27}{Source Code Statistics by Component}{table.caption.20}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {0.5}Testing}{28}{section.0.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {0.5.1}Testing Methodology}{28}{subsection.0.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {0.5.2}Test Cases for Critical Functions}{28}{subsection.0.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {a}Function 1: Cross-chain Deposit and Minting}{28}{subsubsection.0.5.2.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Test Cases for Cross-chain Minting Logic}}{29}{table.caption.21}\protected@file@percent }
+\newlabel{tab:tc_mint}{{7}{29}{Test Cases for Cross-chain Minting Logic}{table.caption.21}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {b}Function 2: Cryptographic Security (Signature Verification)}{29}{subsubsection.0.5.2.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Test Cases for Security and Verification}}{30}{table.caption.22}\protected@file@percent }
+\newlabel{tab:tc_sec}{{8}{30}{Test Cases for Security and Verification}{table.caption.22}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {c}Function 3: Liquidation Engine}{30}{subsubsection.0.5.2.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Test Cases for Liquidation Logic}}{31}{table.caption.23}\protected@file@percent }
+\newlabel{tab:tc_liq}{{9}{31}{Test Cases for Liquidation Logic}{table.caption.23}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {0.5.3}Evaluation and Results}{31}{subsection.0.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {a}Quantitative Summary}{31}{subsubsection.0.5.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {b}Qualitative Analysis}{31}{subsubsection.0.5.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {0.6}Deployment}{32}{section.0.6}\protected@file@percent }
 \ttl@finishall
 \abx@aux@read@bbl@mdfivesum{47390D0FEC917A8062F60A58A9B6D248}
-\gdef \@abspage@last{9}
+\gdef \@abspage@last{32}
