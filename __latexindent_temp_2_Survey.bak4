@@ -1,0 +1,598 @@
+\documentclass[../Main.tex]{subfiles}
+\begin{document}
+This chapter presents a comprehensive analysis of the requirements for the development of a Multi-chain Stablecoin Protocol based on the Collateralized Debt Position (CDP) mechanism. The chapter begins with a survey of the current Decentralized Finance (DeFi) landscape and analyzes existing solutions to identify limitations regarding cross-chain liquidity. Subsequently, it provides a functional overview of the proposed system through general and detailed use case diagrams. The core business processes, specifically the cross-chain state synchronization workflow, are illustrated to clarify the operation of the system. Finally, detailed functional descriptions of critical use cases and non-functional requirements regarding security, performance, and scalability are established to guide the subsequent design and implementation phases.
+
+\section{Status survey}
+The survey of the current technology landscape relies on three primary sources: (i) the needs of DeFi users seeking capital efficiency, (ii) existing single-chain stablecoin protocols, and (iii) current cross-chain infrastructure solutions.
+
+Currently, the DeFi ecosystem exhibits severe fragmentation, particularly within lending protocols and CDP mechanisms. Under the prevailing model, users are restricted to establishing collateralized positions exclusively within a single blockchain network. Prominent platforms such as MakerDAO and Aave operate in isolated silos, preventing cross-chain collateral utility. Consequently, users face a complex and inefficient workflow when attempting to utilize capital across networks, often necessitating manual bridging procedures that incur high transaction costs and operational friction.
+
+\subsection*{Analysis of Existing Systems}
+To identify the gap in the current market, this research analyzes two dominant categories of lending protocols:
+
+\begin{itemize}
+    \item \textbf{Isolated CDP Protocols (e.g., MakerDAO):} 
+    These represent the standard for decentralized stablecoins. They offer high security and proven economic models. However, they operate in strict isolation. A user with collateral on Ethereum cannot leverage this value to mint stablecoins on other networks (like Solana, Sui) and Layer 2 networks (like Arbitrum or Optimism) without physically bridging the underlying assets. This limitation forces users to choose between security (keeping assets on the one chain) and utility (using low-cost chains), resulting in significant capital inefficiency.
+
+    \item \textbf{Cross-Chain Money Markets (e.g., Radiant Capital):} 
+These protocols have effectively streamlined the user workflow, enabling seamless cross-chain borrowing without manual bridging steps. However, their architecture heavily relies on specific third-party interoperability layers, such as LayerZero, for message passing and asset transfers. This dependency introduces a critical single point of failure: the protocol's security is inextricably linked to the third-party bridge. Consequently, users are exposed to external systemic risks, and the protocol lacks sovereignty over its own verification logic.
+\end{itemize}
+
+\subsection*{Proposed Solution Analysis}
+The proposed system addresses the dependency risks of existing cross-chain markets by implementing a State Orchestration Architecture centered on Solana. Unlike protocols that outsource security entirely to general-purpose messaging layers, this solution maintains sovereignty over verification logic. The "Universal Wallet" mechanism ensures that the state is unified, while the validity of cross-chain requests is cryptographically verified on-chain (via Solana's Secp256k1 program) rather than relying solely on the trust assumptions of third-party bridges.
+
+Table \ref{tab:status_survey} highlights the strategic advantages of this approach, specifically regarding security sovereignty and state management.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{@{} l >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X @{}}
+        \toprule
+        \textbf{Feature} & \textbf{Isolated CDPs (e.g., MakerDAO)} & \textbf{Cross-Chain Markets (e.g., Radiant)} & \textbf{Proposed System (Universal USD)} \\
+        \midrule
+        \textbf{State Model} & Isolated & Fragmented Pools & Unified Global State \\
+        \addlinespace
+        \textbf{Verification} & Native On-chain Verification & Trusted Third-Party & On-chain Verification (Solana) \\
+        \addlinespace
+        \textbf{3rd Party Risk} & None & High (Bridge dependency) & Minimized (Cryptographic proof required) \\
+        \addlinespace
+        \textbf{Capital Effic.} & Low (Trapped on one chain) & High & High \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Comparison of Lending Architectures}
+    \label{tab:status_survey}
+\end{table}
+
+\section{Functional Overview}
+The system is designed to function as a decentralized lending protocol that orchestrates state across the Solana blockchain and various EVM-compatible chains.
+
+\subsection{General use case diagram}
+The system involves three primary actors:
+\begin{enumerate}
+    \item \textbf{User:} The borrower who holds collateral on EVM chains. They interact with the system to deposit assets, mint stablecoins, and manage their global debt position.
+    \item \textbf{Guardian:} A decentralized off-chain node responsible for listening to events on EVM chains, relaying signatures to Solana for verification, and synchronizing the execution results back to the EVM chains.
+    \item \textbf{Liquidator:} An actor who monitors the health factor of Universal Wallets on Solana. If a user's position becomes under-collateralized, the liquidator triggers the liquidation process.
+\end{enumerate}
+
+Figure \ref{fig:general_usecase_diagram} illustrates the general use cases.
+
+\begin{figure}[htbp]
+    \centering
+    % Ép hình vừa khít trang giấy
+    \resizebox{0.9\textwidth}{!}{%
+    \begin{tikzpicture}[
+        transform shape,
+        % --- 1. ĐỊNH NGHĨA STYLE (Giống hình Detailed) ---
+        usecase/.style={
+            ellipse, 
+            draw=black!80, 
+            thick, 
+            fill=cyan!10, 
+            minimum width=3.5cm, 
+            minimum height=1.5cm, 
+            align=center, 
+            font=\small\sffamily
+        },
+        % Actor (Stickman)
+        pics/actor/.style={
+            code={
+                \node[circle, draw, thick, fill=white, minimum size=0.5cm] (head) at (0, 0.4) {};
+                \draw[thick] (head.south) -- (0, -0.8); 
+                \draw[thick] (0, -0.8) -- (-0.5, -1.6); 
+                \draw[thick] (0, -0.8) -- (0.5, -1.6);
+                \draw[thick] (-0.8, -0.2) -- (0.8, -0.2); 
+                \node[below=2cm, font=\bfseries] at (0,0) {#1};
+            }
+        }
+    ]
+
+    % --- 2. VẼ SYSTEM BOUNDARY (Khung hệ thống) ---
+    \draw[thick] (-3, 5) rectangle (3, -5);
+    \node[font=\large\bfseries] at (0, 5.5) {Multi-chain CDP System};
+
+    % --- 3. VẼ CÁC USE CASE (Xếp dọc thẳng hàng) ---
+    \node[usecase] (uc_manage) at (0, 3.5) {Manage Universal\\Wallet};
+    \node[usecase] (uc_action) at (0, 0)  {Deposit/Borrow\\/Repay/Withdraw};
+    \node[usecase] (uc_liq)    at (0, -3.5) {Liquidate Position};
+
+    % --- 4. VẼ ACTORS ---
+    
+    % User bên trái
+    \path (-6, 0) pic (User) {actor=User};
+    
+    % Guardian bên phải (Cao hơn chút để dễ nối)
+    \path (6, 2.5) pic (Guard) {actor=Guardian};
+    
+    % Liquidator bên phải (Dưới thấp)
+    \path (6, -3) pic (Liq) {actor=Liquidator};
+
+    % --- 5. VẼ ĐƯỜNG NỐI ---
+
+    % Điểm nối ảo từ ngực các Actor
+    \coordinate (UserChest) at (-6, -0.2);
+    \coordinate (GuardChest) at (6, 2.3);
+    \coordinate (LiqChest) at (6, -3.2);
+
+    % --- User Connects (Nối vào bên trái Use Case) ---
+    \draw[thick] (UserChest) -- (uc_manage.west);
+    \draw[thick] (UserChest) -- (uc_action.west);
+
+    % --- Guardian Connects (Nối vào bên phải Use Case) ---
+    % Guardian tham gia vào verify các hành động chính
+    \draw[thick] (GuardChest) -- (uc_manage.east);
+    \draw[thick] (GuardChest) -- (uc_action.east);
+    % Guardian cũng hỗ trợ rebalance khi thanh lý
+    \draw[thick] (GuardChest) -- (uc_liq.east);
+
+    % --- Liquidator Connects ---
+    \draw[thick] (LiqChest) -- (uc_liq.east);
+
+    \end{tikzpicture}
+    } % End resizebox
+    \caption{General Use Case Diagram}
+    \label{fig:general_usecase_diagram}
+\end{figure}
+
+\subsection{Detailed use case diagram}
+To provide a granular view of the system's operation, Figure \ref{fig:detailed_usecase_diagram} illustrates the decomposition of the core cross-chain workflows. This diagram emphasizes the dependency relationships between user actions and the underlying system processes, specifically highlighting the ``Sign-then-Relay'' mechanism.
+\begin{figure}[htbp]
+    \centering
+    % Lệnh này ép hình vẽ co lại vừa đúng chiều rộng trang giấy (textwidth)
+    \resizebox{1.0\textwidth}{!}{%
+    \begin{tikzpicture}[
+        % Bỏ scale ở đây để resizebox tự lo, giữ transform shape để chữ co theo hình
+        transform shape,
+        % 1. STYLE ĐỊNH DẠNG (Đã thu nhỏ kích thước)
+        usecase/.style={
+            ellipse, 
+            draw=black!80, 
+            thick, 
+            fill=cyan!10, 
+            minimum width=2.8cm,  % Giảm độ rộng (cũ 3.8cm)
+            minimum height=1.4cm, % Giảm độ cao
+            align=center, 
+            font=\footnotesize\sffamily % Giảm cỡ chữ (cũ \small)
+        },
+        include/.style={
+            dashed, 
+            ->, 
+            >={Stealth[open, length=0.2cm]}, 
+            thick, 
+            draw=black!70
+        },
+        lbl/.style={
+            fill=white, 
+            inner sep=1pt, 
+            font=\scriptsize\itshape, % Chữ trên mũi tên nhỏ hơn nữa
+            text=black!80
+        },
+        % ACTOR: Vẽ nhỏ lại
+        pics/actor/.style={
+            code={
+                \node[circle, draw, thick, fill=white, minimum size=0.4cm] (head) at (0, 0.4) {}; % Đầu nhỏ hơn
+                \draw[thick] (head.south) -- (0, -0.6); % Thân ngắn lại
+                \draw[thick] (0, -0.6) -- (-0.4, -1.2); % Chân ngắn lại
+                \draw[thick] (0, -0.6) -- (0.4, -1.2);
+                \draw[thick] (-0.6, -0.1) -- (0.6, -0.1); % Tay ngắn lại
+                \node[below=1.6cm, font=\footnotesize\bfseries] at (0,0) {#1};
+            }
+        }
+    ]
+
+    % --- 2. VẼ CÁC USE CASE (Tọa độ được kéo gần nhau hơn) ---
+    
+    % Khoảng cách X thu hẹp: Cột 1 (-2.5), Cột 2 (2.5) -> Tổng rộng chỉ 5 đơn vị
+    \node[usecase] (uc_wallet)  at (-2.8, 2)   {Create Universal\\Wallet};
+    \node[usecase] (uc_req)     at (2.8, 2)    {Create request \&\\Sign msg};
+
+    \node[usecase] (uc_deposit) at (-2.8, -2)  {Deposit/Borrow\\/Repay/Withdraw};
+    \node[usecase] (uc_sign)    at (2.8, -2)   {Sign msg \& Create\\requests};
+
+    % Cột 3 thu về 6.5
+    \node[usecase] (uc_listen)  at (7.5, 0)    {Listening \&\\Relaying \&\\Synchronizing};
+
+    % --- 3. VẼ ACTOR (Cũng kéo gần vào) ---
+    
+    % User tại -6
+    \path (-6, 0) pic (User) {actor=User};
+    
+    % Guardian tại 10.5
+    \path (10.5, 0) pic (Guard) {actor=Guardians};
+
+    % --- 4. VẼ ĐƯỜNG NỐI ---
+    
+    % Điểm neo ảo để nối dây
+    \coordinate (UserChest) at (-5.9, -0.2); 
+    \coordinate (GuardChest) at (9.9, -0.1);
+
+    \draw[thick] (UserChest) -- (uc_wallet.west);
+    \draw[thick] (UserChest) -- (uc_deposit.west);
+    \draw[thick] (GuardChest) -- (uc_listen.east);
+
+    % --- 5. QUAN HỆ INCLUDE ---
+
+    \draw[include] (uc_wallet) -- node[lbl] {<<include>>} (uc_req);
+    \draw[include] (uc_deposit) -- node[lbl] {<<include>>} (uc_sign);
+    \draw[include] (uc_deposit) -- node[lbl] {<<include>>} (uc_wallet);
+
+    % Chỉnh điểm neo .west để mũi tên không bị dính chùm
+    \draw[include] (uc_req.east) -- node[lbl, sloped] {<<include>>} (uc_listen.north west);
+    \draw[include] (uc_sign.east) -- node[lbl, sloped] {<<include>>} (uc_listen.south west);
+
+    \end{tikzpicture}
+    } % Kết thúc resizebox
+    \caption{Detailed Use Case Diagram}
+    \label{fig:detailed_usecase_diagram}
+\end{figure}
+
+The diagram delineates the following key logical dependencies:
+\begin{itemize}
+    \item \textbf{Universal Wallet Dependency:} The ``Deposit/Borrow/Repay/Withdraw'' use case has an \tex<include>>} relationship with the ``Create Universal Wallet'' use case. This enforces a strict precondition: a user must establish a valid identity (Universal Wallet PDA) on Solana before performing any asset-related operations.
+    \item \textbf{Cryptographic Authorization:} Both the wallet creation and asset management use cases include the ``Sign msg \& Create requests'' sub-use case. This illustrates that users do not write directly to the Solana blockchain; instead, they generate and cryptographically sign structured messages on the EVM interface.
+    \item \textbf{Guardian Orchestration:} The message creation process further includes the ``Listening \& Relaying \& Synchronizing'' use case, executed by the Guardian actor. This signifies that a user's request is only finalized when the Guardian successfully intercepts the emitted event, relays the payload to Solana for verification, and synchronizes the result back to the source chain.
+\end{itemize}
+
+
+
+\subsection{Business process}
+The system operates on a Cross-chain State Orchestration model, where the logic execution is decoupled from asset custody. The workflow involves five distinct entities: the User, the Controller EVM Contract, the Guardian Network, the Solana Gateway, and the Lending CDP Core.
+\begin{figure}[htbp]
+    \centering
+    \resizebox{1.0\textwidth}{!}{%
+    \begin{tikzpicture}[
+        font=\sffamily\small,
+        % --- STYLE ĐỊNH DẠNG ---
+        start/.style={circle, draw=black, fill=black, minimum size=0.6cm},
+        end/.style={circle, draw=black, thick, fill=white, minimum size=0.6cm, double},
+        process/.style={
+            rectangle, 
+            draw=black!80, 
+            thick, 
+            fill=cyan!10, 
+            text width=3.0cm, % Tăng nhẹ độ rộng để chữ RequestCreated không bị tràn
+            align=center, 
+            rounded corners=3pt, 
+            minimum height=1.4cm,
+            drop shadow
+        },
+        decision/.style={
+            diamond, 
+            draw=black!80, 
+            thick, 
+            fill=yellow!20, 
+            text width=1.8cm, 
+            align=center, 
+            aspect=2,
+            drop shadow
+        },
+        % Style đường nối
+        line/.style={draw, thick, ->, >=Stealth, rounded corners=5pt}
+    ]
+
+    % --- 1. VẼ KHUNG LÀN BƠI ---
+    % Header
+    \node[font=\bfseries\large] at (0, 1) {User};
+    \node[font=\bfseries\large] at (4, 1) {Controller EVM};
+    \node[font=\bfseries\large] at (8, 1) {Guardians};
+    \node[font=\bfseries\large] at (12, 1) {Gateway SVM};
+    \node[font=\bfseries\large] at (16, 1) {Lending CDP};
+
+    % Đường kẻ khung
+    \foreach \x in {-2, 2, 6, 10, 14, 18} {
+        \draw[gray!50] (\x, 1.5) -- (\x, -16);
+    }
+    \draw[thick] (-2, 0.5) -- (18, 0.5);
+
+    % --- 2. VẼ NODE ---
+    
+    % ROW 1: User
+    \node[start] (start) at (0, 0) {};
+    \node[process] (sign) at (0, -2) {Sign Request\\Payload};
+    \node[process] (submit) at (0, -4) {Submit\\Transaction};
+
+    % ROW 2: EVM & Guardian
+    \node[process] (emit) at (4, -4) {Emit Event};
+    \node[process] (listen) at (8, -4) {Listen \& Parse\\Event Data};
+
+    % ROW 3: Relay & Verify
+    \node[process] (relay) at (8, -6.5) {Construct \&\\Submit Solana Tx};
+    \node[process] (verify) at (12, -6.5) {Verify Secp256k1\\\& Decode};
+
+    % ROW 4: Decision & Revert
+    \node[decision] (decide_sig) at (12, -9) {Valid?};
+    \node[process, fill=red!10] (cb_revert) at (8, -9) {Trigger Revert\\Callback};
+    \node[process, fill=red!10] (revert_state) at (4, -9) {Revert State\\(Unlock)};
+
+    % ROW 5: Update & Logic
+    \node[process] (update_pos) at (16, -9) {Update Position\\(Debt/Collateral)};
+    \node[decision] (decide_logic) at (16, -11.5) {Valid?};
+
+    % ROW 6: Finalize
+    \node[process] (emit_sol) at (16, -14) {Emit Event};
+    \node[process] (cb_success) at (8, -14) {Trigger Success\\Callback};
+    \node[process] (finalize) at (4, -14) {Finalize:\\Mint/Unlock};
+
+    % End nodes
+    \node[end] (end_success) at (4, -15.8) {};
+    \node[end] (end_fail) at (4, -11.0) {}; 
+
+    % --- 3. VẼ ĐƯỜNG NỐI ---
+
+    % Flow chính
+    \draw[line] (start) -- (sign);
+    \draw[line] (sign) -- (submit);
+    \draw[line] (submit) -- (emit);
+    \draw[line] (emit) -- (listen);
+    \draw[line] (listen) -- (relay);
+    \draw[line] (relay.east) -- (verify.west); 
+    \draw[line] (verify) -- (decide_sig);
+
+    % 1. Valid? -> YES
+    \draw[line] (decide_sig.east) -- node[above, font=\footnotesize] {Yes} (update_pos.west);
+
+    % 2. Valid? -> NO (Đi từ góc trái về Revert)
+    \draw[line] (decide_sig.west) -- node[above, font=\footnotesize] {No} (cb_revert.east);
+
+    % Flow tiếp theo
+    \draw[line] (update_pos) -- (decide_logic);
+
+    % 3. Logic OK? -> YES
+    \draw[line] (decide_logic) -- node[right, font=\footnotesize] {Yes} (emit_sol);
+
+    % 4. Logic OK? -> NO (SỬA LẠI THEO YÊU CẦU)
+    % Xuất phát từ góc trái (.west) -> Đi ngang sang trái (-|) -> Đi lên đáy Revert (.south)
+    \draw[line] (decide_logic.west) -| node[pos=0.1, above, font=\footnotesize] {No} (cb_revert.south);
+
+    % Revert Flow
+    \draw[line] (cb_revert) -- (revert_state);
+    \draw[line] (revert_state) -- (end_fail);
+
+    % Success Flow
+    \draw[line] (emit_sol.west) -- (cb_success.east);
+    \draw[line] (cb_success) -- (finalize);
+    \draw[line] (finalize) -- (end_success);
+
+    \end{tikzpicture}
+    }
+    \caption{Business Process Activity Diagram}
+    \label{fig:business_activity_diagram}
+\end{figure}
+
+As illustrated in Figure \ref{fig:business_activity_diagram}, the process follows a strict "Verify-then-Execute" lifecycle:
+
+\begin{enumerate}
+    \item \textbf{Initiation (User in EVM):} 
+    The process begins when the User cryptographically signs a specific request payload (containing the action type, amount, and nonce) and submits the transaction to the Controller EVM Contract. The contract emits a event. Note that at this stage, no minting or unlocking occurs; the assets are simply locked or the request is queued.
+
+    \item \textbf{Observation \& Relay (Guardians):} 
+    The Guardian network detects the event on the EVM chain. Instead of verifying the logic off-chain, the Guardian parses the event data and encapsulates the raw signature into a transaction destined for Solana.
+
+    \item \textbf{Verification Layer (Solana Gateway):} 
+    The Gateway Contract on Solana acts as the security checkpoint. It utilizes the native Secp256k1 program to verify that the signature matches the User's EVM address. 
+    \begin{itemize}
+        \item If the signature is Invalid, the Gateway immediately signals a failure, bypassing the core logic.
+        \item If the signature is Valid, the request is forwarded to the Lending CDP contract.
+    \end{itemize}
+
+    \item \textbf{Logic Layer (Solana Lending CDP):} 
+    The Lending CDP Contract attempts to update the user's position (e.g., increasing Debt). It performs critical checks such as Health Factor validation (e.g., Collateral Ratio $> 150\%$).
+    \begin{itemize}
+        \item If the logic holds (Logic OK), a event is emitted.
+        \item If the logic fails (e.g., under-collateralized), the transaction is rejected.
+    \end{itemize}
+
+    \item \textbf{Synchronization \& Finalization:} 
+    Guardians listen for the outcome on Solana to trigger the corresponding callback on the EVM chain:
+    \begin{itemize}
+        \item If a event is captured, Guardians trigger the \textit{Success Callback} on the EVM contract to finalize the action (e.g., Mint stablecoins).
+        \item If the verification or logic failed, Guardians trigger the \textit{Revert Callback} to unlock the user's assets and reset the nonce, ensuring funds are never stuck.
+    \end{itemize}
+\end{enumerate}
+
+
+
+
+\section{Functional Description}
+This section details the critical use cases of the system, covering the full lifecycle of a user's interaction from wallet creation to position management.
+
+\subsection{Description of use case: Create Universal Wallet}
+This use case establishes the link between the user's EVM address and a Solana identity, creating the Universal Wallet storage on the Solana blockchain.
+
+\subsubsection{Description of use case: Create Universal Wallet}
+
+This section details the specifications for the initialization of a user's cross-chain identity. The use case is defined by the following components:
+
+\begin{enumerate}
+    \item \textbf{Use Case Name:} Create Universal Wallet.
+
+    \item \textbf{Flow of Events:}
+    The process follows a strict sequence of on-chain and off-chain interactions:
+    \begin{enumerate}
+        \item \textbf{Request Initiation (EVM):} The User calls the \texttt{createRequest} function on the EVM Controller Contract. The contract validates the input and emits a \texttt{WalletCreationRequested} event containing the User's EVM address.
+        \item \textbf{Identity Proof (Off-chain):} The User generates a cryptographic signature using their Solana private key. This signature signs a message containing the User's EVM address to prove ownership of the destination wallet.
+        \item \textbf{Verification (Guardian):} The Guardian service detects the EVM event and receives the off-chain Solana signature. It verifies that the signature matches the destination address and corresponds to the EVM requester.
+        \item \textbf{State Execution (Solana):} Upon successful verification, the Guardian submits a transaction to the Solana Main Contract.
+        \item \textbf{Finalization:} The Solana Main Contract allocates a new Program Derived Address (PDA) for the Universal Wallet, linking it to the User's EVM identity.
+    \end{enumerate}
+
+    \item \textbf{Pre-conditions:}
+    Before this use case can be initiated, the system requires the following state:
+    \begin{itemize}
+        \item The User must possess a valid EVM wallet (e.g., MetaMask) with sufficient native balance to cover the transaction gas fees on the source chain.
+        \item The User must generate or possess a Solana keypair to perform the off-chain signing process required for identity binding.
+    \end{itemize}
+
+    \item \textbf{Post-conditions:}
+    Upon the successful completion of the flow:
+    \begin{itemize}
+        \item A unique \texttt{UniversalWallet} structure is initialized on the Solana blockchain.
+        \item The User is authorized to perform subsequent cross-chain actions, such as depositing collateral or minting stablecoins, using this mapped identity.
+    \end{itemize}
+\end{enumerate}
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Use Case Name} & Create Universal Wallet \\
+        \hline
+        \textbf{Actors} & User, Guardian, EVM Contract, Solana Main Contract \\
+        \hline
+        \textbf{Pre-conditions} & 
+        1. User has an EVM wallet (e.g., MetaMask) with funds for gas. \newline
+        2. User possesses a Solana wallet to sign the verification message. \\
+        \hline
+        \textbf{Main Flow} & 
+        1. \textbf{Request on EVM:} The User initiates a transaction on the EVM Contract to request wallet creation. The contract emits an event containing the EVM address. \newline
+        2. \textbf{Solana Signature:} Off-chain, the User signs a specific message containing their EVM address using their Solana private key. This signature is submitted to the Guardian API. \newline
+        3. \textbf{Guardian Verification:} The Guardian captures the EVM event and verifies the off-chain Solana signature to ensure the User controls both addresses. \newline
+        4. \textbf{Execution on Solana:} Upon successful verification, the Guardian submits a transaction to the Solana Main Contract to initialize the UniversalWallet PDA, mapping the EVM address to the new Solana state. \\
+        \hline
+        \textbf{Post-conditions} & An UniversalWallet is initialized on Solana. The User can now perform cross-chain actions. \\
+        \hline
+    \end{tabularx}
+    \caption{Functional Description: Create Universal Wallet}
+\end{table}
+
+\subsection{Description of use case: Deposit Collateral}
+This process allows users to lock assets on an EVM chain to increase their collateral balance on the Solana state.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Use Case Name} & Deposit Collateral \\
+        \hline
+        \textbf{Actors} & User, Guardian, EVM Contract, Solana Main Contract \\
+        \hline
+        \textbf{Pre-conditions} & User has initialized a Universal Wallet and holds supported assets on the EVM chain. \\
+        \hline
+        \textbf{Main Flow} & 
+        1. \textbf{Lock Assets:} The User sign the payload and submit signatures by calls the \texttt{requestDeposit} function on the EVM Contract. The assets are transferred to the contract vault, and an event is emitted. \newline
+        2. \textbf{Relay:} The Guardian detects the event then reads onchain data. After that, it forwards the payload and signature to the Solana Gateway. \newline
+        3. \textbf{State Update:} The Gateway contract on Solana verify the signature and payload. After that, the Solana Main Contract identifies the user's Universal Wallet and increments the collateral balance for that specific chain ID. \newline
+        4. \textbf{Synchronization:} The Guardian updates the EVM contract to confirm the deposit request has been synced, allowing the user to proceed with other actions. \\
+        \hline
+        \textbf{Post-conditions} & Collateral is locked on EVM. The collateral balance in the Universal Wallet on Solana is increased. \\
+        \hline
+    \end{tabularx}
+    \caption{Functional Description: Deposit Collateral}
+\end{table}
+
+\subsection{Description of use case: Mint Stablecoin}
+Users generate stablecoins against their collateral. This action requires strict verification of the Health Factor on Solana.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Use Case Name} & Mint Stablecoin \\
+        \hline
+        \textbf{Actors} & User, Guardian, EVM Contract, Solana Main Contract \\
+        \hline
+        \textbf{Pre-conditions} & User has sufficient collateral (Health Factor remains above the minimum ratio after minting). \\
+        \hline
+        \textbf{Main Flow} & 
+        1. \textbf{Request:} The User signs a mint request payload then call \texttt{requestMint} function in the EVM Contract. The contract locks the user's mutex. \newline
+        2. \textbf{Validation on Solana:} The Guardian listen the event then submits the signature and payload to Solana. The Main Contract verifies the signature and calculates the projected Health Factor. \newline
+        3. \textbf{Debt Increase:} If the Health Factor is valid, the Solana contract increases the user's debt balance. \newline
+        4. \textbf{Minting on EVM:} The Guardian catches the success event from Solana and executes a transaction on the EVM Contract to mint the stablecoins to the User's wallet and release the Mutex. \\
+        \hline
+        \textbf{Alternative Flow} & If the Health Factor is insufficient, the Solana transaction fails. The Guardian then triggers a \texttt{revert} on the EVM Contract to unlock the user's mutex. \\
+        \hline
+        \textbf{Post-conditions} & User receives stablecoins on EVM. Debt position is recorded on Solana. \\
+        \hline
+    \end{tabularx}
+    \caption{Functional Description: Mint Stablecoin}
+\end{table}
+
+\subsection{Description of use case: Repay Debt}
+Users return stablecoins to reduce their debt position and improve their Health Factor.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Use Case Name} & Repay Debt \\
+        \hline
+        \textbf{Actors} & User, Guardian, EVM Contract, Solana Main Contract \\
+        \hline
+        \textbf{Pre-conditions} & User holds the protocol's stablecoin on the EVM chain. \\
+        \hline
+        \textbf{Main Flow} & 
+        1. \textbf{Lock Tokens:} The User sign the payload then calls \texttt{requestRepay} on the EVM Contract to submit signature. The specified amount of stablecoins is locked immediately, and an event is emitted. \newline
+        2. \textbf{Relay:} The Guardian observes the event and submits the data and signature to Solana. \newline
+        3. \textbf{State Update:} The Solana Gateway verify signature. After that, the Main Contract verifies the transaction and decreases the user's debt balance in the Universal Wallet. \newline
+        4. \textbf{Completion:} The Guardian confirms the state update back to the EVM chain (burn stablecoin and updating the nonce). \\
+        \hline
+        \textbf{Post-conditions} & Stablecoins are burned on EVM. Debt balance on Solana is decreased. \\
+        \hline
+    \end{tabularx}
+    \caption{Functional Description: Repay Debt}
+\end{table}
+
+\subsection{Description of use case: Withdraw Collateral}
+This action allows users to retrieve their locked assets, provided their remaining collateral supports their outstanding debt.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Use Case Name} & Withdraw Collateral \\
+        \hline
+        \textbf{Actors} & User, Guardian, EVM Contract, Solana Main Contract \\
+        \hline
+        \textbf{Pre-conditions} & User has sufficient free collateral (Health Factor remains safe after withdrawal). \\
+        \hline
+        \textbf{Main Flow} & 
+        1. \textbf{Request:} The User signs a withdraw request payload and submits it to the EVM Contract. The contract locks the user's mutex and emits an event if collateral token sufficient in vault EVM. \newline
+        2. \textbf{Validation on Solana:} The Guardian forwards the request to Solana. The Main Contract checks if the remaining collateral is sufficient to cover the debt. \newline
+        3. \textbf{State Update:} If valid, the Solana contract decreases the user's collateral balance. \newline
+        4. \textbf{Unlock on EVM:} The Guardian triggers the EVM Contract to transfer the requested assets from the vault back to the User's wallet. \\
+        \hline
+        \textbf{Alternative Flow} & If the withdrawal would make the position insolvent, the Solana transaction is rejected. The Guardian reverts the request on EVM, keeping the assets locked. \\
+        \hline
+        \textbf{Post-conditions} & User receives assets on EVM. Collateral balance on Solana is reduced. \\
+        \hline
+    \end{tabularx}
+    \caption{Functional Description: Withdraw Collateral}
+\end{table}
+
+\section{Non-functional Requirements}
+To ensure the Multi-chain CDP Protocol operates securely, efficiently, and reliably in a high-value financial environment, the system must adhere to the following strict non-functional requirements.
+
+\subsection{Security and Safety}
+Given the cross-chain nature of the protocol, security is the paramount requirement to prevent fund loss and bridge exploits.
+\begin{itemize}
+    \item \textbf{Cryptographic Compatibility:} The Solana Gateway must natively support and verify \textbf{Secp256k1} signatures (EVM standard) to allow users to control their positions using existing Ethereum wallets without exposing private keys to a third party.
+    \item \textbf{Cross-chain Replay Protection:} The system must implement a rigorous \textbf{Nonce Management} mechanism. Each transaction request must include a unique nonce associated with the specific Chain ID and User Address. The Solana contract must reject any request with a nonce lower than or equal to the current stored nonce to prevent replay attacks.
+    \item \textbf{Guardian Decentralization (Trust Assumption):} The off-chain Guardian network must be designed to prevent a single point of failure. The system should require a threshold of signatures (e.g., Multisig or Threshold Signature Scheme) from Guardians before executing sensitive state changes (like unlocking collateral) to mitigate the risk of a single compromised Guardian node.
+    \item \textbf{Atomic Revert Capabilities:} In the event of a failure during the cross-chain synchronization (e.g., Solana transaction fails due to slippage or insufficient health factor), the system must guarantee that the initial state on the EVM chain can be reverted (unlocking the user's Mutex) to prevent funds from being permanently frozen.
+\end{itemize}
+
+\subsection{Performance and Efficiency}
+\begin{itemize}
+    \item \textbf{End-to-End Latency:} The total time for a generic user action (e.g., Minting) involves the sequence: $T_{EVM\_Confirm} + T_{Guardian\_Relay} + T_{Solana\_Finality} + T_{Guardian\_Callback}$. The system should aim for an end-to-end latency of under 30 seconds (excluding extreme network congestion on Ethereum Mainnet) to ensure a responsive user experience.
+    \item \textbf{Compute Unit Optimization (Solana):} Since cryptographic verification (Secp256k1 recovery) is computationally expensive, the Solana smart contract must be optimized to stay within the Block Compute Unit Limit, potentially utilizing Solana's native Secp256k1 program instructions to reduce costs.
+    \item \textbf{Scalability:} The Guardian architecture must support concurrent monitoring of multiple EVM chains (e.g., Ethereum, BSC, Arbitrum, Optimism) without significant degradation in relaying speed.
+\end{itemize}
+
+\subsection{Reliability and Availability}
+\begin{itemize}
+    \item \textbf{Eventual Consistency:} The system must ensure that the state between the EVM Spokes and the Solana Hub eventually converges. In case of network partitions (Guardian downtime), the system must be able to recover and process pending events once connectivity is restored.
+    \item \textbf{Idempotency:} Guardian operations must be idempotent. Submitting the same event multiple times (due to network retries) must not result in double-counting of debt or collateral on the Solana state.
+    \item \textbf{Uptime:} The Guardian nodes and the Solana RPC endpoints used for query/submission must maintain high availability ($99.9\%$) to prevent liquidation failures during times of high market volatility.
+\end{itemize}
+
+\subsection{Usability and User Experience}
+\begin{itemize}
+    \item \textbf{Transparent Signing (EIP-712):} To protect users from phishing, all off-chain requests signed by the user must adhere to the \textbf{EIP-712} standard (Typed Structured Data Hashing and Signing). This ensures that users can read clearly structured data (Action, Amount, ChainID) in their wallet interface (e.g., MetaMask) before signing, rather than signing opaque hex strings.
+    \item \textbf{Wallets Experience:} Users can interact with the entire protocol using multiple wallets. The complexity of the usage process is significantly reduced by the interactive interface that supports multiple wallets..
+\end{itemize}
+
+\section{Conclusion}
+This chapter has provided a comprehensive analysis of the operational boundaries and functional necessities for the proposed Multi-chain Stablecoin Protocol. By critically evaluating the limitations of existing "Lock-and-Mint" bridges and single-chain CDP models, the study established the rationale for adopting a State Orchestration architecture, where Solana serves as the global state machine for liquidity scattered across EVM chains.
+
+The functional analysis elucidated the complex workflows involving the Universal Wallet, emphasizing the pivotal role of the Guardian Network in maintaining cross-chain atomicity and data synchronization. Furthermore, the non-functional requirements have set strict constraints regarding cryptographic compatibility (Secp256k1), system latency, and security against replay attacks. These specifications serve as the foundational blueprint for the architectural design and technical implementation strategies that will be presented in the subsequent chapters.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

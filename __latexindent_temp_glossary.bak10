@@ -1,0 +1,64 @@
+%\makeglossaries
+\makenoidxglossaries
+
+% Danh mục thuật ngữ và từ viết tắt
+\newglossaryentry{Secp256k1}{
+    type=\acronymtype,
+    name={Secp256k1},
+    description={Dịch vụ hạ tầng},
+    first={Dịch vụ hạ tầng (Infrastructure  as  a  Service - IaaS)}
+}
+\newglossaryentry{EVM}{
+    type=\acronymtype,
+    name={EVM},
+    description={Giao diện lập trình ứng dụng (Application Programming Interface)},
+    first={API}
+}
+\newglossaryentry{SVM}{
+    type=\acronymtype,
+    name={SVM},
+    description={Phát triển ứng dụng người dùng cuối(End-User Development)},
+    first={End-User Development}
+}
+\newglossaryentry{CDP}{
+    type=\acronymtype,
+    name={CDP},
+    description={Công cụ lập trình Javascript bằng Java của Google (Google Web Toolkit)},
+    first={Công cụ lập trình Javascript bằng Java của Google (Google Web Toolkit}
+}
+\newglossaryentry{DeFi}{
+    type=\acronymtype,
+    name={DeFi},
+    description={Tài chính phi tập trung (Decentralized Finance)},
+    first={Decentralized Finance (DeFi)}
+}
+\newglossaryentry{Tx}{
+    type=\acronymtype,
+    name={Tx},
+    description={Ngôn ngữ đánh dấu siêu văn bản (HyperText Markup Language)},
+    first={Dịch vụ hạ tầng (Infrastructure  as  a  Service - IaaS)}
+}
+\newglossaryentry{DAO}{
+    type=\acronymtype,
+    name={DAO},
+    description={Công nghệ thông tin (Information Technology - IT)},
+    first={Information Technology (IT)}
+}
+\newglossaryentry{PoH}{
+    type=\acronymtype,
+    name={PoH},
+    description={Proof of History},
+    first={Proof of History (PoH)}
+}
+\newglossaryentry{ETH}{
+    type=\acronymtype,
+    name={ETH},
+    description={Sinh viên},
+    first={Sinh viên (Student - SV)}
+}
+\newglossaryentry{BT}{
+    type=\acronymtype,
+    name={HUST},
+    description={Đại học Bách Khoa Hà Nội},
+    first={Hanoi University of Science and Technology (HUST)}
+}

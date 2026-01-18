@@ -1,6 +1,6 @@
 INFO:  latexindent.pl version 3.24.7, 2025-08-15, a script to indent .tex files
        latexindent.pl lives here: /opt/homebrew/Cellar/latexindent/3.24.7/libexec/bin/
-       Thu Jan 15 11:06:38 2026
+       Sun Jan 18 18:47:28 2026
        Filename: /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Chapter/__latexindent_temp_4_Experiment_evaluation.tex
 INFO:  Processing switches:
        -s|--silent: Silent mode active (you have used either -s or --silent)
@@ -55,34 +55,7 @@ INFO:  Backup procedure (-w flag active):
        /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak14 already exists, incrementing by 1 (see maxNumberOfBackUps)
        /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak15 already exists, incrementing by 1 (see maxNumberOfBackUps)
        /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak16 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak17 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak18 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak19 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak20 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak21 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak22 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak23 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak24 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak25 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak26 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak27 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak28 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak29 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak30 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak31 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak32 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak33 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak34 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak35 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak36 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak37 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak38 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak39 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak40 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak41 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak42 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak43 already exists, incrementing by 1 (see maxNumberOfBackUps)
-       Backing up /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Chapter/__latexindent_temp_4_Experiment_evaluation.tex to /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak44...
+       Backing up /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Chapter/__latexindent_temp_4_Experiment_evaluation.tex to /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/__latexindent_temp_4_Experiment_evaluation.bak17...
        /Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Chapter/__latexindent_temp_4_Experiment_evaluation.tex will be overwritten after indentation
 INFO:  Phase 1: searching for objects
 INFO:  Phase 2: finding surrounding indentation

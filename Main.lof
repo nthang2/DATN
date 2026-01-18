@@ -2,23 +2,18 @@
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {2.1}{\ignorespaces General Use Case Diagram}}{7}{figure.caption.9}%
 \contentsline {figure}{\numberline {2.2}{\ignorespaces Detailed Use Case Diagram}}{8}{figure.caption.10}%
-\contentsline {figure}{\numberline {2.3}{\ignorespaces Business Process Activity Diagram}}{10}{figure.caption.11}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Business Process Activity Diagram}}{9}{figure.caption.11}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Detailed Architecture of the Multi-chain Stablecoin Protocol}}{27}{figure.caption.17}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Detailed Design of Solana Hub Package}}{29}{figure.caption.24}%
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Detailed Design of Guardian Middleware Package}}{30}{figure.caption.25}%
-\contentsline {figure}{\numberline {4.4}{\ignorespaces Detailed Design of EVM Controller Package}}{31}{figure.caption.26}%
-\contentsline {figure}{\numberline {4.5}{\ignorespaces Multi-chain Wallet Connectivity Interface}}{43}{figure.caption.27}%
-\contentsline {figure}{\numberline {4.6}{\ignorespaces Universal Wallet Management Interface (Link and List View)}}{44}{figure.caption.28}%
-\contentsline {figure}{\numberline {4.7}{\ignorespaces Cross-chain Borrowing and Position Management Interface}}{45}{figure.caption.29}%
-\contentsline {figure}{\numberline {4.8}{\ignorespaces User Portfolio and Position Management Interface}}{46}{figure.caption.30}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Detailed Architecture of the Multi-chain Stablecoin Protocol}}{27}{figure.caption.12}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Detailed Design of Solana Hub Package}}{29}{figure.caption.19}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Detailed Design of Guardian Middleware Package}}{30}{figure.caption.20}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Detailed Design of EVM Controller Package}}{31}{figure.caption.21}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Multi-chain Wallet Connectivity Interface}}{43}{figure.caption.22}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Universal Wallet Management Interface (Link and List View)}}{44}{figure.caption.23}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Cross-chain Borrowing and Position Management Interface}}{45}{figure.caption.24}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces User Portfolio and Position Management Interface}}{46}{figure.caption.25}%
 \addvspace {10\p@ }
-\addvspace {10\p@ }
-\addvspace {10\p@ }
-\contentsline {figure}{\numberline {A.1}{\ignorespaces Internet vạn vật}}{66}{figure.caption.45}%
-\contentsline {figure}{\numberline {A.2}{\ignorespaces Qui cách đóng quyển đồ án}}{68}{figure.caption.48}%
-\contentsline {figure}{\numberline {A.3}{\ignorespaces Qui cách đóng quyển đồ án}}{68}{figure.caption.49}%
 \addvspace {10\p@ }
 \contentsfinish 
 \contentsfinish 

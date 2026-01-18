@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2025.11.7)  5 JAN 2026 10:09
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2025.11.7)  18 JAN 2026 11:21
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1502,64 +1502,13 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [2]
-LaTeX Font Info:    Trying to load font information for T5+pcr on input line 34.
- (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/vntex/t5pcr.fd
-File: t5ucr.fd 2005/08/24 Fontinst v1.929 font definitions for T5/pcr.
-)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
 [3]
-LaTeX Font Info:    Calculating math sizes for size <13> on input line 42.
-
-
-LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <6.5> not available
-(Font)              size <6> substituted on input line 42.
-
-
-LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <13> not available
-(Font)              size <12> substituted on input line 42.
-
-
-LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <6.5> not available
-(Font)              size <6> substituted on input line 42.
-
-
-LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <13> not available
-(Font)              size <12> substituted on input line 42.
-
-
-LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <6.5> not available
-(Font)              size <6> substituted on input line 42.
-
-LaTeX Font Info:    Trying to load font information for U+lasy on input line 42.
-(/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/base/ulasy.fd
-File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
-)
-
-LaTeX Font Warning: Font shape `U/lasy/m/n' in size <13> not available
-(Font)              size <12> substituted on input line 42.
-
-
-LaTeX Font Warning: Font shape `U/lasy/m/n' in size <6.5> not available
-(Font)              size <6> substituted on input line 42.
-
-LaTeX Font Info:    Trying to load font information for U+msa on input line 42.
-(/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 42.
- (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-Overfull \hbox (1.15111pt too wide) in paragraph at lines 42--43
-\T5/ptm/m/n/13 tho-rized by the holder of the pri-vate key $\OML/cmm/m/it/12 d$\T5/ptm/m/n/13 . The do-main pa-ram-e-ters of the secp256k1
- []
-
-
-Overfull \hbox (13.06354pt too wide) in paragraph at lines 60--61
-\T5/ptm/m/n/13 po-ten-tially ex-ceed-ing the block limit. To solve this, the method-ol-ogy em-ploys Solana's
+Overfull \hbox (5.02956pt too wide) in paragraph at lines 45--46
+\T5/ptm/m/n/13 method-ol-ogy pri-or-i-tizes se-cu-rity and stan-dard com-pli-ance over raw ex-e-cu-tion speed.
  []
 
 
@@ -1568,12 +1517,64 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [4]
+LaTeX Font Info:    Calculating math sizes for size <13> on input line 57.
+
+
+LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <6.5> not available
+(Font)              size <6> substituted on input line 57.
+
+
+LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <13> not available
+(Font)              size <12> substituted on input line 57.
+
+
+LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <6.5> not available
+(Font)              size <6> substituted on input line 57.
+
+
+LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <13> not available
+(Font)              size <12> substituted on input line 57.
+
+
+LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <6.5> not available
+(Font)              size <6> substituted on input line 57.
+
+LaTeX Font Info:    Trying to load font information for U+lasy on input line 57.
+(/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/base/ulasy.fd
+File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
+)
+
+LaTeX Font Warning: Font shape `U/lasy/m/n' in size <13> not available
+(Font)              size <12> substituted on input line 57.
+
+
+LaTeX Font Warning: Font shape `U/lasy/m/n' in size <6.5> not available
+(Font)              size <6> substituted on input line 57.
+
+LaTeX Font Info:    Trying to load font information for U+msa on input line 57.
+(/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 57.
+ (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+Overfull \hbox (1.15111pt too wide) in paragraph at lines 57--58
+\T5/ptm/m/n/13 tho-rized by the holder of the pri-vate key $\OML/cmm/m/it/12 d$\T5/ptm/m/n/13 . The do-main pa-ram-e-ters of the secp256k1
+ []
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
 [5]
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 87.
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[6]
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 102.
  (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
@@ -1581,8 +1582,8 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[6{/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/enc/dvips/base/8r.enc}]
-Overfull \hbox (10.6456pt too wide) in paragraph at lines 122--123
+[7{/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/enc/dvips/base/8r.enc}]
+Overfull \hbox (10.6456pt too wide) in paragraph at lines 137--138
 \T5/ptm/m/n/13 dard-iza-tion of So-lid-ity for as-set cus-tody, and the math-e-mat-i-cal rigor of the Secp256k1
  []
 
@@ -1591,7 +1592,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[7]
+[8]
 
 Package glossaries Warning: No \printnoidxglossary or \printnoidxglossaries
  found. (Remove \makenoidxglossaries if you don't want any glossaries.)
@@ -1599,7 +1600,7 @@ This document will not have a glossary.
 
 
 
-[8] (Chapter/3_Methodology.aux)
+[9] (Chapter/3_Methodology.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -1613,7 +1614,7 @@ LaTeX Font Warning: Size substitutions with differences
 LaTeX Warning: There were undefined references.
 
 Package rerunfilecheck Info: File `3_Methodology.out' has not changed.
-(rerunfilecheck)             Checksum: BE909AD29272FC67382DC4C295ADF000;5454.
+(rerunfilecheck)             Checksum: EFD23527E2E5154A05F5CAE31967019D;5380.
 
 Package biblatex Warning: Please (re)run BibTeX on the file(s):
 (biblatex)                3_Methodology
@@ -1624,13 +1625,13 @@ Package logreq Info: Writing requests to '3_Methodology.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 46102 strings out of 473190
- 923862 string characters out of 5704335
- 1800374 words of memory out of 5000000
- 68561 multiletter control sequences out of 15000+600000
- 576418 words of font info for 65 fonts, out of 8000000 for 9000
+ 46546 strings out of 473190
+ 930202 string characters out of 5704335
+ 1804007 words of memory out of 5000000
+ 69009 multiletter control sequences out of 15000+600000
+ 575219 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 128i,5n,124p,2483b,893s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 128i,6n,124p,2483b,890s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 pdfTeX warning (dest): name{cite.0@openzeppelin} has been referenced but does not exist, replaced by a fixed one
 
@@ -1638,22 +1639,19 @@ pdfTeX warning (dest): name{cite.0@openzeppelin} has been referenced but does no
 pdfTeX warning (dest): name{cite.0@anchor_framework} has been referenced but does not exist, replaced by a fixed one
 
 
-pdfTeX warning (dest): name{cite.0@wood2014ethereum} has been referenced but does not exist, replaced by a fixed one
+pdfTeX warning (dest): name{cite.0@buterin2014ethereum} has been referenced but does not exist, replaced by a fixed one
 
 
 pdfTeX warning (dest): name{cite.0@yakovenko2018solana} has been referenced but does not exist, replaced by a fixed one
 
 
-pdfTeX warning (dest): name{cite.0@buterin2014ethereum} has been referenced but does not exist, replaced by a fixed one
-
-
 pdfTeX warning (dest): name{cite.0@nakamoto2008bitcoin} has been referenced but does not exist, replaced by a fixed one
 
-</opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/ucrr8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb>
-Output written on Chapter/3_Methodology.pdf (8 pages, 156492 bytes).
+</opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb>
+Output written on Chapter/3_Methodology.pdf (9 pages, 146484 bytes).
 PDF statistics:
- 246 PDF objects out of 1000 (max. 8388607)
- 194 compressed objects within 2 object streams
+ 243 PDF objects out of 1000 (max. 8388607)
+ 192 compressed objects within 2 object streams
  42 named destinations out of 1000 (max. 500000)
  277 words of extra memory for PDF output out of 10000 (max. 10000000)
 

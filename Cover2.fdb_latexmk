@@ -1,15 +1,15 @@
 # Fdb version 4
-["bibtex Cover2"] 1764230499.79633 "Cover2.aux" "Cover2.bbl" "Cover2" 1766044260.52099 0
-  "./Cover2-blx.bib" 1766044260.27213 343 eecd58be191eac03682f8fda492bb690 ""
-  "./reference.bib" 1764201516 1488 c84ec2be0e7384c9343be26b8c6eb7b7 ""
+["bibtex Cover2"] 1768622414.37091 "Cover2.aux" "Cover2.bbl" "Cover2" 1768622416.54615 0
+  "./Cover2-blx.bib" 1768622416.29782 343 eecd58be191eac03682f8fda492bb690 ""
+  "./reference.bib" 1766375003.37202 2212 35bf5342b1f561f73f891ce68859e55f ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/bibtex/bst/biblatex/biblatex.bst" 1741388039 65510 b1f696b0241395385f422f67543c37fd ""
-  "Cover2.aux" 1766044260.26831 589 72953630dd538ad9260f98d62d560079 "pdflatex"
+  "Cover2.aux" 1768622416.2923 589 72953630dd538ad9260f98d62d560079 "pdflatex"
   (generated)
   "Cover2.bbl"
   "Cover2.blg"
   (rewritten before read)
-["pdflatex"] 1766044258.75065 "/Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Cover2.tex" "Cover2.pdf" "Cover2" 1766044260.5211 0
-  "/Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Cover2.tex" 1766044258.49178 1278 bae257b03cc5fedd3bdef2e3638c21ff ""
+["pdflatex"] 1768622414.44466 "/Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Cover2.tex" "Cover2.pdf" "Cover2" 1768622416.54633 0
+  "/Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Cover2.tex" 1768622414.15014 1363 24b2e4f6a942cc72a20891d18d325e5a ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/enc/dvips/vntex/t5.enc" 1741388039 7824 21ade6c3c7fd67cb4ace8dbc91c53118 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/map/fontname/texfonts.map" 1741388039 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/map/pdftex/updmap/pdftex.map" 1741388039 5466553 2748998d7db8078826afa1f272036265 ""
@@ -278,13 +278,13 @@
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/xurl/xurl.sty" 1741388039 4675 e4b8c405820368c2dfb03526e16d725a ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/web2c/texmf.cnf" 1741388039 42151 79f67285bdd95beca4d137b380b4b9e5 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-var/web2c/pdftex/pdflatex.fmt" 1741388039 3346125 851abcc596872d7f7285a006ccee0040 ""
-  "Cover2.aux" 1766044260.26831 589 72953630dd538ad9260f98d62d560079 "pdflatex"
-  "Cover2.bbl" 1764230499.86399 520 47390d0fec917a8062f60a58a9b6d248 "bibtex Cover2"
-  "Cover2.out" 1766044260.10456 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "Cover2.run.xml" 1766044260.27285 2636 22d335a9c89ed59d5688e9414d8aab83 "pdflatex"
-  "Cover2.tex" 1766044258.49178 1278 bae257b03cc5fedd3bdef2e3638c21ff ""
-  "Main.tex" 1765350071.6733 11073 d4ee03e7650fcebcc4faeaa4855c0d4e ""
-  "glossary.tex" 1764201516 1124 1e36675fd9cb1dc813bdcde9ee2f1dc8 ""
+  "Cover2.aux" 1768622416.2923 589 72953630dd538ad9260f98d62d560079 "pdflatex"
+  "Cover2.bbl" 1768622414.4408 520 47390d0fec917a8062f60a58a9b6d248 "bibtex Cover2"
+  "Cover2.out" 1768622416.13187 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "Cover2.run.xml" 1768622416.29899 2636 22d335a9c89ed59d5688e9414d8aab83 "pdflatex"
+  "Cover2.tex" 1768622414.15014 1363 24b2e4f6a942cc72a20891d18d325e5a ""
+  "Main.tex" 1768201541.19221 11071 2ed7a8c282044ee4818956d68c24647b ""
+  "glossary.tex" 1766389093.86124 1363 1502e3d86449ed5efb9018398a519cef ""
   "lstlisting" 0 -1 0 ""
   (generated)
   "Cover2-blx.bib"

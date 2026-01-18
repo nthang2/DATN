@@ -59,31 +59,30 @@ To visualize the interaction between these components and the directional flow o
 The operational workflow of the system, as depicted in the diagram, follows a rigorous six-step process designed to ensure atomicity, security, and eventual consistency.
 
 \paragraph{Step 1: Initiation and Request Encapsulation}
-The process begins on the EVM chain where the user intends to perform an action, such as depositing collateral. The user constructs a message $M$ containing the action parameters (e.g., Token Address, Amount, Target Chain ID) and a unique nonce. Crucially, the user signs this message with their EVM private key, generating a signature $\sigma$. The user then submits a transaction to the \textbf{Controller Contract}. Upon receipt, the Controller does not immediately execute the cross-chain logic but performs two critical local actions: it locks the user's assets (in a Vault) and emits a `RequestCreated` event containing the message $M$ and signature $\sigma$. This emission acts as a signal flare to the off-chain infrastructure.
+The process begins on the EVM chain where the user intends to perform an action, such as depositing collateral. The user constructs a message $M$ containing the action parameters (e.g., Token Address, Amount, Target Chain ID) and a unique nonce. Crucially, the user signs this message with their EVM private key, generating a signature $\sigma$. The user then submits a transaction to the Controller Contract. Upon receipt, the Controller does not immediately execute the cross-chain logic but performs two critical local actions: it locks the user's assets (in a Vault) and emits a "RequestCreated" event containing the message $M$ and signature $\sigma$. This emission acts as a signal flare to the off-chain infrastructure.
 
 \paragraph{Step 2: Event Ingestion (The Listening Phase)}
-Unlike traditional polling mechanisms that can be resource-intensive, the Guardian Server employs a reactive Event Listening model. It maintains an active WebSocket or HTTP connection to the EVM RPC nodes. When the `RequestCreated` event is emitted by the Controller, the Guardian immediately captures the log data. This step represents the "Event" in the Event-Driven Architecture. The Guardian parses the log to extract the raw data necessary for the state transition on the destination chain.
+Unlike traditional polling mechanisms that can be resource-intensive, the Guardian Server employs a reactive Event Listening model. It maintains an active WebSocket or HTTP connection to the EVM RPC nodes. When the "RequestCreated" event is emitted by the Controller, the Guardian immediately captures the log data. This step represents the "Event" in the Event-Driven Architecture. The Guardian parses the log to extract the raw data necessary for the state transition on the destination chain.
 
 \paragraph{Step 3: Relaying and Submission}
-Once the data is captured, the Guardian packages the original message $M$ and the signature $\sigma$ into a new transaction payload compatible with the Solana runtime. It then submits this transaction to the \textbf{Gateway Contract} on the SVM. In this phase, the Guardian acts strictly as a courier (Relayer); it does not modify the message content, ensuring that the user's original intent remains tamper-proof. The Guardian also manages the payment of SOL gas fees, abstracting the complexity of holding multiple native tokens from the end-user.
+Once the data is captured, the Guardian packages the original message $M$ and the signature $\sigma$ into a new transaction payload compatible with the Solana runtime. It then submits this transaction to the Gateway Contract on the SVM. In this phase, the Guardian acts strictly as a courier (Relayer); it does not modify the message content, ensuring that the user's original intent remains tamper-proof. The Guardian also manages the payment of SOL gas fees, abstracting the complexity of holding multiple native tokens from the end-user.
 
 \paragraph{Step 4: Verification and Instruction Execution}
-The \textbf{Gateway Contract} serves as the entry point to the Solana environment. Its primary responsibility is security. Before any business logic is executed, the Gateway invokes Solana's native `Secp256k1` program to cryptographically verify that the signature $\sigma$ corresponds to the user's EVM address contained in message $M$. This verification is performed on-chain, providing a trustless guarantee of identity. Upon successful verification, the Gateway formats the data into a structured Instruction and calls the \textbf{Main Contract}. The Main Contract then executes the core logic, such as creating a Universal Wallet PDA or updating the user's debt position.
+The Gateway Contract serves as the entry point to the Solana environment. Its primary responsibility is security. Before any business logic is executed, the Gateway invokes Solana's native `Secp256k1` program to cryptographically verify that the signature $\sigma$ corresponds to the user's EVM address contained in message $M$. This verification is performed on-chain, providing a trustless guarantee of identity. Upon successful verification, the Gateway formats the data into a structured Instruction and calls the Main Contract. The Main Contract then executes the core logic, such as creating a Universal Wallet PDA or updating the user's debt position.
 
 \paragraph{Step 5: Outcome Observation}
 Similar to the ingestion phase on the EVM side, the Guardian Server also maintains a listener on the Solana Blockchain. When the Main Contract finishes execution, it emits a specific event - either `ExecutionSuccess` (indicating the state was updated) or `ExecutionFailure` (indicating a logic error, such as low health factor). The Guardian listens for these specific outcome events to determine the final status of the cross-chain operation. This asynchronous confirmation step is vital for handling the probabilistic finality of blockchain networks.
 
 \paragraph{Step 6: State Synchronization and Finalization}
-Based on the event received from the Solana Main Contract, the Guardian initiates a final callback transaction to the EVM \textbf{Controller Contract} to close the loop. If the Solana execution was successful, the Guardian calls the `updateState` function to finalize the process (e.g., minting stablecoins to the user). If the Solana execution failed, the Guardian triggers a rollback mechanism, unlocking the user's assets and resetting their nonce. This ensures that the system maintains data consistency between the Asset Layer and the State Layer, preventing any funds from being permanently locked in transit.
+Based on the event received from the Solana Main Contract, the Guardian initiates a final callback transaction to the EVM Controller Contract to close the loop. If the Solana execution was successful, the Guardian calls the `updateState` function to finalize the process (e.g., minting stablecoins to the user). If the Solana execution failed, the Guardian triggers a rollback mechanism, unlocking the user's assets and resetting their nonce. This ensures that the system maintains data consistency between the Asset Layer and the State Layer, preventing any funds from being permanently locked in transit.
 
 \subsection{Detailed Package Design}
 
 Based on the overall architecture, this section details the internal design of the critical subsystems. The design is visualized using Class Diagrams grouped by their respective execution environments.
 
 \subsubsection{Solana Hub Package Design}
-The Solana Hub Package, designated as package SolanaCore, encapsulates the system's central business logic and state management. This package is architected to ensure strict separation between the interface layer (Gateway), the logic layer (Main Contract and Managers), and the data layer (Wallet and Counters).
-Figure \ref{fig:solana_detailed_design} illustrates the internal structure and class relationships within this package.
 
+The Solana Hub Package, identified as package Solana Core, functions as the central nervous system of the protocol, tasked with the rigorous validation of incoming cross-chain requests and the execution of complex financial state transitions. As illustrated in Figure \ref{fig:solana_detailed_design}, the package is architected with a strict separation of concerns, hierarchically organized into three distinct layers: entry processing, core business logic, and persistent state management.
 \pgfdeclarelayer{background}
 \pgfdeclarelayer{foreground}
 \pgfsetlayers{background,main,foreground}
@@ -185,35 +184,16 @@ Figure \ref{fig:solana_detailed_design} illustrates the internal structure and c
     \label{fig:solana_detailed_design}
 \end{figure}
 
-\textbf{Class Descriptions and Relationships:}
-\begin{itemize}
-\item \textbf{GatewayContract:} This class acts as the single entry point for all cross-chain transactions initiated by the Guardian. It serves as an orchestrator that sanitizes inputs before passing control to the core logic.
-    \begin{itemize}
-        \item Implementation Relationships: The Gateway implements logic from Formater Data class to deserialize incoming payloads and utilizes the Signature Verifier to perform cryptographic checks (Secp256k1 recovery) on the user's signature.
-        \item Aggregation: It maintains an aggregation relationship with the Main Contract, indicating that the Gateway coordinates the execution flow but delegates the actual financial state transitions to the Main Contract.
-    \end{itemize}
-\item \textbf{MainContract:} This is the core controller of the system. It manages the lifecycle of CDPs and coordinates liquidity across chains. To maintain modularity, it splits complex operations into specialized management modules:
-    \begin{itemize}
-        \item It implements the Position Management module to handle collateral locking, debt minting, and health factor calculations.
-        \item It implements the Liquidity Management module to handle the rebalancing of assets between the Hub and Spokes during liquidations.
-    \end{itemize}
+At the apex of this hierarchy sits the Gateway Contract, which serves as the single entry point for all external interactions initiated by the Guardian. This class acts as an orchestrator rather than a calculator; its primary responsibility is to sanitize inputs and enforce security protocols before any state modification occurs. To achieve this, the Gateway maintains dependencies on two specialized utility classes: Formater Data, which handles the deserialization and normalization of raw byte streams from EVM chains, and Signature Verifier, which performs the cryptographic heavy lifting to authenticate user signatures against the secp256k1 curve. Only upon successful verification does the Gateway delegate control to the underlying logic layer, maintaining an aggregation relationship with the Main Contract.
 
-\item \textbf{UniversalWallet:} This class represents the persistent state (Program Derived Address - PDA) of a user. It stores the aggregated data of collateral and debt.
-    \begin{itemize}
-        \item Association: Both the Main Contract and Position Management have direct associations with the Universal Wallet to read and modify the user's financial position.
-    \end{itemize}
+The core operational logic is encapsulated within the Main Contract. To prevent the contract from becoming a monolithic entity, the system employs a modular design pattern where specific domains of responsibility are offloaded to helper modules. The diagram depicts implementation relationships connecting the Main Contract to Position Management, which handles user-centric operations such as collateral locking and debt calculations, and Liquidity Management, which governs system-wide solvency and asset rebalancing. This separation ensures that business rules regarding user positions are isolated from the mechanisms managing the protocol's aggregate liquidity.
 
-\item \textbf{NonceCounter:} This class tracks the sequence number of transactions to prevent replay attacks.
-    \begin{itemize}
-        \item Composition: The diagram defines a strict composition relationship (filled diamond) between Universal Wallet and Nonce Counter. This implies that the Nonce Counter is an intrinsic part of the Wallet; it cannot exist independently, and its lifecycle is bound to the existence of the Universal Wallet.
-    \end{itemize}
-\end{itemize}
+The foundational layer of the package is represented by the Universal Wallet, which serves as the persistent data storage for user profiles. Both the Main Contract and the Position Management module maintain direct associations with this class to read and update financial records. Crucially, the diagram highlights a strict composition relationship between the Universal Wallet and the Nonce Counter. This denotes that the anti-replay mechanism (the nonce) is intrinsically bound to the lifecycle of the wallet; the counter has no independent existence outside the context of its parent wallet, ensuring that transaction ordering is strictly enforced for every unique user identity.
+
 
 \subsubsection{Guardian Middleware Package Design}
-The Guardian Middleware Package, designated as package GuardianService, acts as the off-chain orchestration layer. It is designed using an Event-Driven architecture to handle the asynchronous nature of cross-chain communication reliably.
 
-Figure \ref{fig:guardian_detailed_design} depicts the internal class design of the Guardian node.
-
+The Guardian Middleware Package, designated as package Guardian Service, constitutes the active off-chain orchestration layer responsible for synchronizing state between the heterogeneous blockchain networks. Designed with an Event-Driven architecture, this package prioritizes reliability and asynchronous processing capability. Figure \ref{fig:guardian_detailed_design} provides a structural overview of the internal components and their interactions, delineating the flow of data from event ingestion to transaction execution.
 \begin{figure}[htbp]
     \centering
     \resizebox{\textwidth}{!}{
@@ -299,35 +279,14 @@ Figure \ref{fig:guardian_detailed_design} depicts the internal class design of t
     \label{fig:guardian_detailed_design}
 \end{figure}
 
-\textbf{Class Descriptions and Relationships:}
+The processing pipeline begins on the left side of the diagram with the Event Listener. This component acts as the system's sensory organ, tasked with the continuous monitoring of blockchain networks. To ensure flexibility and decoupling from specific provider implementations, the listener implements the RPC Provider interface, allowing it to maintain agnostic connections to various EVM chains such as Ethereum, BSC, or Arbitrum. Once a relevant log is detected, the data is passed to the Event Queue. As shown in the center of the diagram, this queue serves as a critical buffer zone, decoupling the high-throughput ingestion layer from the complex processing logic. This design ensures that during periods of network congestion, events are persisted rather than lost, guaranteeing eventual consistency.
 
-\begin{itemize}
-    \item \textbf{EventListener:} This component is responsible for monitoring blockchain networks. It implements the IRpcProvider interface to maintain agnostic connections to various EVM chains (Ethereum, BSC, Arbitrum). Its primary role is to detect RequestCreated logs and normalize them into a standard event format.
-    
-    \item \textbf{EventQueue:} Acting as a buffer, this class decouples the ingestion layer (Listener) from the processing layer (Orchestrator). It ensures that during high network traffic, events are not lost but queued for sequential processing.
-    
-    \item \textbf{TxOrchestrator:} This is the core logic unit of the middleware. It consumes events from the queue, validates the data integrity, and constructs the corresponding cross-chain transaction payloads.
-    
-    \item \textbf{KeyManager:} A security-critical class responsible for managing the Guardian's private keys.
-    \begin{itemize}
-        \item Composition: The TxOrchestrator has a composition relationship with KeyManager, indicating that the orchestrator cannot function (cannot sign transactions) without the secure signing module.
-    \end{itemize}
-    
-    \item \textbf{SolanaRelayer:} This class handles the low-level networking required to broadcast signed transactions to the Solana cluster and confirm their finality.
-    \begin{itemize}
-        \item Aggregation: The TxOrchestrator aggregates the SolanaRelayer, utilizing it as a service to dispatch the final outcome of its logic.
-    \end{itemize}
-\end{itemize}
+The core business logic resides in the Transaction Orchestrator (TxOrchestrator), which consumes normalized events from the queue. This orchestrator is responsible for validating the integrity of the request data and constructing the appropriate cross-chain transaction payloads. To execute its duties securely, the diagram illustrates that the orchestrator maintains strict dependencies on two utility modules. First, it holds a composition relationship with the Key Manager, a security-critical component that manages the Guardian's private keys; this relationship implies that the orchestrator cannot function without the ability to sign transactions. Second, it aggregates the Solana Relayer, utilizing this networking module as a service to broadcast the final signed transactions to the Solana cluster and monitor their confirmation status.
+
 
 \subsubsection{EVM Controller Package Design}
-% \pgfdeclarelayer{background}
-% \pgfdeclarelayer{foreground}
-% \pgfsetlayers{background,main,foreground}
 
-The EVM Controller Package is designed to manage user interactions on the EVM chains, ensuring that requests are properly formatted, signed, and validated before being relayed to the Solana Hub. This package adheres to a layered design within the EVM environment, separating concerns related to request handling, data validation, and asset management.
-
-Figure \ref{fig:evm_detailed_design} illustrates the class structure within this package.
-
+The EVM Controller Package functions as the primary interface for user interaction within the Ethereum-compatible ecosystem, designed to ensure that every cross-chain request is strictly formatted, authenticated, and processed. Figure \ref{fig:evm_detailed_design} provides a structural view of this package, visualizing the relationships between the core logic and its supporting modules.
 \begin{figure}[htbp]
     \centering
     \resizebox{\textwidth}{!}{
@@ -412,18 +371,10 @@ Figure \ref{fig:evm_detailed_design} illustrates the class structure within this
     \label{fig:evm_detailed_design}
 \end{figure}
 
-\textbf{Design Explanation:}
-\begin{itemize}
-    \item \textbf{Controller Contract:} This is the core contract deployed on the EVM chain. It manages user requests and orchestrates the cross-chain interaction flow.
-    \begin{itemize}
-        \item Interface Implementation: The contract implements the IRequestHandler interface, defining the standard methods for processing external requests.
-        \item Usage Relationships: It has direct associations with RequestAction and SignatureVerifier classes. The Controller Contract utilizes RequestAction to structure and validate incoming request data and relies on SignatureVerifier to perform cryptographic checks on user signatures.
-    \end{itemize}
-    
-    \item \textbf{RequestAction:} A data structure class that encapsulates all the necessary parameters for a cross-chain request (e.g., nonce, action type, amount, destination chain ID). It is used by the Controller Contract to hold and process incoming requests.
-    
-    \item \textbf{SignatureVerifier:} This utility class is responsible for validating the authenticity of a user's signature. It takes the message $M$ and the signature $\sigma$ as input and verifies if they were generated by the owner of the intended EVM address. This is a critical security component that prevents unauthorized actions.
-\end{itemize}
+At the heart of the architecture lies the Controller Contract, which acts as the orchestrator for asset custody and event emission. To ensure modularity and adherence to a standardized communication protocol, the diagram shows that the Controller Contract implements the IRequestHandler interface. This realization relationship guarantees that the contract exposes a consistent set of entry points for external actors, allowing the system to easily swap or upgrade the underlying logic implementation without breaking the interface used by the frontend or the Guardian middleware.
+
+The operational flow of the Controller is supported by two direct associations with utility classes. First, data management is handled through the RequestAction class. The Controller utilizes this component to structure complex input parameters, such as the destination chain ID, token amounts, and action types into a unified data object, ensuring that the payload emitted in event logs is consistent and parseable. Second, and most critically for security, the Controller relies on the SignatureVerifier. Before processing any user request, the Controller delegates the cryptographic validation to this verifier, which confirms that the provided digital signature corresponds to the user's address. This separation of concerns ensures that the core business logic remains uncluttered while maintaining rigorous security checks.
+
 
 
 % %%%%%%%%%%%
@@ -493,12 +444,12 @@ The Gateway exposes the following key method for secure data handling:
 \subsubsection{Solana Main Contract Design}
 The Main Contract functions as the central nervous system of the protocol, encapsulating the global financial state and executing the core logic of the Collateralized Debt Position mechanism. This component is architected to be the single source of truth for the entire multi-chain ecosystem, aggregating disparate asset data into a unified solvency model. The design prioritizes modularity and state isolation, ensuring that the complex interactions between collateral management, debt issuance, and liquidation are handled with precision and security.
 
-At the heart of the state management strategy is the Universal Wallet, a sophisticated data structure stored as a Program Derived Address. This structure aggregates the user's entire portfolio, tracking the collateral balances deposited across various connected chains and the total debt issued by the protocol. By maintaining this global view, the contract can calculate a unified health factor for each user in real-time, allowing for capital efficiency that isolated lending protocols cannot match. Complementing individual user states is the Depository, a global singleton account that tracks system-wide parameters such as the total value locked, the aggregate debt ceiling, and the risk configurations for each supported asset class.
+At the heart of the state management strategy is the Universal Wallet, a sophisticated data structure stored as a PDA. This structure aggregates the user's entire portfolio, tracking the collateral balances deposited across various connected chains and the total debt issued by the protocol. By maintaining this global view, the contract can calculate a unified health factor for each user in real-time, allowing for capital efficiency that isolated lending protocols cannot match. Complementing individual user states is the Depository, a global singleton account that tracks system-wide parameters such as the total value locked, the aggregate debt ceiling, and the risk configurations for each supported asset class.
 The Main Contract defines several critical data structures to manage user positions and system integrity:
 \begin{itemize}
-    \item Universal Wallet: The central PDA (Program Derived Address) that aggregates a user's entire portfolio. It stores the total collateral balance and total debt across all connected chains, serving as the single source of truth for solvency calculations.
+    \item Universal Wallet: The central PDA that aggregates a user's entire portfolio. It stores the total collateral balance and total debt across all connected chains, serving as the single source of truth for solvency calculations.
     
-    \item Depository: A global state tracking the system-wide parameters, such as total protocol debt, total value locked (TVL), and risk parameters (LTV ratios) for each supported asset.
+    \item Depository: A global state tracking the system-wide parameters, such as total protocol debt, total value locked, and risk parameters (LTV ratios) for each supported asset.
     
     \item Loan: A data structure representing the specific debt position of a user. It tracks the principal amount borrowed and the accrued interest over time.
     
@@ -523,7 +474,7 @@ The first critical function of the server is the robust ingestion of blockchain 
 
 Once an event is securely ingested, the system relies on the Data Persistence and Reliability module to manage the asynchronous processing flow. Recognizing that cross-chain operations involve probabilistic latency, the server avoids in-memory processing which is volatile and prone to data loss during system restarts. Instead, all incoming requests are serialized and pushed into a persistent First-In-First-Out queue backed by the local file system or a dedicated database. This queuing mechanism serves as a buffer that decouples the high-throughput ingestion layer from the transaction submission layer. It allows the system to absorb traffic spikes without overwhelming the Solana RPC endpoints. Furthermore, this module integrates with a Redis key-value store to implement idempotency checks. By caching the unique nonce of every processed request, the system ensures that a specific user action is never executed twice, even if the source chain emits duplicate events due to network retries.
 
-Following the queuing phase, the Business Logic Orchestration module takes responsibility for interpreting and transforming the raw data. Since the EVM and Solana environments utilize different data standards—for instance, the handling of large integers and address formats—this module performs the necessary normalization. It parses the binary payload from the EVM logs, extracting critical parameters such as the user identity, token address, and action type. The logic then maps these parameters to the corresponding Solana-specific data structures defined in the Anchor program IDL. This phase also involves the validation of business rules off-chain, such as checking if the user's request exceeds the system's global debt ceiling or if the requested token is currently supported by the protocol. This pre-computation layer reduces the burden on the on-chain smart contracts, ensuring that only structurally valid transactions are attempted.
+Following the queuing phase, the Business Logic Orchestration module takes responsibility for interpreting and transforming the raw data. Since the EVM and Solana environments utilize different data standards. For instance, the handling of large integers and address formats. This module performs the necessary normalization. It parses the binary payload from the EVM logs, extracting critical parameters such as the user identity, token address, and action type. The logic then maps these parameters to the corresponding Solana-specific data structures defined in the Anchor program IDL. This phase also involves the validation of business rules off-chain, such as checking if the user's request exceeds the system's global debt ceiling or if the requested token is currently supported by the protocol. This pre-computation layer reduces the burden on the on-chain smart contracts, ensuring that only structurally valid transactions are attempted.
 
 Integral to the safety of the protocol is the Cryptographic Security and Verification module. Before the Guardian constructs a transaction to update the state on the Solana Hub, it must cryptographically prove that the request originated from the rightful owner. The server implements a signature verification utility that reconstructs the message hash from the request parameters and performs an elliptic curve recovery on the user's provided signature. This off-chain verification acts as a filter to discard malicious or forged requests immediately, saving the Guardian from paying gas fees for invalid transactions. Additionally, this module manages the Guardian's own sensitive private keys through a secure Key Management System. The signing process is isolated from the logic layer, ensuring that the private keys are never exposed in logs or memory dumps, strictly adhering to the principle of least privilege.
 
@@ -534,47 +485,47 @@ The final functional component is the Transaction Dispatch and State Synchroniza
 While the blockchain ledger serves as the immutable system of record, the architecture incorporates an off-chain database layer within the Guardian infrastructure. This database functions as a high-performance indexer and state cache, facilitating rapid data retrieval for the frontend interface and supporting complex queries required for the liquidation engine. The schema is designed to mirror the on-chain state, organized into three primary domains: Identity Management, User Position Tracking, and Protocol Liquidity Control.
 
 \subsubsection{Universal Wallet Collection}
-The fundamental entity within the database is the Universal Wallet collection, which manages the cross-chain identity mapping. The primary objective of this entity is to prevent identity collisions and enforce the one-to-one relationship between a user's primary EVM address and their Solana Program Derived Address. The schema for this entity stores the unique Universal Wallet address derived from the Solana blockchain, acting as the primary key. Associated with this key is the Owner field, recording the initial EVM address that created the position. To support multi-chain interoperability, the entity includes a Wallets array or relation, listing all secondary addresses from different chains that have been cryptographically linked to this profile. This structure allows the Guardian to instantly verify if an incoming request originates from an authorized address associated with an existing universal profile, thereby preventing duplicate wallet creation attempts.
+The fundamental entity within the database is the Universal Wallet collection, which manages the cross-chain identity mapping. The primary objective of this entity is to prevent identity collisions and enforce the one-to-one relationship between a user's primary EVM address and their Solana PDA. The schema for this entity stores the unique Universal Wallet address derived from the Solana blockchain, acting as the primary key. Associated with this key is the Owner field, recording the initial EVM address that created the position. To support multi-chain interoperability, the entity includes a Wallets array or relation, listing all secondary addresses from different chains that have been cryptographically linked to this profile. This structure allows the Guardian to instantly verify if an incoming request originates from an authorized address associated with an existing universal profile, thereby preventing duplicate wallet creation attempts.
 The Universal Wallet collection includes the following key attributes:
 \begin{itemize}
-    \item \textbf{Universal wallet address (Primary Key):} The unique Solana address (PDA) generated by the program. This serves as the global identifier for the user's account across the entire system.
-    \item \textbf{Owner address:} The initial EVM address that created the wallet. This field is used to authenticate the root ownership rights.
-    \item \textbf{Linked wallets:} An array or relational table storing all secondary EVM addresses linked to this Universal Wallet. This allows the system to recognize a user interacting from different chains (e.g., Polygon, BSC) as the same entity.
-    \item \textbf{Creation tx hash:} The transaction hash on the source chain that triggered the wallet creation. This serves as an immutable audit trail for the account's origin.
-    \item \textbf{Status:} A status flag (e.g., \textit{Active, Pending Sign, Blacklisted}) used to manage the operational state of the wallet.
+    \item Universal wallet address (Primary Key): The unique Solana address (PDA) generated by the program. This serves as the global identifier for the user's account across the entire system.
+    \item Owner address: The initial EVM address that created the wallet. This field is used to authenticate the root ownership rights.
+    \item Linked wallets: An array or relational table storing all secondary EVM addresses linked to this Universal Wallet. This allows the system to recognize a user interacting from different chains (e.g., Polygon, BSC) as the same entity.
+    \item Creation tx hash: The transaction hash on the source chain that triggered the wallet creation. This serves as an immutable audit trail for the account's origin.
+    \item Status: A status flag (e.g., \textit{Active, Pending Sign, Blacklisted}) used to manage the operational state of the wallet.
 \end{itemize}
 
 \subsubsection{User Collection (Loans and Requests)}
 The second critical domain is the User Position and Transaction History, which tracks the financial health and interaction logs of individual users. This domain is essential for both the user dashboard and the automated liquidation bots. The User entity aggregates the financial data, storing the Loan details such as total minted debt and the current composite collateral value. Crucially, it maintains a computed Health Factor field, updated in real-time based on oracle price feeds, which allows the system to query for under-collateralized positions efficiently without scanning the entire blockchain. Linked to the user profile is the Transaction Requests collection. This entity logs every lifecycle event, capturing attributes such as the request ID, action type, token amount, and the associated transaction hashes for both the source and destination chains. This historical log serves as an audit trail, enabling the system to track the status of asynchronous cross-chain operations and detect any stuck or failed requests that require manual intervention.
 The User Collection encompasses two main sub-entities:
 \begin{itemize}
-    \item \textbf{Loan Position State:}
+    \item Loan Position State:
     \begin{itemize}
-        \item \textbf{Total debt:} The aggregate amount of stablecoins minted by the user, denominated in the protocol's base unit.
-        \item \textbf{Total collateral value:} The real-time USD value of all assets locked by the user across all chains. This is frequently updated by the price oracle workers.
-        \item \textbf{Health factor:} A computed index derived from the \eqref{eq:health_factor_global} formula. This field is indexed to allow liquidator bots to query where Health factor < 1.0 efficiently.
-        \item \textbf{Liquidation threshold:} The minimum safe ratio required for the specific basket of assets held by the user.
+        \item Total debt: The aggregate amount of stablecoins minted by the user, denominated in the protocol's base unit.
+        \item Total collateral value: The real-time USD value of all assets locked by the user across all chains. This is frequently updated by the price oracle workers.
+        \item Health factor: A computed index derived from the \eqref{eq:health_factor_global} formula. This field is indexed to allow liquidator bots to query where Health factor < 1.0 efficiently.
+        \item Liquidation threshold: The minimum safe ratio required for the specific basket of assets held by the user.
     \end{itemize}
-    \item \textbf{Request Action History:}
+    \item Request Action History:
     \begin{itemize}
-        \item \textbf{Request id:} A unique composite key (typically chainId + nonce) identifying a specific user action.
-        \item \textbf{Action type:} Specifies the intent of the transaction (e.g., \textit{Deposit, Withdraw, Mint, Repay}).
-        \item \textbf{Source chain id} \& \textbf{Dest chain id}: Tracks the origin and destination networks of the request.
-        \item \textbf{Token address} \& \textbf{Amount}: Details the asset and quantity involved in the transaction.
-        \item \textbf{EVM tx hash:} The transaction hash on the EVM side (Locking/Burning assets).
-        \item \textbf{Solana tx hash:} The corresponding transaction hash on the Solana side (State Update). This links the two asynchronous events together.
-        \item \textbf{Process status:} Indicates the current lifecycle stage: \textit{Pending, Processing, Completed, Failed, Reverted}.
+        \item Request id: A unique composite key (typically chainId + nonce) identifying a specific user action.
+        \item Action type: Specifies the intent of the transaction (e.g., \textit{Deposit, Withdraw, Mint, Repay}).
+        \item Source chain id \& Dest chain id: Tracks the origin and destination networks of the request.
+        \item Token address \& Amount: Details the asset and quantity involved in the transaction.
+        \item EVM tx hash: The transaction hash on the EVM side (Locking/Burning assets).
+        \item Solana tx hash: The corresponding transaction hash on the Solana side (State Update). This links the two asynchronous events together.
+        \item Process status: Indicates the current lifecycle stage: \textit{Pending, Processing, Completed, Failed, Reverted}.
     \end{itemize}
 \end{itemize}
 
 \subsubsection{Controller \& Liquidity Collection}
-Finally, the Protocol Controller domain manages the aggregate liquidity and security parameters of the system. This entity tracks the global state of the protocol across all connected spokes. It records the Total Value Locked (TVL) per chain and the total circulating supply of the stablecoin. The schema includes specific fields for liquidity management, monitoring the available capacity of each EVM vault to ensure that withdrawal requests can be honored. Furthermore, this domain stores system-wide configuration parameters, such as the current Loan-To-Value ratios for supported collateral assets and the operational status of each bridge connection. By centralizing this data off-chain, the Guardian can perform complex analytics to detect liquidity imbalances or potential security threats, allowing for proactive rebalancing or emergency pausing of specific controller contracts if anomalies are detected.
+Finally, the Protocol Controller domain manages the aggregate liquidity and security parameters of the system. This entity tracks the global state of the protocol across all connected spokes. It records the Total Value Locked per chain and the total circulating supply of the stablecoin. The schema includes specific fields for liquidity management, monitoring the available capacity of each EVM vault to ensure that withdrawal requests can be honored. Furthermore, this domain stores system-wide configuration parameters, such as the current Loan-To-Value ratios for supported collateral assets and the operational status of each bridge connection. By centralizing this data off-chain, the Guardian can perform complex analytics to detect liquidity imbalances or potential security threats, allowing for proactive rebalancing or emergency pausing of specific controller contracts if anomalies are detected.
 The Controller \& Liquidity Collection includes the following critical attributes:
 \begin{itemize}
-    \item \textbf{Chain id:} The identifier for the specific blockchain network (e.g., 1 for Ethereum).
-    \item \textbf{Total value locked (TVL):} The aggregate amount of collateral assets currently held in the protocol on each specific chain.
-    \item \textbf{Circulating supply:} The total amount of stablecoins minted and currently active in the market from each chain.
-    \item \textbf{Available liquidity:} Monitors the free capital available in the vault. This is crucial for approving withdrawal requests; if a vault is empty, the Guardian must pause withdrawals or trigger a rebalance.
+    \item Chain id: The identifier for the specific blockchain network (e.g., 1 for Ethereum).
+    \item Total value locked: The aggregate amount of collateral assets currently held in the protocol on each specific chain.
+    \item Circulating supply: The total amount of stablecoins minted and currently active in the market from each chain.
+    \item Available liquidity: Monitors the free capital available in the vault. This is crucial for approving withdrawal requests; if a vault is empty, the Guardian must pause withdrawals or trigger a rebalance.
 \end{itemize}
 
 \section{Application Client and Illustration of main functions}
@@ -587,7 +538,7 @@ The Universal Wallet interface serves as the foundational layer of the applicati
 
 \subsubsection{Wallet Connectivity}
 
-The initial interaction with the protocol begins with the wallet connection module. To support the hybrid architecture, the interface is designed to accommodate distinct blockchain standards simultaneously. The connectivity panel categorizes providers into specific network groups, allowing users to select between Solana-native wallets like Phantom or EVM-compatible wallets such as MetaMask. A distinguishing feature of this implementation is the support for concurrent multi-wallet connections. Users can maintain active sessions with multiple providers at the same time, which is visualized by the status indicators next to each provider. This capability is essential for the protocol, as it allows the application to read balances and request signatures from different chains without forcing the user to constantly switch the active network in their browser extension.
+The initial interaction with the protocol begins with the wallet connection module. To support the hybrid architecture, the interface is designed to accommodate distinct blockchain standards simultaneously. The connectivity panel categorizes providers into specific network groups, allowing users to select between Solana-native wallets like Phantom or EVM-compatible wallets such as MetaMask. A distinguishing feature of this implementation is the support for concurrent multi-wallet connections. Users can maintain active sessions with multiple providers at the same time, which is visualized by the status indicators next to each provider. This capability is essential for the protocol, as it allows the application to read balances and request signatures from different chains without forcing the user to constantly switch the active network in their browser extension. Figure \ref{fig:wl_connect} illustrates the wallet connectivity interface, showcasing the seamless integration of various wallet types and networks.
 
 \begin{figure}[htbp]
     \centering
@@ -615,7 +566,7 @@ The management of associated addresses is handled through the wallet list panel,
 
 \subsection{User Interface for Cross-chain Borrow}
 
-The borrowing interface acts as the central command center for the user's financial activities. It is designed to provide immediate visual feedback on the user's solvency while offering granular control over their asset allocation across different chains. Figure \ref{fig:borrow_client} illustrates the consolidated dashboard view.
+The borrowing interface functions as the central command center for the user's financial activities, designed to provide immediate visual feedback on solvency while offering granular control over asset allocation across disparate chains. As illustrated in Figure \ref{fig:borrow_client}, the dashboard aggregates the user's global financial position at the top level into two primary metrics: Total Deposited and Total Minted. Unlike single-chain applications that reflect only local balances, these values represent the summation of assets across all connected networks—such as Ethereum, Solana, and Arbitrum—normalized to a USD base currency. This high-level summary provides users with an instant snapshot of their portfolio's scale and outstanding liabilities, essential for informed borrowing decisions, while the current Borrow Rate is prominently displayed to ensure transparency regarding the cost of debt.
 
 \begin{figure}[htbp]
     \centering
@@ -624,28 +575,13 @@ The borrowing interface acts as the central command center for the user's financ
     \label{fig:borrow_client}
 \end{figure}
 
-\subsubsection{Overview Panel: Total Deposit and Minted}
-At the top of the interface, the system aggregates the user's global financial position into two primary metrics: Total Deposited and Total Minted. Unlike single-chain applications that only show local balances, these values represent the summation of assets across all connected networks (e.g., Ethereum, Solana, Arbitrum), normalized to a USD base currency. This high-level summary provides users with an instant snapshot of their portfolio's scale and their outstanding liabilities, which is crucial for making informed borrowing decisions. To the right, the current Borrow Rate is prominently displayed, ensuring transparency regarding the cost of debt.
+Core interactions are facilitated through dual-pane action modules dedicated to Deposit and Mint operations. The Deposit module enables users to lock collateral via a chain-agnostic token selector, allowing assets like USDC or ETH to be deposited from any supported network without leaving the dashboard. Simultaneously, the Mint module permits the generation of the protocol's stablecoin, UniUSD. These components are tightly coupled; as the user inputs a deposit amount, the interface dynamically updates the borrowing capacity in the mint section, providing real-time feedback on how much debt can be safely issued against the new collateral.
 
-\subsubsection{Action Panel: Deposit and Mint Operations}
-The core interaction occurs within the dual-pane action modules for Deposit and Mint. 
-\begin{itemize}
-    \item \textbf{Deposit Module:} This component allows users to lock collateral. It features a chain-agnostic token selector, enabling the user to deposit assets like USDC or ETH from any supported network without leaving the dashboard. The interface automatically fetches the user's available balance and provides a "Max" button for convenience.
-    \item \textbf{Mint Module:} Correspondingly, the minting module allows the user to generate the protocol's stablecoin (USDAI) on any supported blockchain. It is tightly coupled with the deposit module; as the user inputs a deposit amount, the interface dynamically updates the borrowing capacity in the mint section, providing real-time feedback on how much debt can be safely issued against the new collateral.
-\end{itemize}
-
-\subsubsection{Risk Management Controls: LTV and Health Factor}
-To mitigate the risk of liquidation, the interface incorporates advanced visualization tools for risk management.
-
-\textbf{Loan-To-Value (LTV) Slider:}
-A distinctive feature of the design is the interactive LTV slider bar. This control visualizes the ratio between the minted value and the collateral value. As users adjust the amount of debt they wish to mint, the progress bar fills up towards the liquidation threshold (marked in red at 98\%). This visual cue helps users intuitively understand their position's risk level relative to the maximum allowable limit (95\%), preventing accidental over-leveraging.
-
-\textbf{Health Factor Gauge:}
-The Health Factor is the most critical metric for position safety, and it is visualized using a semi-circular gauge. The interface categorizes the health status into color-coded zones: red for danger (close to 1.0), yellow for caution, and green for healthy (e.g., $> 1.5$). In the example shown, a Health Factor of 1.92 indicates a robust position. This gauge updates instantaneously as the user modifies the deposit or mint amounts in the action panel, allowing them to simulate the impact of their transaction on their solvency before committing to the blockchain.
+To mitigate the inherent risks of liquidation, the interface incorporates advanced visualization tools specifically designed for proactive risk management. A distinctive feature is the interactive Loan-To-Value (LTV) slider bar, which visualizes the ratio between the minted debt value and the underlying collateral value. As users adjust their minting amount, the progress bar dynamically fills towards the critical liquidation threshold marked at 98\%, intuitively alerting users to their risk level relative to the protocol's maximum allowable limit. Complementing this is the Health Factor gauge, a semi-circular display that categorizes health status into color-coded zones: red for danger, yellow for caution, and green for healthy positions. This gauge updates instantaneously with user input, allowing for the simulation of transaction impacts on solvency prior to blockchain commitment, thereby fostering safer financial behavior.
 
 \subsection{User Interface for Portfolio}
 
-The Portfolio interface is engineered to provide a comprehensive, real-time overview of the user's active financial engagements within the protocol. Unlike the borrowing interface which focuses on initiating new actions, the portfolio view is dedicated to the ongoing management and monitoring of established debt positions. Figure \ref{fig:portfolio_client} displays the detailed layout of this section.
+The Portfolio interface is engineered to provide a comprehensive, real-time overview of the user's active financial engagements within the protocol. Unlike the borrowing interface which focuses on the initiation of new actions, the portfolio view is strictly dedicated to the ongoing management and monitoring of established debt positions. As illustrated in Figure \ref{fig:portfolio_client}, the layout is divided into logical zones covering position visualization, risk assessment, and operational control.
 
 \begin{figure}[htbp]
     \centering
@@ -654,27 +590,11 @@ The Portfolio interface is engineered to provide a comprehensive, real-time over
     \label{fig:portfolio_client}
 \end{figure}
 
-\subsubsection{Position Visualization}
-The "Your Position" panel offers a granular breakdown of the user's capital allocation. It utilizes horizontal progress bars to visually represent the magnitude of assets relative to the user's total capacity.
-\begin{itemize}
-    \item \textbf{Collateral Deposited:} This bar displays the total value of assets locked in the protocol (e.g., \$110). It provides a quick visual reference for the user's capital commitment.
-    \item \textbf{Minted Debt:} This bar indicates the outstanding stablecoin debt (e.g., \$5.1). By placing these bars in proximity, the interface allows users to easily compare their debt load against their collateral base.
-    \item \textbf{Staked Assets:} A dedicated section tracks yield-bearing activities, ensuring that all forms of capital deployment are centralized in one view.
-\end{itemize}
+The "Your Position" panel serves as the visual anchor of the dashboard, offering a granular breakdown of capital allocation. It utilizes horizontal progress bars to represent the magnitude of assets relative to the user's total capacity. Specifically, the "Collateral Deposited" bar displays the total value of assets locked in the protocol, providing a quick visual reference for capital commitment, while the "Minted Debt" bar indicates the outstanding stablecoin liability. By placing these metrics in close proximity, the interface allows users to effortlessly evaluate their leverage ratio. Additionally, a dedicated section tracks yield-bearing activities such as Staked Assets, ensuring that all forms of capital deployment are centralized within a single view.
 
-\subsubsection{Solvency Indicators and Liquidation Risk}
-To the right of the position summary, the Health Factor gauge reappears as a persistent safety monitor. In the portfolio context, this gauge is augmented with critical market data essential for risk assessment.
-\begin{itemize}
-    \item \textbf{Liquidation Price:} This metric calculates the specific price point of the collateral asset (e.g., USDC) at which the position would become insolvent. In the example, a liquidation price of 0.04 against a current price of 1 indicates a highly safe position.
-    \item \textbf{Current Price Feed:} Real-time price updates from the Oracle are displayed, allowing users to benchmark the market movement against their liquidation threshold instantly.
-\end{itemize}
+To the right of the position summary, the Health Factor gauge functions as a persistent safety monitor. In the portfolio context, this gauge is augmented with critical market data essential for risk assessment, most notably the Liquidation Price. This metric calculates the specific price point of the collateral asset at which the position would become insolvent. For example, a liquidation price of 0.04 against a current market price of 1 indicates a highly secure position. Real-time price updates from the Oracle are displayed alongside these figures, allowing users to benchmark market movements against their liquidation thresholds instantly.
 
-\subsubsection{Operational Controls: Deposit, Withdraw, Mint, Redeem}
-The lower section of the portfolio interface integrates the functional controls directly with the asset list. This design pattern minimizes navigation friction, allowing users to react swiftly to market changes.
-\begin{itemize}
-    \item \textbf{Deposit \& Withdraw:} Located within the asset row (e.g., USDC), these buttons allow users to add more collateral to strengthen their health factor or withdraw excess capital when the market is favorable. The interface displays both the wallet balance and the currently deposited amount to facilitate decision-making.
-    \item \textbf{Mint \& Redeem:} Similarly, the stablecoin section (USDAI) provides controls to increase leverage (Mint) or repay debt (Redeem/Burn). The "Available" field informs the user of their remaining borrowing power, while "Minted" tracks the current obligation.
-\end{itemize}
+Finally, the lower section of the portfolio interface integrates operational controls directly into the asset list to facilitate rapid decision-making. This design pattern minimizes navigation friction by embedding functions such as Deposit and Withdraw within the collateral asset rows, and Mint and Redeem within the stablecoin sections. By displaying the user's wallet balance and available borrowing power adjacent to these controls, the interface enables users to react swiftly to market changes strengthening their health factor or capturing profit without navigating away from the monitoring dashboard.
 
 \section{Application Building}
 
@@ -692,8 +612,10 @@ The development environment is centered around Visual Studio Code, augmented wit
     \hline
     \textbf{Tool / Extension} & \textbf{Purpose} & \textbf{URL} \\ \hline
     Visual Studio Code & Primary Integrated Development Environment. & \url{https://code.visualstudio.com/} \\ \hline
-    rust-analyzer & Language support for Rust (code completion, goto definition). & \url{https://github.com/rust-lang/rust-analyzer} \\ \hline
+    Rust-analyzer & Language support for Rust (code completion, goto definition). & \url{https://github.com/rust-lang/rust-analyzer} \\ \hline
     Solidity (Juan Blanco) & Syntax highlighting and snippets for Ethereum smart contracts. & \url{https://github.com/juanfranblanco/vscode-solidity} \\ \hline
+    Tenderly Extension & Integration with Tenderly for smart contract monitoring and debugging. & \url{https://tenderly.co/} \\ \hline
+    Solana-cli & Command-line tools for Solana program deployment and management. & \url{https://docs.solana.com/cli} \\ \hline
     \end{tabular}
     \caption{Development Environment Tools}
     \label{tab:ide_tools}
@@ -802,14 +724,14 @@ Quality assurance is maintained through a combination of unit testing frameworks
 
 The development phase culminated in a fully operational Cross-chain Stablecoin Protocol, demonstrating the feasibility of the Hub-and-Spoke architecture for decentralized finance. The project successfully delivered three distinct yet integrated components, each fulfilling a critical role in the system:
 
-\begin{enumerate}
-    \item \textbf{The Multi-chain DApp Client:} A unified interface that abstracts the complexity of cross-chain interactions. It allows users to manage their Universal Wallets and execute financial operations seamlessly across heterogeneous networks without manually bridging assets.
-    \item \textbf{The Hybrid Smart Contract System:} 
+\begin{enumerate}[label=(\roman*)]
+    \item The Multi-chain DApp Client: A unified interface that abstracts the complexity of cross-chain interactions. It allows users to manage their Universal Wallets and execute financial operations seamlessly across heterogeneous networks without manually bridging assets.
+    \item The Hybrid Smart Contract System: 
     \begin{itemize}
-        \item The \textit{Solana Hub} successfully manages the global financial state, proving that a high-performance chain can serve as the settlement layer for assets on slower chains.
-        \item The \textit{EVM Controllers} function effectively as decentralized vaults, ensuring secure asset custody with minimized gas costs.
+        \item The Solana Hub successfully manages the global financial state, proving that a high-performance chain can serve as the settlement layer for assets on slower chains.
+        \item The EVM Controllers function effectively as decentralized vaults, ensuring secure asset custody with minimized gas costs.
     \end{itemize}
-    \item \textbf{The Guardian Infrastructure:} The Python-based middleware proved robust in synchronizing state. It successfully handles event ingestion, cryptographic verification, and transaction relaying, ensuring eventual consistency between the EVM and SVM environments.
+    \item The Guardian Infrastructure: The Python-based middleware proved robust in synchronizing state. It successfully handles event ingestion, cryptographic verification, and transaction relaying, ensuring eventual consistency between the EVM and SVM environments.
 \end{enumerate}
 
 \subsubsection{Project Statistics}
@@ -848,53 +770,65 @@ Ensuring the reliability and security of smart contracts is the paramount object
 The testing framework leverages a combination of industry-standard techniques to maximize code coverage and vulnerability detection:
 
 \begin{itemize}
-    \item \textbf{Unit Testing:} This is the first line of defense. Each function within the Solana \texttt{MainContract} (Rust) and EVM \texttt{Controller} (Solidity) is tested in isolation. We utilized the \textit{Anchor} framework's testing suite (TypeScript) to verify Solana logic and \textit{Hardhat/Chai} for EVM logic. The goal is to ensure that mathematical calculations (e.g., Health Factor) and state transitions occur exactly as specified.
+    \item Unit Testing: This is the first line of defense. Each function within the Solana Main Contract (Rust) and EVM Controller (Solidity) is tested in isolation. We utilized the \textit{Anchor} framework's testing suite (TypeScript) to verify Solana logic and \textit{Hardhat/Chai} for EVM logic. The goal is to ensure that mathematical calculations (e.g., Health Factor) and state transitions occur exactly as specified.
     
-    \item \textbf{Integration Testing (End-to-End):} Given the hybrid architecture, unit tests alone are insufficient. We simulated the cross-chain environment using a local testnet setup (Solana Bankrun + Anvil Fork). These tests involve mocking the Guardian's role to verify the interaction flow: \textit{User locks on EVM $\rightarrow$ Event Emitted $\rightarrow$ Mock Relayer submits to Solana $\rightarrow$ State Updated}.
+    \item Integration Testing (End-to-End): Given the hybrid architecture, unit tests alone are insufficient. We deployed the cross-chain environment using a testnet. These tests involve the Guardian's role to verify the interaction flow: \textit{User locks on EVM $\rightarrow$ Event Emitted $\rightarrow$ Relayer submits to Solana $\rightarrow$ State Updated}.
     
-    \item \textbf{Fuzz Testing (Property-based Testing):} To detect edge cases that manual test cases might miss (such as integer overflows or rounding errors), we employed fuzzing techniques. This involves feeding the smart contracts with thousands of random inputs (e.g., random amounts, random chain IDs) to ensure the system never enters an undefined state or panics unexpectedly.
 \end{itemize}
 
 \subsection{Test Cases for Critical Functions}
 
 The testing focus was prioritized on three high-risk areas: Cross-chain Minting (Solvency), Cryptographic Verification (Security), and Liquidation (System Health).
 
-\subsubsection{Function 1: Cross-chain Deposit and Minting}
+\subsubsection{Function 1: Cross-chain Lending Operations (Deposit, Mint, Withdraw, Redeem)}
 This function is the core value proposition of the protocol. It involves state changes on both chains and requires strict solvency checks.
 
 \begin{table}[H]
     \centering
     \renewcommand{\arraystretch}{1.4}
-    \begin{tabular}{|p{2.5cm}|p{5cm}|p{5.5cm}|p{2cm}|}
+    \begin{tabular}{|p{0.4\textwidth}|p{0.5\textwidth}|p{0.1\textwidth}|}
     \hline
-    \textbf{Test Case ID} & \textbf{Test Scenario \& Input} & \textbf{Detailed Procedure \& Expected Result} & \textbf{Status} \\ \hline
+    \textbf{Test Scenario \& Input} & \textbf{Detailed Procedure \& Expected Result} & \textbf{Status} \\ \hline
     
-    \textbf{TC-MINT-01} \newline (Happy Path) 
-    & \textbf{Scenario:} User deposits valid collateral and mints within LTV. \newline 
-      \textbf{Input:} \newline - Collateral: 10 ETH \newline - Mint: 5000 USDAI \newline - LTV Limit: 80\% 
-    & \textbf{1.} User calls \texttt{requestAction} on EVM. \newline 
-      \textbf{2.} Check EVM Vault balance: increases by 10 ETH. \newline 
+    \textbf{Scenario:} User deposits valid collateral and mints within LTV. \newline 
+      \textbf{Input:} \newline - Collateral: 100 USDC \newline - Mint: 95 UniUSD \newline - LTV Limit: 95\% 
+    & \textbf{1.} User calls requestAction on EVM. \newline 
+      \textbf{2.} Check EVM Vault balance: increases by 100 USDC. \newline 
       \textbf{3.} Mock Guardian submits valid signature to Solana. \newline 
-      \textbf{4. Expected:} Solana state updates UniversalWallet debt to 5000. Health Factor remains $> 1.0$. Transaction succeeds. 
+      \textbf{4. Expected:} Solana state updates UniversalWallet debt to 95. Health Factor remains $> 1.0$. Transaction succeeds. 
     & Passed \\ \hline
 
-    \textbf{TC-MINT-02} \newline (Over-minting) 
-    & \textbf{Scenario:} User attempts to mint debt exceeding the collateral value. \newline 
-      \textbf{Input:} \newline - Collateral: 1 ETH (\$2000) \newline - Mint: 3000 USDAI \newline - Max LTV: 80\% 
+    \textbf{Scenario:} User attempts to mint debt exceeding the collateral value. \newline 
+      \textbf{Input:} \newline - Collateral: 100 USDC \newline - Mint: 100 UniUSD \newline - Max LTV: 95\% 
     & \textbf{1.} Construct request on EVM (this passes as EVM doesn't check price). \newline 
       \textbf{2.} Guardian relays to Solana. \newline 
       \textbf{3.} Solana contract calculates projected Health Factor. \newline 
-      \textbf{4. Expected:} Calculation shows $HF < 1.0$. Transaction on Solana reverts with custom error \texttt{RiskThresholdExceeded}. 
+      \textbf{4. Expected:} Calculation shows $HF < 1.0$. Transaction on Solana reverts with an error. 
     & Passed \\ \hline
 
-    \textbf{TC-MINT-03} \newline (Zero Amount) 
-    & \textbf{Scenario:} User sends a request with 0 amount. \newline 
+    \textbf{Scenario:} User sends a request with 0 amount. \newline 
       \textbf{Input:} Amount = 0 
-    & \textbf{1.} Call \texttt{requestAction}. \newline 
-      \textbf{2. Expected:} EVM Contract reverts immediately with \texttt{InvalidAmount} error to save gas and prevent spam. 
+    & \textbf{1.} Call requestAction. \newline 
+      \textbf{2. Expected:} EVM Contract reverts immediately with InvalidAmount error to save gas and prevent spam. 
     & Passed \\ \hline
+
+    \textbf{Scenario:} User redeem and withdraw max valid collateral amount. \newline 
+      \textbf{Input:} \newline -  Withdraw collateral: 100 USDC \newline - Redeem: 95 UniUSD \newline - New LTV: 0\% 
+    & \textbf{1.} User calls requestAction on EVM. \newline 
+      \textbf{2.} Check EVM Vault balance: decreases by 100 USDC. \newline 
+      \textbf{3.} Mock Guardian submits valid signature to Solana. \newline 
+      \textbf{4. Expected:} Solana state updates UniversalWallet debt to zero and collateral to zero. Transaction succeeds. 
+    & Passed \\ \hline
+
+    \textbf{Scenario:} User withdraw exceeds collateral allowed \newline 
+      \textbf{Input:} \newline -  Withdraw collateral: 100 USDC \newline - New LTV: 100\% 
+    & \textbf{1.} User calls requestAction on EVM (this passes as EVM doesn't check LTV). \newline 
+      \textbf{2.} Guarndian relays to Solana. \newline 
+      \textbf{3.} Solana contract calculates projected LTV. \newline 
+      \textbf{4. Expected:} Calculation shows $LTV > MaxLTV$. Transaction on Solana reverts with an error. 
+    & Passed \\ \hline
+
     \end{tabular}
-    \caption{Test Cases for Cross-chain Minting Logic}
     \label{tab:tc_mint}
 \end{table}
 
@@ -904,32 +838,29 @@ Since the Solana state is updated based on messages relayed by an off-chain serv
 \begin{table}[H]
     \centering
     \renewcommand{\arraystretch}{1.4}
-    \begin{tabular}{|p{2.5cm}|p{5cm}|p{5.5cm}|p{2cm}|}
+    \begin{tabular}{|p{0.4\textwidth}|p{0.5\textwidth}|p{0.1\textwidth}|}
     \hline
-    \textbf{Test Case ID} & \textbf{Test Scenario \& Input} & \textbf{Detailed Procedure \& Expected Result} & \textbf{Status} \\ \hline
+    \textbf{Test Scenario \& Input} & \textbf{Detailed Procedure \& Expected Result} & \textbf{Status} \\ \hline
     
-    \textbf{TC-SEC-01} \newline (Valid Sig) 
-    & \textbf{Scenario:} Guardian submits a payload with a valid Secp256k1 signature. \newline 
-      \textbf{Input:} \newline - Msg Hash: $H(M)$ \newline - Sig: Sign($User_{priv}$, $H(M)$) 
-    & \textbf{1.} Solana Gateway invokes native \texttt{secp256k1\_recover}. \newline 
-      \textbf{2.} Recovered address is compared with \texttt{UniversalWallet.owner}. \newline 
-      \textbf{3. Expected:} Addresses match. Execution proceeds to Main Contract. 
+    \textbf{Scenario:} Guardian submits a payload with a valid Secp256k1 signature. \newline 
+      \textbf{Input:} \newline - Msg Hash: $H(M)$ \newline - Sig: Sign($User_{priv\_key}$, $H(M)$) 
+    & \textbf{1.} Solana Gateway invokes native Secp256k1 to recover address. \newline 
+      \textbf{2.} Recovered address is compared with each wallet in an Universal Wallet . \newline 
+      \textbf{3. Expected:} An address matches. Execution proceeds to Main Contract. 
     & Passed \\ \hline
 
-    \textbf{TC-SEC-02} \newline (Forgery) 
-    & \textbf{Scenario:} Attacker (or compromised Guardian) tries to mint debt for a Victim using Attacker's signature. \newline 
+    \textbf{Scenario:} Attacker (or compromised Guardian) tries to mint debt for a Victim using Attacker's signature. \newline 
       \textbf{Input:} \newline - Msg: "Mint for Victim" \newline - Sig: Sign($Attacker_{priv}$, Msg) 
     & \textbf{1.} Gateway recovers the signer address from the signature. \newline 
       \textbf{2.} Contract compares Recovered ($Attacker$) vs Wallet Owner ($Victim$). \newline 
       \textbf{3. Expected:} Assertion fails. Transaction reverts with \texttt{InvalidSignature}. 
     & Passed \\ \hline
 
-    \textbf{TC-SEC-03} \newline (Replay Attack) 
-    & \textbf{Scenario:} Attacker resubmits a previously valid Mint request to double the debt. \newline 
+    \textbf{Scenario:} Attacker resubmits a previously valid Mint request to double the debt. \newline 
       \textbf{Input:} A valid payload $(M, \sigma)$ used in block $N$. 
-    & \textbf{1.} First submission succeeds; \texttt{UniversalWallet.nonce} increments from $k$ to $k+1$. \newline 
+    & \textbf{1.} First submission succeeds; nonce of Universal Wallet increments from $k$ to $k+1$. \newline 
       \textbf{2.} Second submission sends same payload (nonce $k$). \newline 
-      \textbf{3. Expected:} Contract checks $Payload.nonce (k) == Wallet.nonce (k+1)$. Check fails. Revert with \texttt{InvalidNonce}. 
+      \textbf{3. Expected:} Contract checks $Payload.nonce (k) == Wallet.nonce (k+1)$ -> fails. Revert with invalid nonce. 
     & Passed \\ \hline
     \end{tabular}
     \caption{Test Cases for Security and Verification}
@@ -942,23 +873,21 @@ This module ensures the protocol remains solvent by allowing third parties to li
 \begin{table}[H]
     \centering
     \renewcommand{\arraystretch}{1.4}
-    \begin{tabular}{|p{2.5cm}|p{5cm}|p{5.5cm}|p{2cm}|}
+    \begin{tabular}{|p{0.4\textwidth}|p{0.5\textwidth}|p{0.1\textwidth}|}
     \hline
-    \textbf{Test Case ID} & \textbf{Test Scenario \& Input} & \textbf{Detailed Procedure \& Expected Result} & \textbf{Status} \\ \hline
+    \textbf{Test Scenario \& Input} & \textbf{Detailed Procedure \& Expected Result} & \textbf{Status} \\ \hline
     
-    \textbf{TC-LIQ-01} \newline (Valid Liquidation) 
-    & \textbf{Scenario:} Oracle price drops, making user insolvent. \newline 
+    \textbf{Scenario:} Oracle price drops, making user insolvent. \newline 
       \textbf{Input:} \newline - Collateral: 1 ETH \newline - Debt: 1500 USD \newline - Price drops: $2000 \to 1600$ 
-    & \textbf{1.} Mock Oracle updates price to \$1600. Health Factor drops below 1.1. \newline 
-      \textbf{2.} Liquidator calls \texttt{liquidate()}. \newline 
+    & \textbf{1.} Mock Oracle updates price to \$1600. Health Factor drops below 1.0. \newline 
+      \textbf{2.} Liquidator calls liquidate function. \newline 
       \textbf{3. Expected:} Liquidator pays debt. User's collateral is transferred to Liquidator + Bonus. User's debt is reduced. 
     & Passed \\ \hline
 
-    \textbf{TC-LIQ-02} \newline (Healthy Position) 
-    & \textbf{Scenario:} Liquidator tries to liquidate a healthy user for profit. \newline 
+    \textbf{Scenario:} Liquidator tries to liquidate a healthy user for profit. \newline 
       \textbf{Input:} Health Factor = 1.5 
-    & \textbf{1.} Call \texttt{liquidate()}. \newline 
-      \textbf{2. Expected:} Contract verifies $HF > Threshold$. Reverts with \texttt{PositionHealthy}. No assets are transferred. 
+    & \textbf{1.} Call liquidate function. \newline 
+      \textbf{2. Expected:} Contract verifies $HF > Threshold$. Reverts with debt is healthy. No assets are transferred. 
     & Passed \\ \hline
     \end{tabular}
     \caption{Test Cases for Liquidation Logic}
@@ -967,23 +896,43 @@ This module ensures the protocol remains solvent by allowing third parties to li
 
 \subsection{Evaluation and Results}
 
-The testing phase has yielded highly positive results, validating the architectural decisions made during the design phase.
+The comprehensive testing campaign has yielded highly positive results, serving as a rigorous validation of the architectural decisions made during the design phase. The evaluation process was not merely a check-box exercise but a stress test of the system's resilience under adversarial conditions. Quantitatively, the project executed a total of 12 distinct test suites. These tests spanned the entire stack, from the EVM Vault logic to the Solana state management and the Guardian middleware. The code coverage metrics are particularly indicative of the system's robustness: the Solidity contracts on the EVM side achieved 100\% branch coverage, a feasible target due to the minimal logic design pattern. On the Solana side, the Rust programs achieved a 92\% statement coverage, with the remaining uncovered paths primarily relating to unreachable panic states that are theoretically impossible to trigger under normal protocol operation.
 
-\subsubsection{Quantitative Summary}
-\begin{itemize}
-    \item \textbf{Total Test Suites:} 12 (Covering EVM Vaults, Solana State, Gateway, and Math Libraries).
-    \item \textbf{Total Test Cases Executed:} 84 individual atomic tests.
-    \item \textbf{Code Coverage:}
-    \begin{itemize}
-        \item Solana (Rust): 92\% Statement Coverage.
-        \item EVM (Solidity): 100\% Branch Coverage (due to smaller codebase).
-    \end{itemize}
-\end{itemize}
+Qualitatively, the integration tests confirmed the efficacy of the hybrid security model. The most significant finding was the robustness of the Mutex locking mechanism implemented on the EVM Controller. During simulated network latency scenarios where the Guardian node was forced offline for extended periods, the system maintained its integrity; user funds remained securely locked, and no race conditions occurred when the Guardian resumed operation to process the backlog. This proves that the system effectively adheres to the principle of "Safety over Liveness," prioritizing fund security even at the cost of temporary service unavailability during infrastructure outages.
 
-\subsubsection{Qualitative Analysis}
-The testing process uncovered a critical issue in the early development phase regarding \textit{decimal precision loss} when converting between EVM (18 decimals) and Solana (9 decimals). This was rectified by implementing a \texttt{DecimalScaling} library in the Gateway contract, which was subsequently verified by Test Case \texttt{TC-MINT-01}. Furthermore, the integration tests confirmed that the \texttt{Mutex} locking mechanism on the EVM controller effectively prevents race conditions, ensuring that user funds are secure even if the Guardian node experiences temporary latency.
+Furthermore, the testing phase uncovered a critical technical challenge regarding cross-chain arithmetic precision. Early iterations of the protocol revealed discrepancies when transferring value between Ethereum (which uses 18 decimal places) and Solana (which typically uses 9 decimal places for native tokens). This mismatch initially led to rounding errors that, while microscopic per transaction, could accumulate to significant accounting imbalances over time. This issue was rectified by implementing a dedicated Decimal Scaling function within the Gateway contract, which standardizes all values to a common high-precision internal format before execution. This solution was subsequently verified by specific boundary value test cases, ensuring that the protocol remains mathematically consistent regardless of the underlying chain's token standards.
 
 \section{Deployment}
-Sinh viên trình bày mô hình và/hoặc cách thức triển khai thử nghiệm/thực tế. Ứng dụng của sinh viên được triển khai trên server/thiết bị gì, cấu hình như thế nào. Kết quả triển khai thử nghiệm nếu có (số lượng người dùng, số lượng truy cập, thời gian phản hồi, phản hồi người dùng, khả năng chịu tải, các thống kê, v.v.)
 
+The deployment phase marks the transition of the Multi-chain Stablecoin Protocol from a local development environment to a live, distributed network accessible to the public. To validate the system's performance under realistic network conditions, including latency, gas costs, and block finality times. The application was deployed across a heterogeneous testnet environment that mirrors the topology of the mainnet production target.
+
+The blockchain infrastructure is deployed on two distinct networks to simulate the cross-chain architecture. The asset layer, responsible for custody and user interaction, is deployed on the Ethereum Sepolia Testnet. This network was selected for its stability and the availability of robust RPC endpoints, providing an accurate simulation of the Ethereum Mainnet environment. Conversely, the state execution layer is hosted on the Solana Devnet. This choice allows for the testing of high-throughput transaction processing and the validation of the Anchor program's performance without incurring real financial costs. The smart contracts on both chains were verified on their respective block explorers (Etherscan and Solana Explorer) to ensure transparency and facilitate public auditing during the testing phase.
+
+The infrastructure is distributed across two distinct environments to simulate real-world cross-chain conditions:
+\begin{itemize}
+    \item Asset Layer: Deployed on the Ethereum Sepolia Testnet. This environment hosts the Controller Contract responsible for locking user assets and managing mutex locks.
+    \item State Layer: Deployed on the Solana Devnet. This environment hosts the high-performance logic, including the Gateway for signature verification and the Main Contract for global state management.
+\end{itemize}
+
+Table \ref{tab:deployment_addresses} provides the specific on-chain addresses for the deployed components, enabling public verification of the protocol's code and transaction history.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5} % Tăng khoảng cách dòng
+    \setlength{\tabcolsep}{5pt} % Điều chỉnh khoảng cách cột
+    \small % Giảm cỡ chữ một chút để địa chỉ dài không bị tràn
+    \begin{tabular}{|p{0.15\textwidth}|p{0.1\textwidth}|p{0.75\textwidth}|}
+    \hline
+    \textbf{Component} & \textbf{Network} & \textbf{Contract Address} \\ \hline
+    
+    Controller Contract & Ethereum Sepolia & \texttt{0x93BdF8c1e6a18D3e73280d886f1141755CDeCde5} \\ \hline
+    
+    Main Contract & Solana Devnet & \texttt{vdstH476bZ8hdb8TvFS5bsn1RPBVuczpYQyBRgAceHq} \\ \hline
+    
+    Gateway Contract & Solana Devnet & \texttt{9oRzAwX1a31LDUrxdZDdMMGxcPe4v2cdUwET8UbKP826} \\ \hline
+    
+    \end{tabular}
+    \caption{Deployed Smart Contract Addresses}
+    \label{tab:deployment_addresses}
+\end{table}
 \end{document}

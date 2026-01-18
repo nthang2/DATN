@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2025.11.7)  17 DEC 2025 11:14
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2025.11.7)  18 JAN 2026 18:18
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1264,7 +1264,7 @@ Package: xparse 2024-08-16 L3 Experimental document command parser
 Package: blx-case-expl3 2024/03/21 v3.20 expl3 case changing code for biblatex
 ))
 
-LaTeX Warning: \include should only be used after \begin{document} on input line 71.
+LaTeX Warning: \include should only be used after \begin{document} on input line 70.
 
 No file lstlisting.
 (./glossary.tex) (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/hyperref/hyperref.sty
@@ -1494,50 +1494,28 @@ Overfull \hbox (6.06953pt too wide) in paragraph at lines 3--4
 \T5/ptm/m/n/13 The core busi-ness pro-cesses, specif-i-cally the cross-chain state syn-chro-niza-tion work-
  []
 
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 14.
-(/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/psnfss/ts1ptm.fd
-File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-)
+
+Overfull \hbox (6.97954pt too wide) in paragraph at lines 8--9
+\T5/ptm/m/n/13 stricted to es-tab-lish-ing col-lat-er-al-ized po-si-tions ex-clu-sively within a sin-gle blockchain
+ []
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
 [1
 
-{/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/map/pdftex/updmap/pdftex.map}{/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/enc/dvips/vntex/t5.enc}{/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/enc/dvips/base/8r.enc}]
-
-Package caption Warning: \label without proper reference on input line 28.
-See the caption package documentation for explanation.
-
-
-LaTeX Warning: Reference `tab:status_survey' on page 2 undefined on input line 24.
-
-(/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/base/ulasy.fd) (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/amsfonts/umsa.fd) (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/amsfonts/umsb.fd)
-Underfull \vbox (badness 2680) has occurred while \output is active []
-
-
+{/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/map/pdftex/updmap/pdftex.map}{/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/enc/dvips/vntex/t5.enc}] (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/base/ulasy.fd) (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/amsfonts/umsa.fd) (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/amsfonts/umsb.fd)
 
 [2]
-LaTeX Font Info:    Trying to load font information for T5+phv on input line 130.
+LaTeX Font Info:    Trying to load font information for T5+phv on input line 126.
  (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/vntex/t5phv.fd
 File: t5uhv.fd 2005/08/24 Fontinst v1.929 font definitions for T5/phv.
 )
 
-LaTeX Warning: Reference `fig:detailed_usecase_diagram' on page 3 undefined on input line 136.
-
-
-
 [3]
-LaTeX Font Info:    Trying to load font information for T5+pcr on input line 140.
- (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/vntex/t5pcr.fd
-File: t5ucr.fd 2005/08/24 Fontinst v1.929 font definitions for T5/pcr.
-)
-Underfull \vbox (badness 1810) has occurred while \output is active []
-
-
-
-[4]
-Overfull \hbox (0.82324pt too wide) in paragraph at lines 386--386
+Overfull \hbox (0.82324pt too wide) in paragraph at lines 344--344
  []\T5/phv/m/n/11.86258 (Debt/Collateral) 
  []
 
@@ -1546,19 +1524,28 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[5]
+[4]
 
-[6]
+[5]
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 361.
+ (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[6{/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/enc/dvips/base/8r.enc}]
+Overfull \hbox (10.16177pt too wide) in paragraph at lines 395--396
+[]\T5/ptm/m/n/13 Subsequently, the Guardian cap-tures the on-chain EVM event and cross-references
+ []
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
 [7]
-Underfull \hbox (badness 2717) in paragraph at lines 470--470
-[]|\T5/ptm/m/n/13 User re-ceives sta-ble-coins on EVM. Debt po-si-tion is
- []
-
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -1569,43 +1556,16 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [9]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 
 [10]
-Overfull \hbox (6.87653pt too wide) in paragraph at lines 533--534
-[]\T5/ptm/b/n/13 Cross-chain Re-play Pro-tec-tion: \T5/ptm/m/n/13 The sys-tem must im-ple-ment a rig-or-ous \T5/ptm/b/n/13 Nonce
- []
-
-
-Overfull \hbox (38.41455pt too wide) in paragraph at lines 541--542
-[]\T5/ptm/b/n/13 Compute Unit Op-ti-miza-tion (Solana): \T5/ptm/m/n/13 Since cryp-to-graphic ver-i-fi-ca-tion (Secp256k1
- []
-
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
 [11]
-Overfull \hbox (2.58658pt too wide) in paragraph at lines 548--549
-\T5/ptm/m/n/13 event mul-ti-ple times (due to net-work re-tries) must not re-sult in double-counting
- []
-
-
-Overfull \hbox (2.31282pt too wide) in paragraph at lines 554--555
-\T5/ptm/m/n/13 struc-tured data (Ac-tion, Amount, ChainID) in their wal-let in-ter-face (e.g., Meta-
- []
-
-
-Overfull \hbox (42.26152pt too wide) in paragraph at lines 561--563
-\T5/ptm/m/n/13 re-quire-ments have set strict con-straints re-gard-ing cryp-to-graphic com-pat-i-bil-ity (Secp256k1),
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-[12]
 
 Package glossaries Warning: No \printnoidxglossary or \printnoidxglossaries
  found. (Remove \makenoidxglossaries if you don't want any glossaries.)
@@ -1613,7 +1573,7 @@ This document will not have a glossary.
 
 
 
-[13] (Chapter/2_Survey.aux)
+[12] (Chapter/2_Survey.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -1623,28 +1583,25 @@ L3 programming layer <2025-01-18>
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
-
-LaTeX Warning: There were undefined references.
-
 Package rerunfilecheck Info: File `2_Survey.out' has not changed.
-(rerunfilecheck)             Checksum: 99BD68E5A7177103C6D91D316E766560;3443.
+(rerunfilecheck)             Checksum: 579C031D904D482F11BBA4CD824DD659;2822.
 Package logreq Info: Writing requests to '2_Survey.run.xml'.
 \openout1 = `2_Survey.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 46313 strings out of 473190
- 927482 string characters out of 5704335
- 1808510 words of memory out of 5000000
- 68761 multiletter control sequences out of 15000+600000
- 602751 words of font info for 77 fonts, out of 8000000 for 9000
+ 46862 strings out of 473190
+ 935959 string characters out of 5704335
+ 1815922 words of memory out of 5000000
+ 69304 multiletter control sequences out of 15000+600000
+ 597026 words of font info for 74 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 128i,12n,124p,2478b,994s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/ucrr8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/uhvr8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmri8v.pfb>
-Output written on Chapter/2_Survey.pdf (13 pages, 148061 bytes).
+ 128i,13n,124p,2478b,994s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/uhvr8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmri8v.pfb>
+Output written on Chapter/2_Survey.pdf (12 pages, 119010 bytes).
 PDF statistics:
- 238 PDF objects out of 1000 (max. 8388607)
- 187 compressed objects within 2 object streams
- 48 named destinations out of 1000 (max. 500000)
- 245 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 234 PDF objects out of 1000 (max. 8388607)
+ 188 compressed objects within 2 object streams
+ 58 named destinations out of 1000 (max. 500000)
+ 237 words of extra memory for PDF output out of 10000 (max. 10000000)
 

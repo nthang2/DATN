@@ -513,10 +513,6 @@ OUTPUT Chapter/3_Methodology.out
 INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/tfm/vntex/urwvn/utmb8v.tfm
 INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/map/pdftex/updmap/pdftex.map
 INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/enc/dvips/vntex/t5.enc
-INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/vntex/t5pcr.fd
-INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/vntex/t5pcr.fd
-INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/vntex/t5pcr.fd
-INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/tfm/vntex/urwvn/ucrr8v.tfm
 INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/tfm/public/cm/cmr9.tfm
 INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/tfm/public/cm/cmr6.tfm
 INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm
@@ -568,7 +564,6 @@ INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/publi
 INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb
 INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb
-INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/ucrr8v.pfb
 INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb
 INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb
 INPUT /opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb

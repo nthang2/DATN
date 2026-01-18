@@ -1,15 +1,15 @@
 # Fdb version 4
-["bibtex Chapter/3_Methodology"] 1766542716.01045 "Chapter/3_Methodology.aux" "Chapter/3_Methodology.bbl" "Chapter/3_Methodology" 1767582560.17951 0
+["bibtex Chapter/3_Methodology"] 1768710093.06292 "Chapter/3_Methodology.aux" "Chapter/3_Methodology.bbl" "Chapter/3_Methodology" 1768710101.32794 0
   "./reference.bib" 1766375003.37202 2212 35bf5342b1f561f73f891ce68859e55f ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/bibtex/bst/biblatex/biblatex.bst" 1741388039 65510 b1f696b0241395385f422f67543c37fd ""
-  "Chapter/3_Methodology-blx.bib" 1767582559.86424 343 eecd58be191eac03682f8fda492bb690 "pdflatex"
-  "Chapter/3_Methodology.aux" 1767582559.85958 4883 b392a99d102fb6e20cbbf6f724b10dd0 "pdflatex"
+  "Chapter/3_Methodology-blx.bib" 1768710100.18758 343 eecd58be191eac03682f8fda492bb690 "pdflatex"
+  "Chapter/3_Methodology.aux" 1768710100.18289 4753 08fc3c5beb5afbe431e7aaa00149d7c4 "pdflatex"
   (generated)
   "Chapter/3_Methodology.bbl"
   "Chapter/3_Methodology.blg"
   (rewritten before read)
-["pdflatex"] 1767582558.08624 "/Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Chapter/3_Methodology.tex" "Chapter/3_Methodology.pdf" "3_Methodology" 1767582560.17971 0
-  "/Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Chapter/3_Methodology.tex" 1767582557.72463 18347 c82d8938d8aac28ba479b540801cec9e ""
+["pdflatex"] 1768710093.41038 "/Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Chapter/3_Methodology.tex" "Chapter/3_Methodology.pdf" "3_Methodology" 1768710101.32819 0
+  "/Users/ndt/Downloads/Nguyen_Duc_Thang_DATN/Chapter/3_Methodology.tex" 1768710037.09363 21172 4bbeb1f0ed57151451d37b9e23234430 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/enc/dvips/base/8r.enc" 1741388039 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/enc/dvips/vntex/t5.enc" 1741388039 7824 21ade6c3c7fd67cb4ace8dbc91c53118 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/map/fontname/texfonts.map" 1741388039 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -35,7 +35,6 @@
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/tfm/public/latex-fonts/lasy10.tfm" 1741388039 520 82a3d37183f34b6eb363a161dfc002c2 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/tfm/public/latex-fonts/lasy6.tfm" 1741388039 520 4889cce2180234b97cad636b6039c722 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/tfm/public/latex-fonts/lasy9.tfm" 1741388039 520 1cc7cc05f4d7bae5c23bf7516f88fa52 ""
-  "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/tfm/vntex/urwvn/ucrr8v.tfm" 1741388039 4892 8939be8a0c3a2ab9490df926bea8cf34 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/tfm/vntex/urwvn/utmb8v.tfm" 1741388039 9152 6eaf55be4c040a59ad35102d0af7daf8 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/tfm/vntex/urwvn/utmr8v.tfm" 1741388039 9148 bc984b2d882e6063375e28b14a49fb54 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/tfm/vntex/vnr/vnr12.tfm" 1741388039 3984 be7b630197255361b12d153ce5e1bc5b ""
@@ -48,7 +47,6 @@
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb" 1741388039 32442 c975af247b6702f7ca0c299af3616b80 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1741388039 34694 ad62b13721ee8eda1dcc8993c8bd7041 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb" 1741388039 46026 6dab18b61c907687b520c72847215a68 ""
-  "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/ucrr8v.pfb" 1741388039 76747 7661890fb8ab67318f6d2b38f38e368f ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb" 1741388039 72608 f436cd73c67ea6e1877b6103639dad6d ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb" 1741388039 74601 73db20eaadfe3da50ec5dfbb1e3ad83a ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/vf/adobe/times/ptmr8c.vf" 1741388039 3556 8a9a6dcbcd146ef985683f677f4758a6 ""
@@ -285,7 +283,6 @@
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/vntex/t5cmr.fd" 1741388039 1333 ab1c3d512aa3d88df568aed3641db58f ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/vntex/t5enc.def" 1741388039 21986 ccb3b8f7cc27fbd61b3daabbbb82ad3f ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/vntex/t5enc.dfu" 1741388039 13949 387dd4fa58aea5f873839c93430fffed ""
-  "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/vntex/t5pcr.fd" 1741388039 1102 fa6916e6165172f21d71f8ac0a56bf11 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/vntex/t5ptm.fd" 1741388039 1100 803888e7a6edcd8c143317c75deceb08 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/vntex/vietnam.sty" 1741388039 2477 91784aa2c9213f74609391e3cae65a13 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/vntex/vncaps.tex" 1741388039 3273 a55ebdb07413d2fea580f210e3c0b252 ""
@@ -295,14 +292,14 @@
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/xurl/xurl.sty" 1741388039 4675 e4b8c405820368c2dfb03526e16d725a ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/web2c/texmf.cnf" 1741388039 42151 79f67285bdd95beca4d137b380b4b9e5 ""
   "/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-var/web2c/pdftex/pdflatex.fmt" 1741388039 3346125 851abcc596872d7f7285a006ccee0040 ""
-  "Chapter/../Main.tex" 1766375939.99029 11071 2ed7a8c282044ee4818956d68c24647b ""
-  "Chapter/3_Methodology.aux" 1767582559.85958 4883 b392a99d102fb6e20cbbf6f724b10dd0 "pdflatex"
-  "Chapter/3_Methodology.bbl" 1766542716.07819 4084 c09f61f9211bc3958292fb5bdb33337d "bibtex Chapter/3_Methodology"
-  "Chapter/3_Methodology.out" 1767582559.86062 5454 be909ad29272fc67382dc4c295adf000 "pdflatex"
-  "Chapter/3_Methodology.run.xml" 1767582559.86531 2699 8fc414e686378a356af434aaddbc4929 "pdflatex"
-  "Chapter/3_Methodology.tex" 1767582557.72463 18347 c82d8938d8aac28ba479b540801cec9e ""
+  "Chapter/../Main.tex" 1768201541.19221 11071 2ed7a8c282044ee4818956d68c24647b ""
+  "Chapter/3_Methodology.aux" 1768710100.18289 4753 08fc3c5beb5afbe431e7aaa00149d7c4 "pdflatex"
+  "Chapter/3_Methodology.bbl" 1768710093.40058 3431 e427e89da970f89cd4983a5ba8aacb25 "bibtex Chapter/3_Methodology"
+  "Chapter/3_Methodology.out" 1768710100.18392 5380 efd23527e2e5154a05f5cae31967019d "pdflatex"
+  "Chapter/3_Methodology.run.xml" 1768710100.18847 2699 8fc414e686378a356af434aaddbc4929 "pdflatex"
+  "Chapter/3_Methodology.tex" 1768710037.09363 21172 4bbeb1f0ed57151451d37b9e23234430 ""
   "Chapter/lstlisting" 0 -1 0 ""
-  "glossary.tex" 1766389093.86124 1363 1502e3d86449ed5efb9018398a519cef ""
+  "glossary.tex" 1768710059.35793 3686 00eef5ac83ab9b840807ee1e2ae641df ""
   "lstlisting" 0 -1 0 ""
   (generated)
   "Chapter/3_Methodology-blx.bib"

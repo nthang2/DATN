@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2025.11.7)  18 DEC 2025 14:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2025.11.7)  17 JAN 2026 11:00
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1264,7 +1264,7 @@ Package: xparse 2024-08-16 L3 Experimental document command parser
 Package: blx-case-expl3 2024/03/21 v3.20 expl3 case changing code for biblatex
 ))
 
-LaTeX Warning: \include should only be used after \begin{document} on input line 71.
+LaTeX Warning: \include should only be used after \begin{document} on input line 70.
 
 No file lstlisting.
 (./glossary.tex) (/opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/tex/latex/hyperref/hyperref.sty
@@ -1557,15 +1557,15 @@ Package logreq Info: Writing requests to 'Cover2.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 45732 strings out of 473190
- 916412 string characters out of 5704335
- 1791253 words of memory out of 5000000
- 68243 multiletter control sequences out of 15000+600000
+ 45762 strings out of 473190
+ 917050 string characters out of 5704335
+ 1792689 words of memory out of 5000000
+ 68273 multiletter control sequences out of 15000+600000
  578356 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  128i,12n,124p,2536b,854s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb>
-Output written on Cover2.pdf (1 page, 43950 bytes).
+Output written on Cover2.pdf (1 page, 44761 bytes).
 PDF statistics:
  52 PDF objects out of 1000 (max. 8388607)
  28 compressed objects within 1 object stream

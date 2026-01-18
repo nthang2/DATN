@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2025.11.7)  22 DEC 2025 14:38
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2025.11.7)  18 JAN 2026 13:50
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1557,15 +1557,15 @@ Package logreq Info: Writing requests to 'Cover.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 45762 strings out of 473190
- 917021 string characters out of 5704335
- 1791684 words of memory out of 5000000
- 68273 multiletter control sequences out of 15000+600000
+ 46302 strings out of 473190
+ 925055 string characters out of 5704335
+ 1795663 words of memory out of 5000000
+ 68813 multiletter control sequences out of 15000+600000
  578356 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  128i,10n,124p,2535b,854s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb></opt/homebrew/Cellar/texlive/20250308_2/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb>
-Output written on Cover.pdf (1 page, 43880 bytes).
+Output written on Cover.pdf (1 page, 44694 bytes).
 PDF statistics:
  52 PDF objects out of 1000 (max. 8388607)
  28 compressed objects within 1 object stream
